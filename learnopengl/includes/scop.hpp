@@ -4,7 +4,7 @@
 #include "../../include/glad/glad.h"
 #include "../../deps/include/GLFW/glfw3.h"
 
+#include "shader.h"
 #include <iostream>
-
 
 #endif
