@@ -3,6 +3,9 @@
 
 #include <vector>
 #include <string>
+#include <fstream>
+#include <sstream>
+#include <cstring>
 
 class Face;
 class Vertex;
@@ -12,12 +15,17 @@ class Object
 	public:
 		Object();
 		Object(const Object&);
-		Object(const std::string);
+		Object(const std::string& file);
 		Object& operator=(const Object&);
 		~Object();
+
+		void parse();
+		void parseVertex(std::istringstream&);
+		void test(); // to remove
 	private:
-		std::vector<Face> faces;
-		std::vector<Vertex> vertices;
+		std::string			_filePath;
+		std::vector<Face> 	_faces;
+		std::vector<Vertex> _vertices;
 };
 
 #endif

@@ -8,6 +8,6 @@
 #include <iostream>
 #include <string>
 
-void parse(const std::string& file);
+#include "Object.hpp"
 
 #endif

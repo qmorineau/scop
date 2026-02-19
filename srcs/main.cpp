@@ -6,9 +6,11 @@ int main(int argc, char **argv)
 {
 	if (argc == 2)
 	{
+		Object *obj = new Object(std::string(argv[1]));
 		try
 		{
-			parse(std::string(argv[1]));
+			obj->parse();
+			obj->test();
 		}
 		catch (const std::exception& e)
 		{
