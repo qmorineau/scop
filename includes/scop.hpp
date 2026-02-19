@@ -2,9 +2,12 @@
 #define SCOP_HPP
 
 #include <glad/glad.h>
-#include <GLFW/glfw3.h>
+#include <GLFW/glfw3.h> 
 
-#include "shader.h"
+#include "stb_images.h"
 #include <iostream>
+#include <string>
+
+void parse(const std::string& file);
 
 #endif
