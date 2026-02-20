@@ -1,6 +1,5 @@
 #include "Object.hpp"
 #include "scop.hpp"
-#include <exception>
 
 int main(int argc, char **argv)
 {
@@ -11,6 +10,7 @@ int main(int argc, char **argv)
 		{
 			obj->parse();
 			obj->test();
+			renderObject(obj);
 		}
 		catch (const std::exception& e)
 		{

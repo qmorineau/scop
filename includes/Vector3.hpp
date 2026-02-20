@@ -10,7 +10,7 @@ struct Vector3
 	Vector3(float x = 0.0f, float y = 0.0f, float z = 0.0f) : x(x), y(y), z(z) {};
 };
 
-std::ostream& operator<<(std::ostream& out_stream, const Vector3& vec)
+inline std::ostream& operator<<(std::ostream& out_stream, const Vector3& vec)
 {
 	out_stream << "[" << vec.x << " ," << vec.y << ", " << vec.z << "]";
 	return (out_stream);
