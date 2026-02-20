@@ -7,8 +7,9 @@
 #include <sstream>
 #include <cstring>
 
+#include "Types.hpp"
+
 class Face;
-class Vertex;
 
 class Object
 {

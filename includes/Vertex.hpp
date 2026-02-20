@@ -2,23 +2,21 @@
 #define VERTEX_HPP
 
 #include <iostream>
+#include "Types.hpp"
 
-class Vertex
+struct Vertex
 {
-	public:
-		Vertex();
-		Vertex(const Vertex&);
-		Vertex(const float x, const float y, const float z, const float w);
-		Vertex& operator=(const Vertex&);
-		~Vertex();
+	Vector4 position;
+	Vector3 normale;
 
-		void print();
+	Vertex(float x, float y, float z) : position(x, y, z) {};
+	Vertex(float x, float y, float z, float w) : position(x, y, z, w) {};
 
-	private:
-		float _posx;
-		float _posy;
-		float _posz;
-		float _w;
+	void print()
+	{
+		std::cout << "position" << position << ", normale" << normale << std::endl;
+	};
+
 };
 
 #endif
