@@ -9,11 +9,9 @@ struct Vector2
 
 	Vector2(float x = 0.0f, float y = 0.0f) : x(x), y(y) {};
 
-	bool operator==(Vector2 other)
+	bool operator==(const Vector2 other) const
 	{
-		if (x == other.x && y == other.y)
-			return true;
-		return false;
+		return (x == other.x && y == other.y);
 	}
 };
 

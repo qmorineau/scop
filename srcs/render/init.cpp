@@ -1,13 +1,12 @@
 #include "scop.hpp"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
-void processInput(GLFWwindow *window);
 
 // settings
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 
-int initOpenGL()
+GLFWwindow* initOpenGL()
 {
 	// glfw: initialize and configure
     // ------------------------------
@@ -27,7 +26,7 @@ int initOpenGL()
     {
         std::cout << "Failed to create GLFW window" << std::endl;
         glfwTerminate();
-        return -1;
+        return NULL;
     }
     glfwMakeContextCurrent(window);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
@@ -37,22 +36,14 @@ int initOpenGL()
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
     {
         std::cout << "Failed to initialize GLAD" << std::endl;
-        return -1;
+        return NULL;
     }
 
     // configure global opengl state
     // -----------------------------
     glEnable(GL_DEPTH_TEST);
 
-	return (0);
-}
-
-// process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
-// ---------------------------------------------------------------------------------------------------------
-void processInput(GLFWwindow *window)
-{
-    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-        glfwSetWindowShouldClose(window, true);
+	return (window);
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes

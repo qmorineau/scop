@@ -15,6 +15,9 @@ class Face;
 class Object
 {
 	public:
+		std::vector<Vertex> _vertices;
+		std::vector<uint32_t> _indices;
+
 		Object();
 		Object(const Object&);
 		Object(const std::string& file);
@@ -35,11 +38,7 @@ class Object
 		std::vector<Vector3> _positions;
 		std::vector<Vector3> _normals;
 		std::vector<Vector2> _textures;
-		std::vector<uint32_t> _indices;
-
 		std::string			_filePath;
-		std::vector<Vertex> _vertices;
-		
 };
 
 #endif

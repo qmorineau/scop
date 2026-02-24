@@ -153,8 +153,3 @@ void Object::test()
 		_vertices[_indices[i]].print();
 	}
 }
-
-void Object::render()
-{
-
-}

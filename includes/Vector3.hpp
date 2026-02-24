@@ -9,11 +9,9 @@ struct Vector3
 
 	Vector3(float x = 0.0f, float y = 0.0f, float z = 0.0f) : x(x), y(y), z(z) {};
 	
-	bool operator==(Vector3 other)
+	bool operator==(const Vector3 other) const
 	{
-		if (x == other.x && y == other.y && z == other.z)
-			return true;
-		return false;
+		return (x == other.x && y == other.y && z == other.z);
 	}
 };
 

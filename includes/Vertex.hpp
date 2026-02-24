@@ -10,18 +10,16 @@ struct Vertex
 	Vector3 normale;
 	Vector2 texture;
 
-	Vertex(Vector3 pos, Vector3 norm, Vector2 text) : position(pos), normale(norm), texture(text) {};
+	Vertex(Vector3& pos, Vector3& norm, Vector2& text) : position(pos), normale(norm), texture(text) {};
 
 	void print()
 	{
 		std::cout << "v" << position << ", vn" << normale << ", vt" << texture << std::endl;
 	};
 
-	bool operator==(Vertex& other)
+	bool operator==(const Vertex& other) const
 	{
-		if (position == other.position && normale == other.normale && texture == other.texture)
-			return true;
-		return false;
+		return (position == other.position && normale == other.normale && texture == other.texture);
 	}
 };
 
