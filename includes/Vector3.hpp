@@ -8,6 +8,13 @@ struct Vector3
 	float x, y, z;
 
 	Vector3(float x = 0.0f, float y = 0.0f, float z = 0.0f) : x(x), y(y), z(z) {};
+	
+	bool operator==(Vector3 other)
+	{
+		if (x == other.x && y == other.y && z == other.z)
+			return true;
+		return false;
+	}
 };
 
 inline std::ostream& operator<<(std::ostream& out_stream, const Vector3& vec)

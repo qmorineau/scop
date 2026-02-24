@@ -27,7 +27,8 @@ SRC_CPP = $(shell find $(SRC_DIR) -name "*.cpp")
 GLAD_C  = $(GLAD_DIR)/src/glad.c
 OBJ_CPP = $(patsubst $(SRC_DIR)/%.cpp, $(OBJ_DIR)/%.o, $(SRC_CPP))
 OBJ_GLAD = $(OBJ_DIR)/glad.o
-DEP = $(OBJ:.o=.d)
+ALL_OBJS = $(OBJ_CPP) $(OBJ_GLAD)
+DEP = $(ALL_OBJS:.o=.d)
 
 NAME = scop
 

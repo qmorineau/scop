@@ -10,7 +10,7 @@ int main(int argc, char **argv)
 		{
 			obj->parse();
 			obj->test();
-			renderObject(obj);
+			obj->render();
 		}
 		catch (const std::exception& e)
 		{

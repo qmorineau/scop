@@ -9,8 +9,4 @@
 
 #include "stb_images.h"
 
-#include "Object.hpp"
-
-void renderObject();
-
 #endif
