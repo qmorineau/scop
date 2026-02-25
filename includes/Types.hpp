@@ -4,6 +4,8 @@
 #include "Vector3.hpp"
 #include "Vector2.hpp"
 #include "Vertex.hpp"
-#include "Matrix4.hpp"
+
+using vec2 = Vector2;
+using vec3 = Vector3;
 
 #endif
