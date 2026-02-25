@@ -40,9 +40,10 @@ class Camera
 		float MovementSpeed;
 		float MouseSensitivity;
 		float Zoom;
+		float aspectRatio;
 
 		// constructor with vectors
-		Camera(vec3 position = vec3(0.0f, 0.0f, 0.0f), vec3 up = vec3(0.0f, 1.0f, 0.0f), float yaw = YAW, float pitch = PITCH) : Front(vec3(0.0f, 0.0f, -1.0f)), MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY), Zoom(ZOOM)
+		Camera(vec3 position = vec3(0.0f, 0.0f, 0.0f), vec3 up = vec3(0.0f, 1.0f, 0.0f), float yaw = YAW, float pitch = PITCH, float aspect = 4.0f / 3.0f) : Front(vec3(0.0f, 0.0f, -1.0f)), MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY), Zoom(ZOOM), aspectRatio(aspect)
 		{
 			Position = position;
 			WorldUp = up;
@@ -64,6 +65,11 @@ class Camera
 		mat4 GetViewMatrix()
 		{
 			return mat4::lookAt(Position, Position + Front, Up);
+		}
+
+		void resize(int width, int height)
+		{
+			aspectRatio = width / height;
 		}
 
 		// processes input received from any keyboard-like input system. Accepts input parameter in the form of camera defined ENUM (to abstract it from windowing systems)

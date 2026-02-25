@@ -1,6 +1,8 @@
 #include "Renderer.hpp"
-#include "Types.hpp"
 #include "GLMesh.hpp"
+#include "Matrix4.hpp"
+#include "Math.hpp"
+#include "Camera.hpp"
 
 Renderer::Renderer() : _shader("texture.vs", "texture.fs") {};
 
@@ -14,8 +16,12 @@ void Renderer::beginFrame()
 
 void Renderer::draw(GLMesh& mesh, Camera& camera)
 {
-	(void) camera; // next
-
 	_shader.use();
+	mat4 projection = mat4::perspective(math::radians(camera.Zoom), camera.aspectRatio, 0.1f, 100.0f);
+	_shader.setMat4("projection", projection);
+
+	mat4 view = camera.GetViewMatrix();
+	_shader.setMat4("view", view);
+
 	mesh.draw();
 };

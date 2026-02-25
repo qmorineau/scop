@@ -68,11 +68,15 @@ class Matrix4
 
 		static Matrix4 perspective(float fov, float aspect, float near, float far)
 		{
-			(void) fov;
-			(void) aspect;
-			(void) near;
-			(void) far;
-			return Matrix4({0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0});
+			float tanHalfFov = std::tan(fov / 2.0f);
+
+			std::vector<float> array(16, 0.0f);
+			array[0] = 1.0f / (aspect * tanHalfFov);
+			array[5] = 1.0f / tanHalfFov;
+			array[10] = - (far + near) / (far - near);
+			array[11] = -1.0f;
+			array[14] = - (2.0f * far * near) / (far - near);
+			return Matrix4(array);
 		}
 
 		const float& operator()(size_t c, size_t r) const
@@ -82,6 +86,12 @@ class Matrix4
 				throw OutOfBound();
 			return (data[idx]);
 		}
+
+		const float* dataPtr() const
+		{
+			return data.data();
+		}
+
 	private:
 		std::vector<float> data;
 };
