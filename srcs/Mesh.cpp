@@ -1,14 +1,13 @@
-#include "scop.hpp"
-#include "Object.hpp"
+#include "Mesh.hpp"
 #include "Vertex.hpp"
 
-Object::Object() {}
+Mesh::Mesh() {}
 
-Object::Object(const Object& copy) {*this = copy;}
+Mesh::Mesh(const Mesh& copy) {*this = copy;}
 
-Object::Object(const std::string& file) : _filePath(file) {}
+Mesh::Mesh(const std::string& file) : _filePath(file) {}
 
-Object& Object::operator=(const Object& other)
+Mesh& Mesh::operator=(const Mesh& other)
 {
 	if (this != &other)
 	{
@@ -18,12 +17,12 @@ Object& Object::operator=(const Object& other)
 	return (*this);
 }
 
-Object::~Object() 
+Mesh::~Mesh() 
 {
 
 }
 
-void Object::parsePosition(std::istringstream& iss)
+void Mesh::parsePosition(std::istringstream& iss)
 {
 	float x = 0;
 	float y = 0;
@@ -34,11 +33,10 @@ void Object::parsePosition(std::istringstream& iss)
 	iss >> z;
 
 	Vector3 v(x, y, z);
-	// std::cout << "position " << v << std::endl;
 	_positions.push_back(v);
 }
 
-void Object::parseVertexNormal(std::istringstream& iss)
+void Mesh::parseVertexNormal(std::istringstream& iss)
 {
 	float x = 0;
 	float y = 0;
@@ -49,11 +47,10 @@ void Object::parseVertexNormal(std::istringstream& iss)
 	iss >> z;
 
 	Vector3 v(x, y, z);
-	// std::cout << "normal " << v << std::endl;
 	_normals.push_back(v);
 }
 
-void Object::parseTexture(std::istringstream& iss)
+void Mesh::parseTexture(std::istringstream& iss)
 {
 	float x = 0;
 	float y = 0;
@@ -62,11 +59,10 @@ void Object::parseTexture(std::istringstream& iss)
 	iss >> y;
 
 	Vector2 v(x, y);
-	// std::cout << "texture " << v << std::endl;
 	_textures.push_back(v);
 }
 
-int Object::findDuplicateVertex(Vertex& v)
+int Mesh::findDuplicateVertex(Vertex& v)
 {
 	for (unsigned int i = 0; i < _vertices.size(); i++)
 	{
@@ -76,7 +72,7 @@ int Object::findDuplicateVertex(Vertex& v)
 	return (0);
 }
 
-void Object::parseVertex(std::string indices)
+void Mesh::parseVertex(std::string indices)
 {
 	std::string position = indices.substr(0, indices.find('/'));
 	indices.erase(0, indices.find('/') + 1);
@@ -99,20 +95,18 @@ void Object::parseVertex(std::string indices)
 	}
 }
 
-void Object::createFace(std::istringstream& iss)
+void Mesh::createFace(std::istringstream& iss)
 {
 	std::string word;
 
-	// std::cout << "create face :" << std::endl;
 	for (int i = 0; i < 3; i++)
 	{
 		iss >> word;
-		// std::cout << word << std::endl;
 		parseVertex(word);
 	}
 }
 
-void Object::parse()
+void Mesh::parse()
 {
 	std::ifstream inFile(_filePath);
 
@@ -145,7 +139,7 @@ void Object::parse()
 	}
 }
 
-void Object::test()
+void Mesh::print()
 {
 	for	(unsigned int i = 0; i < _indices.size(); i++)
 	{

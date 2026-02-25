@@ -1,7 +1,6 @@
 #ifndef SHADER_HPP
 #define SHADER_HPP
 
-#include "scop.hpp"
 #include <string>
 #include <fstream>
 #include <sstream>

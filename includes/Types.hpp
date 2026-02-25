@@ -4,5 +4,6 @@
 #include "Vector3.hpp"
 #include "Vector2.hpp"
 #include "Vertex.hpp"
+#include "Matrix4.hpp"
 
 #endif

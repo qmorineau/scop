@@ -1,5 +1,5 @@
-#ifndef OBJECT_HPP
-#define OBJECT_HPP
+#ifndef MESH_HPP
+#define MESH_HPP
 
 #include <vector>
 #include <string>
@@ -10,23 +10,21 @@
 
 #include "Types.hpp"
 
-class Face;
-
-class Object
+class Mesh
 {
 	public:
 		std::vector<Vertex> _vertices;
 		std::vector<uint32_t> _indices;
 
-		Object();
-		Object(const Object&);
-		Object(const std::string& file);
-		Object& operator=(const Object&);
-		~Object();
+		Mesh();
+		Mesh(const Mesh&);
+		Mesh(const std::string& file);
+		Mesh& operator=(const Mesh&);
+		~Mesh();
 
 		void parse();
 		void render();
-		void test(); // to remove
+		void print();
 	private:
 		void parseVertexNormal(std::istringstream& iss);
 		void parsePosition(std::istringstream&);
