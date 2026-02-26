@@ -33,6 +33,13 @@ class Matrix4
 
 		~Matrix4() {};
 
+		static Matrix4 identity()
+		{
+			std::vector<float> m(16, 0.0f);
+			m[0] = m[5] = m[10] = m[15] = 1.0f;
+			return (Matrix4(m));
+		}
+
 		Matrix4 mul_mat(const Matrix4& mat) const
 		{
 			std::vector<float> array(16, float {});

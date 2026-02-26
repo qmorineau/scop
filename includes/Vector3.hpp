@@ -30,6 +30,11 @@ struct Vector3
 		return (Vector3(x * other.x, y * other.y, z * other.z));
 	}
 
+	Vector3 operator*(const float s) const
+	{
+		return (Vector3(x * s, y * s, z * s));
+	}
+
 	Vector3 operator+=(const Vector3& other)
 	{
 		x += other.x;
@@ -45,6 +50,11 @@ struct Vector3
 		z -= other.z;
 		return (*this);
 	}
+};
+
+inline Vector3 operator*(float s, const Vector3& v)
+{
+	return (Vector3(v.x * s, v.y * s, v.z * s));
 };
 
 inline std::ostream& operator<<(std::ostream& out_stream, const Vector3& vec)

@@ -16,12 +16,19 @@ void Renderer::beginFrame()
 
 void Renderer::draw(GLMesh& mesh, Camera& camera)
 {
-	_shader.use();
-	mat4 projection = mat4::perspective(math::radians(camera.Zoom), camera.aspectRatio, 0.1f, 100.0f);
-	_shader.setMat4("projection", projection);
+    _shader.use();
 
-	mat4 view = camera.GetViewMatrix();
-	_shader.setMat4("view", view);
+    // Projection
+    mat4 projection = mat4::perspective(math::radians(camera.Zoom), camera.aspectRatio, 0.1f, 100.0f);
+    _shader.setMat4("projection", projection);
 
-	mesh.draw();
-};
+    // View
+    mat4 view = camera.GetViewMatrix();
+    _shader.setMat4("view", view);
+
+    // Model
+    mat4 model = mat4::identity();
+    _shader.setMat4("model", model);
+
+    mesh.draw();
+}

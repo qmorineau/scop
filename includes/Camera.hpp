@@ -42,9 +42,16 @@ class Camera
 		float Zoom;
 		float aspectRatio;
 
+		int _width;
+		int _height;
+		bool firstMouse = true;
+		float lastX = 0.0f;
+		float lastY = 0.0f;
+
 		// constructor with vectors
-		Camera(vec3 position = vec3(0.0f, 0.0f, 0.0f), vec3 up = vec3(0.0f, 1.0f, 0.0f), float yaw = YAW, float pitch = PITCH, float aspect = 4.0f / 3.0f) : Front(vec3(0.0f, 0.0f, -1.0f)), MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY), Zoom(ZOOM), aspectRatio(aspect)
+		Camera(vec3 position = vec3(0.0f, 0.0f, 4.0f), vec3 up = vec3(0.0f, 1.0f, 0.0f), float yaw = YAW, float pitch = PITCH, int width = 800, int height = 600) : Front(vec3(0.0f, 0.0f, -1.0f)), MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY), Zoom(ZOOM), _width(width), _height(height)
 		{
+			aspectRatio = static_cast<float>(_width) / static_cast<float>(_height);
 			Position = position;
 			WorldUp = up;
 			Yaw = yaw;
@@ -69,7 +76,9 @@ class Camera
 
 		void resize(int width, int height)
 		{
-			aspectRatio = width / height;
+			_width = width;
+			_height = height;
+			aspectRatio = static_cast<float>(_width) / static_cast<float>(_height);
 		}
 
 		// processes input received from any keyboard-like input system. Accepts input parameter in the form of camera defined ENUM (to abstract it from windowing systems)
@@ -86,31 +95,42 @@ class Camera
 				Position += Right * velocity;
 		}
 
-		// processes input received from a mouse input system. Expects the offset value in both the x and y direction.
-		void ProcessMouseMovement(float xoffset, float yoffset, GLboolean constrainPitch = true)
+		void onMouseMove(double xposIn, double yposIn)
 		{
-			xoffset *= MouseSensitivity;
-			yoffset *= MouseSensitivity;
+			float xpos = static_cast<float>(xposIn);
+			float ypos = static_cast<float>(yposIn);
 
-			Yaw   += xoffset;
+			if (firstMouse)
+			{
+				lastX = xpos;
+				lastY = ypos;
+				firstMouse = false;
+			}
+
+			float xoffset = xpos - lastX;
+			float yoffset = lastY - ypos; // reversed since y-coordinates go from bottom to top
+			lastX = xpos;
+			lastY = ypos;
+
+			float sensitivity = 0.1f; // change this value to your liking
+			xoffset *= sensitivity;
+			yoffset *= sensitivity;
+
+			Yaw += xoffset;
 			Pitch += yoffset;
 
 			// make sure that when pitch is out of bounds, screen doesn't get flipped
-			if (constrainPitch)
-			{
-				if (Pitch > 89.0f)
-					Pitch = 89.0f;
-				if (Pitch < -89.0f)
-					Pitch = -89.0f;
-			}
+			if (Pitch > 89.0f)
+				Pitch = 89.0f;
+			if (Pitch < -89.0f)
+				Pitch = -89.0f;
 
-			// update Front, Right and Up Vectors using the updated Euler angles
 			updateCameraVectors();
 		}
 
-		// processes input received from a mouse scroll-wheel event. Only requires input on the vertical wheel-axis
-		void ProcessMouseScroll(float yoffset)
+		void onMouseScroll(double xoffset, double yoffset)
 		{
+			(void) xoffset;
 			Zoom -= (float)yoffset;
 			if (Zoom < 1.0f)
 				Zoom = 1.0f;
