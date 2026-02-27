@@ -49,7 +49,7 @@ class Camera
 		float lastY = 0.0f;
 
 		// constructor with vectors
-		Camera(vec3 position = vec3(0.0f, 0.0f, 4.0f), vec3 up = vec3(0.0f, 1.0f, 0.0f), float yaw = YAW, float pitch = PITCH, int width = 800, int height = 600) : Front(vec3(0.0f, 0.0f, -1.0f)), MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY), Zoom(ZOOM), _width(width), _height(height)
+		Camera(int width = 800, int height = 600, vec3 position = vec3(0.0f, 0.0f, 4.0f), vec3 up = vec3(0.0f, 1.0f, 0.0f), float yaw = YAW, float pitch = PITCH) : Front(vec3(0.0f, 0.0f, -1.0f)), MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY), Zoom(ZOOM), _width(width), _height(height)
 		{
 			aspectRatio = static_cast<float>(_width) / static_cast<float>(_height);
 			Position = position;

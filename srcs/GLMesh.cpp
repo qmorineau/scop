@@ -1,11 +1,11 @@
 #include "GLMesh.hpp"
-#include "Mesh.hpp"
+#include "ObjMeshData.hpp"
 
 GLMesh::GLMesh() {}
 
 GLMesh::~GLMesh() {}
 
-void GLMesh::upload(const Mesh& mesh)
+void GLMesh::upload(const ObjMeshData& mesh)
 {
 	_indexCount = mesh._indices.size();
 

@@ -1,9 +1,12 @@
 #include "Application.hpp"
 
-Application::Application(char *file) : _mesh(std::string(file)) {}
+Application::Application(char *file) : _camera(SCR_WIDTH, SCR_HEIGHT), _mesh(std::string(file)) {}
 		
 
-Application::~Application() {}
+Application::~Application()
+{
+	delete _renderer;
+}
 
 void Application::run()
 {
@@ -12,6 +15,7 @@ void Application::run()
 		initWindow();
 		_renderer = new Renderer();
 		_mesh.parse();
+		_mesh.print();
 		renderLoop();
 	}
 	catch(const std::exception& e)

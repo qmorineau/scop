@@ -9,11 +9,11 @@
 
 #include "Camera.hpp"
 #include "Renderer.hpp"
-#include "Mesh.hpp"
+#include "ObjMeshData.hpp"
 #include "GLMesh.hpp"
 
-#define SCR_WIDTH 800
-#define SCR_HEIGHT 600
+#define SCR_WIDTH 1920
+#define SCR_HEIGHT 1080
 
 class Application
 {
@@ -43,7 +43,7 @@ class Application
 	private:
 		Camera		_camera;
 		Renderer*	_renderer;
-		Mesh		_mesh;
+		ObjMeshData	_mesh;
 		GLFWwindow* _window;
 
 		float		_deltaTime = 0.0f;

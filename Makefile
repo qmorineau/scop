@@ -66,7 +66,7 @@ $(GLFW_LIB):
 	@cd $(GLFW_BUILD_DIR) && make -j$(shell nproc)
 
 test: all
-	./$(NAME) ./assets/resources/cube.obj
+	./$(NAME) ./assets/resources/42.obj
 
 .PHONY: all re clean fclean
 

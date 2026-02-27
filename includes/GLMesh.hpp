@@ -6,7 +6,7 @@
 
 #include "Types.hpp"
 
-class Mesh;
+class ObjMeshData;
 
 class GLMesh
 {
@@ -14,7 +14,7 @@ class GLMesh
 		GLMesh();
 		~GLMesh();
 
-		void upload(const Mesh& mesh);
+		void upload(const ObjMeshData& mesh);
 		void draw() const;
 
 	private:
