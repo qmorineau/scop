@@ -32,8 +32,7 @@ void ObjMeshData::parsePosition(std::istringstream& iss)
 	iss >> y;
 	iss >> z;
 
-	vec3 v = math::normalize(vec3(x, y, z));
-	_positions.push_back(v);
+	_positions.push_back(vec3(x, y, z));
 }
 
 void ObjMeshData::parseVertexNormal(std::istringstream& iss)
@@ -175,6 +174,40 @@ void ObjMeshData::convertToGpuData()
 	}
 }
 
+void ObjMeshData::centerMesh()
+{
+	vec3 min(_positions[0]);
+	vec3 max(_positions[0]);
+
+	for (auto& v : _positions)
+	{
+		if (v.x < min.x)
+			min.x = v.x;
+		if (v.x > max.x)
+			max.x = v.x;
+		if (v.y < min.y)
+			min.y = v.y;
+		if (v.y > max.y)
+			max.y = v.y;
+		if (v.z < min.z)
+			min.z = v.z;
+		if (v.z > max.z)
+			max.z = v.z;
+	}
+
+	vec3 center((min + max) * 0.5f);
+	vec3 size = max - min;
+
+	float maxExtent = std::max(size.x, std::max(size.y, size.z));
+	float scale = 2.0f / maxExtent;
+
+	for (auto& v : _positions)
+	{
+		v -= center;
+		v *= scale;
+	}
+}
+
 void ObjMeshData::parse()
 {
 	std::ifstream inFile(_filePath);
@@ -206,6 +239,7 @@ void ObjMeshData::parse()
 				continue; // wrong token, error ?
 		}
 	}
+	centerMesh();
 	createNormal();
 	createTextCoord();
 	convertToGpuData();

@@ -6,6 +6,8 @@
 #include <fstream>
 #include <sstream>
 #include <cstring>
+#include <cstdint>
+#include <algorithm>
 
 #include "ObjMeshData.hpp"
 #include "Types.hpp"
@@ -46,6 +48,7 @@ class ObjMeshData
 		int  findDuplicatePosition(vec3& v);
 		int  findDuplicateNormal(vec3& v);
 		int	 findDuplicateVertex(Vertex& v);
+		void centerMesh();
 		void createNormal();
 		void createTextCoord();
 		void createTextureCoord();
