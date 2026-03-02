@@ -10,6 +10,7 @@ struct Vertex
 	Vector3 normale;
 	Vector2 texture;
 
+	Vertex() {};
 	Vertex(Vector3& pos, Vector3& norm, Vector2& text) : position(pos), normale(norm), texture(text) {};
 
 	void print()

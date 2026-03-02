@@ -24,7 +24,8 @@ class ObjMeshData
 
 	struct Face
 	{
-		VertexIndex vertices[3];
+		std::vector<VertexIndex> vertices;
+		// VertexIndex vertices[3];
 	};
 
 	public:
@@ -53,6 +54,7 @@ class ObjMeshData
 		void createTextCoord();
 		void createTextureCoord();
 		void convertToGpuData();
+		void addTriangle(VertexIndex a, VertexIndex b, VertexIndex c);
 
 		std::vector<Vector3> _positions;
 		std::vector<Vector3> _normals;

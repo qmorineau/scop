@@ -113,11 +113,13 @@ void ObjMeshData::createFace(std::istringstream& iss)
 	std::string word;
 	Face face;
 
-	for (int i = 0; i < 3; i++)
-	{
-		iss >> word;
-		face.vertices[i] = parseVertex(word);
-	}
+	// for (int i = 0; i < 3; i++)
+	// {
+	// 	iss >> word;
+	// 	face.vertices[i] = parseVertex(word);
+	// }
+	while (iss >> word)
+		face.vertices.push_back(parseVertex(word));
 	_faces.push_back(face);
 }
 
@@ -132,7 +134,9 @@ void ObjMeshData::createNormal()
 		vec3 normal = math::cross(a, b);
 		normal = math::normalize(normal);
 		int id = findDuplicateNormal(normal);
-		_faces[i].vertices[0].normal = _faces[i].vertices[1].normal = _faces[i].vertices[2].normal = !id ? _normals.size() + 1 : id + 1;
+		for (auto& v : _faces[i].vertices)
+			v.normal = !id ? _normals.size() + 1 : id + 1;
+		// _faces[i].vertices[0].normal = _faces[i].vertices[1].normal = _faces[i].vertices[2].normal = !id ? _normals.size() + 1 : id + 1;
 		if (!id)
 			_normals.push_back(normal);
 	}
@@ -151,26 +155,31 @@ void ObjMeshData::createTextCoord()
 	}
 }
 
+void ObjMeshData::addTriangle(VertexIndex a, VertexIndex b, VertexIndex c)
+{
+	VertexIndex index[] = {a, b, c};
+	Vertex vertex[3];
+	for (int i = 0; i < 3; i++)
+	{
+		vertex[i] = Vertex(_positions[index[i].vertex - 1], _normals[index[i].normal - 1], _textures[index[i].textCoord]); // change to real text coord
+		int id = findDuplicateVertex(vertex[i]);
+		if (id)
+			_indices.push_back(id);
+		else
+		{
+			_indices.push_back(_vertices.size());
+			_vertices.push_back(vertex[i]);
+		}
+	}
+}
+
 void ObjMeshData::convertToGpuData()
 {
 	for (unsigned int i = 0; i < _faces.size(); i++)
 	{
-		for (int j = 0; j < 3; j++)
-		{
-			// std::cout << _positions.size() << " " << _normals.size() << " " << _textures.size() << std::endl;
-			// std::cout << _faces[i].vertices[j].vertex - 1 << " " << _faces[i].vertices[j].normal - 1 << " " << _faces[i].vertices[j].textCoord - 1 << std::endl;
-			Vertex vertex(_positions[_faces[i].vertices[j].vertex - 1],
-							_normals[_faces[i].vertices[j].normal - 1],
-							_textures[_faces[i].vertices[j].textCoord - 1]); // should be parsed and add -1
-			int id = findDuplicateVertex(vertex);
-			if (id)
-				_indices.push_back(id);
-			else
-			{
-				_indices.push_back(_vertices.size());
-				_vertices.push_back(vertex);
-			}			
-		}
+		std::vector<ObjMeshData::VertexIndex> &v = _faces[i].vertices;
+		for (unsigned int j = 1; j < v.size() - 1; j++)
+			addTriangle(v[0], v[j], v[j + 1]);
 	}
 }
 

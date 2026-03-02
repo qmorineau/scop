@@ -15,7 +15,7 @@ void Application::run()
 		initWindow();
 		_renderer = new Renderer();
 		_mesh.parse();
-		_mesh.print();
+		// _mesh.print();
 		renderLoop();
 	}
 	catch(const std::exception& e)
