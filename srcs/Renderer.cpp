@@ -6,7 +6,8 @@
 
 #include "stb_images.h"
 
-Renderer::Renderer() : _light("light.vs", "light.fs"), _texture("texture.vs", "texture.fs")
+Renderer::Renderer() :	_light("assets/shaders/light.vs", "assets/shaders/light.fs"),
+						_texture("assets/shaders/texture.vs", "assets/shaders/texture.fs")
 {
 	test();
 };

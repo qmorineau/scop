@@ -68,7 +68,7 @@ int ObjMeshData::findDuplicateVertex(Vertex& v)
 		if (v == _vertices[i])
 			return (i);
 	}
-	return (0);
+	return (-1);
 }
 
 int ObjMeshData::findDuplicateNormal(vec3& v)
@@ -78,7 +78,7 @@ int ObjMeshData::findDuplicateNormal(vec3& v)
 		if (v == _normals[i])
 			return (i);
 	}
-	return (0);
+	return (-1);
 }
 
 int ObjMeshData::findDuplicatePosition(vec3& v)
@@ -88,7 +88,7 @@ int ObjMeshData::findDuplicatePosition(vec3& v)
 		if (v == _positions[i])
 			return (i);
 	}
-	return (0);
+	return (-1);
 }
 
 ObjMeshData::VertexIndex ObjMeshData::parseVertex(const std::string& indices)
@@ -101,9 +101,9 @@ ObjMeshData::VertexIndex ObjMeshData::parseVertex(const std::string& indices)
 	std::getline(ss, vnStr, '/');
 
 	VertexIndex index;
-	index.vertex = vStr.empty() ? 0 : std::stoi(vStr.c_str());
-	index.textCoord = vtStr.empty() ? 0 : std::stoi(vtStr.c_str());
-	index.normal = vnStr.empty() ? 0 : std::stoi(vnStr.c_str());
+	index.vertex = vStr.empty() ? -1 : std::stoi(vStr.c_str()) - 1;
+	index.textCoord = vtStr.empty() ? -1 : std::stoi(vtStr.c_str()) - 1;
+	index.normal = vnStr.empty() ? -1 : std::stoi(vnStr.c_str()) - 1;
 	
 	return (index);
 }
@@ -122,7 +122,7 @@ void ObjMeshData::createNormal()
 {
 	for (unsigned int i = 0; i < _faces.size(); i++)
 	{
-		if (_faces[i].vertices[0].normal)
+		if (_faces[i].vertices[0].normal != -1)
 			continue;
 		vec3 a = _positions[_faces[i].vertices[1].vertex] - _positions[_faces[i].vertices[0].vertex];
 		vec3 b = _positions[_faces[i].vertices[2].vertex] - _positions[_faces[i].vertices[0].vertex];
@@ -130,8 +130,8 @@ void ObjMeshData::createNormal()
 		normal = math::normalize(normal);
 		int id = findDuplicateNormal(normal);
 		for (auto& v : _faces[i].vertices)
-			v.normal = !id ? _normals.size() + 1 : id + 1;
-		if (!id)
+			v.normal = id == -1 ? _normals.size() : id;
+		if (id == -1)
 			_normals.push_back(normal);
 	}
 }
@@ -140,10 +140,10 @@ void ObjMeshData::createTextCoord()
 {
 	for (unsigned int i = 0; i < _faces.size(); i++)
 	{
-		// if (_faces[i].vertices[0].textCoord)
-		// 	continue;
+		if (_faces[i].vertices[0].textCoord != -1)
+			continue;
 
-		Face face = _faces[i];
+		Face& face = _faces[i];
 		vec2 textCoord;
 
 		for (auto& v : face.vertices)
@@ -161,6 +161,7 @@ void ObjMeshData::createTextCoord()
 
 			for (auto& t : face.vertices)
 				t.textCoord = _textures.size();
+
 			_textures.push_back(textCoord);
 		}
 	}
@@ -172,9 +173,9 @@ void ObjMeshData::addTriangle(VertexIndex a, VertexIndex b, VertexIndex c)
 	Vertex vertex[3];
 	for (int i = 0; i < 3; i++)
 	{
-		vertex[i] = Vertex(_positions[index[i].vertex - 1], _normals[index[i].normal - 1], _textures[index[i].textCoord]);
+		vertex[i] = Vertex(_positions[index[i].vertex], _normals[index[i].normal], _textures[index[i].textCoord]);
 		int id = findDuplicateVertex(vertex[i]);
-		if (id)
+		if (id != -1)
 			_indices.push_back(id);
 		else
 		{
@@ -196,7 +197,6 @@ void ObjMeshData::convertToGpuData()
 
 void ObjMeshData::centerMesh()
 {
-	std::cout << _positions.size() << std::endl;
 	vec3 min(_positions[0]);
 	vec3 max(_positions[0]);
 
