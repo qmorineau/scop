@@ -24,8 +24,9 @@ class ObjMeshData
 
 	struct Face
 	{
+		bool hasTextCoord = false;
+		bool hasNormal = false;
 		std::vector<VertexIndex> vertices;
-		// VertexIndex vertices[3];
 	};
 
 	public:

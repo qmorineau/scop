@@ -4,7 +4,12 @@
 #include "Math.hpp"
 #include "Camera.hpp"
 
-Renderer::Renderer() : _shader("texture.vs", "texture.fs") {};
+#include "stb_images.h"
+
+Renderer::Renderer() : _light("light.vs", "light.fs"), _texture("texture.vs", "texture.fs")
+{
+	test();
+};
 
 Renderer::~Renderer() {};
 
@@ -16,19 +21,84 @@ void Renderer::beginFrame()
 
 void Renderer::draw(GLMesh& mesh, Camera& camera)
 {
-    _shader.use();
+    _light.use();
+	// _texture.use();
 
     // Projection
     mat4 projection = mat4::perspective(math::radians(camera.Zoom), camera.aspectRatio, 0.1f, 100.0f);
-    _shader.setMat4("projection", projection);
+    _light.setMat4("projection", projection);
 
     // View
     mat4 view = camera.GetViewMatrix();
-    _shader.setMat4("view", view);
+    _light.setMat4("view", view);
 
     // Model
     mat4 model = mat4::identity();
-    _shader.setMat4("model", model);
+    _light.setMat4("model", model);
+
+	_light.setVec3("lightPos", vec3(5., 5., 5.));
+	_light.setVec3("lightColor", vec3(1.,0.,0.));
+	_light.setVec3("objectColor", vec3(1., 0., 0.));
 
     mesh.draw();
+}
+
+void Renderer::test()
+{
+	// load and create a texture 
+    // -------------------------
+    unsigned int texture1, texture2;
+    // texture 1
+    // ---------
+    glGenTextures(1, &texture1);
+    glBindTexture(GL_TEXTURE_2D, texture1); 
+     // set the texture wrapping parameters
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	// set texture wrapping to GL_REPEAT (default wrapping method)
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    // set texture filtering parameters
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    // load image, create texture and generate mipmaps
+    int width, height, nrChannels;
+    stbi_set_flip_vertically_on_load(true); // tell stb_image.h to flip loaded texture's on the y-axis.
+    // The FileSystem::getPath(...) is part of the GitHub repository so we can find files on any IDE/platform; replace it with your own image path.
+    unsigned char *data = stbi_load("assets/textures/awesomeface.png", &width, &height, &nrChannels, 0);
+    if (data)
+    {
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+        glGenerateMipmap(GL_TEXTURE_2D);
+    }
+    else
+    {
+        std::cout << "Failed load image: " << stbi_failure_reason() << std::endl;
+    }
+    stbi_image_free(data);
+    // texture 2
+    // ---------
+    glGenTextures(1, &texture2);
+    glBindTexture(GL_TEXTURE_2D, texture2);
+    // set the texture wrapping parameters
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	// set texture wrapping to GL_REPEAT (default wrapping method)
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    // set texture filtering parameters
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    // load image, create texture and generate mipmaps
+    data = stbi_load("assets/textures/awesomeface.png", &width, &height, &nrChannels, 0);
+    if (data)
+    {
+        // note that the awesomeface.png has transparency and thus an alpha channel, so make sure to tell OpenGL the data type is of GL_RGBA
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+        glGenerateMipmap(GL_TEXTURE_2D);
+    }
+    else
+    {
+        std::cout << "Failed load image: " << stbi_failure_reason() << std::endl;
+    }
+    stbi_image_free(data);
+	
+	// _texture.use();
+
+	glUniform1i(glGetUniformLocation(_texture.ID, "texture1"), 0);
+	_texture.setInt("texture2", 1);
 }

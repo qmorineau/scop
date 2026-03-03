@@ -17,9 +17,10 @@ class Renderer
 
 		void beginFrame();
 		void draw(GLMesh& mesh, Camera& camera);
-
+		void test();
 	private:
-		Shader			_shader;
+		Shader	_light;
+		Shader	_texture;
 };
 
 #endif

@@ -3,7 +3,8 @@ CCPP = c++
 CC = cc
 
 # Flags
-FLAGS = -Wall -Wextra -Werror -MMD -g -fsanitize=address
+CFLAGS = -Wall -Wextra -Werror
+CPPFLAGS = -Wall -Wextra -Werror -MMD -g -fsanitize=address
 
 # Project Paths
 SRC_DIR = srcs
@@ -35,16 +36,16 @@ NAME = scop
 all: $(NAME)
 
 $(NAME): $(OBJ_DIR) $(OBJ_CPP) $(OBJ_GLAD) $(GLFW_LIB)
-	@$(CCPP) $(FLAGS) $(INCLUDES) $(OBJ_GLAD) $(OBJ_CPP) $(LIBS) -o $(NAME)
+	@$(CCPP) $(CPPFLAGS) $(INCLUDES) $(OBJ_GLAD) $(OBJ_CPP) $(LIBS) -o $(NAME)
 	@echo "$(NAME) compiled"
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
 	@mkdir -p $(dir $@)
-	@$(CCPP) $(FLAGS) $(INCLUDES) -c $< -o $@
+	@$(CCPP) $(CPPFLAGS) $(INCLUDES) -c $< -o $@
 
 $(OBJ_GLAD): $(GLAD_C)
 	@mkdir -p $(OBJ_DIR)
-	@$(CC) $(FLAGS) $(INCLUDES) -c $< -o $@
+	@$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
 $(OBJ_DIR):
 	@mkdir -p $(OBJ_DIR)
@@ -66,7 +67,7 @@ $(GLFW_LIB):
 	@cd $(GLFW_BUILD_DIR) && make -j$(shell nproc)
 
 test: all
-	./$(NAME) ./assets/resources/42.obj
+	./$(NAME) ./assets/resources/teapot2.obj
 
 .PHONY: all re clean fclean
 

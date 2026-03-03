@@ -7,16 +7,14 @@
 
 namespace math
 {
-    constexpr float PI = 3.14159265358979323846f;
-
     inline float radians(float degrees)
     {
-        return degrees * (PI / 180.0f);
+        return degrees * (M_PI / 180.0f);
     }
 
     inline float degrees(float radians)
     {
-        return radians * (180.0f / PI);
+        return radians * (180.0f / M_PI);
     }
 
 	inline float dot(const vec3& a, const vec3& b)
