@@ -167,13 +167,13 @@ void ObjMeshData::createTextCoord()
 	}
 }
 
-void ObjMeshData::addTriangle(VertexIndex a, VertexIndex b, VertexIndex c)
+void ObjMeshData::addTriangle(VertexIndex a, VertexIndex b, VertexIndex c, vec3 color)
 {
 	VertexIndex index[] = {a, b, c};
 	Vertex vertex[3];
 	for (int i = 0; i < 3; i++)
 	{
-		vertex[i] = Vertex(_positions[index[i].vertex], _normals[index[i].normal], _textures[index[i].textCoord]);
+		vertex[i] = Vertex(_positions[index[i].vertex], _normals[index[i].normal], _textures[index[i].textCoord], color);
 		int id = findDuplicateVertex(vertex[i]);
 		if (id != -1)
 			_indices.push_back(id);
@@ -185,13 +185,21 @@ void ObjMeshData::addTriangle(VertexIndex a, VertexIndex b, VertexIndex c)
 	}
 }
 
+const vec3 faceColors[4] =
+{
+	vec3(0.0f, 0.0f, 0.0f),
+	vec3(0.25f, 0.25f, 0.25f),
+	vec3(0.5f, 0.5f, 0.5f),
+	vec3(0.75f, 0.75f, 0.75f)
+};
+
 void ObjMeshData::convertToGpuData()
 {
 	for (unsigned int i = 0; i < _faces.size(); i++)
 	{
 		std::vector<ObjMeshData::VertexIndex> &v = _faces[i].vertices;
 		for (unsigned int j = 1; j < v.size() - 1; j++)
-			addTriangle(v[0], v[j], v[j + 1]);
+			addTriangle(v[0], v[j], v[j + 1], faceColors[i % 4]);
 	}
 }
 

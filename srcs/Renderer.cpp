@@ -37,9 +37,12 @@ void Renderer::draw(GLMesh& mesh, Camera& camera)
     mat4 model = mat4::identity();
     _light.setMat4("model", model);
 
+	_light.setVec3("viewPos", vec3(camera.Position));
 	_light.setVec3("lightPos", vec3(5., 5., 5.));
-	_light.setVec3("lightColor", vec3(1.,0.,0.));
-	_light.setVec3("objectColor", vec3(1., 0., 0.));
+	_light.setVec3("lightColor", vec3(1.,1.,1.));
+	_light.setVec3("objectColor", vec3(0.5, 0.5, 0.5));
+
+	_light.setFloat("shininess", 32.f);
 
     mesh.draw();
 }

@@ -55,7 +55,7 @@ class ObjMeshData
 		void createTextCoord();
 		void createTextureCoord();
 		void convertToGpuData();
-		void addTriangle(VertexIndex a, VertexIndex b, VertexIndex c);
+		void addTriangle(VertexIndex a, VertexIndex b, VertexIndex c, vec3 color);
 
 		std::vector<Vector3> _positions;
 		std::vector<Vector3> _normals;
