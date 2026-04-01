@@ -44,13 +44,23 @@ class Application
 		static void mouse_callback(GLFWwindow* window, double xposIn, double yposIn);
 		static void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 
+		void toggleEditLight() {_editLight = !_editLight;};
+		void setWindowTitle(std::string s) {_windowTitle = s;};
+
 		bool _keys[1024] = {false};
+		// put in private or in another class
+		bool				_red = false;
+		bool				_green = false;
+		bool				_blue = false;
+		bool				_editLight = false;
 	private:
 		Camera				_camera;
 		Renderer*			_renderer;
 		ObjMeshData			_mesh;
 		GLFWwindow* 		_window;
-		std::vector<Light>	_lights;
+		std::vector<Light*>	_lights;
+		
+		std::string			_windowTitle;
 		float				_deltaTime = 0.0f;
 		float				_lastFrame = 0.0f;
 

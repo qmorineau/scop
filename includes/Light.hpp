@@ -3,7 +3,7 @@
 
 #include "Types.hpp"
 
-enum class LightColor
+enum class Color
 {
 	Red,
 	Green,
@@ -15,8 +15,12 @@ class Light
 	public:
 		Light(vec3 position, vec3 color, float intensity);
 
-		void increaseColor(LightColor color);
-		void decreaseColor(LightColor color);
+		void increaseColor(Color color);
+		void decreaseColor(Color color);
+
+		vec3 getPosition() {return _position;};
+		vec3 getColor() {return _color;};
+		float getIntensity() {return _intensity;};
 
 	private:
 		vec3	_position;
@@ -24,9 +28,6 @@ class Light
 		float	_intensity;
 
 
-		vec3 getPosition() {return _position;};
-		vec3 getColor() {return _color;};
-		float getIntensity() {return _intensity;};
 };
 
 #endif

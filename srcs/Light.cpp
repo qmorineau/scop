@@ -17,43 +17,43 @@ Light::Light(vec3 position, vec3 color, float intensity) : _position(position), 
 	_color = color;
 };
 
-void Light::increaseColor(LightColor color)
+void Light::increaseColor(Color color)
 {
 	switch (color)
 	{
-		case LightColor::Red:
-			_color.x += 0.05;
+		case Color::Red:
+			_color.x += 0.01;
 			if (_color.x > 1)
 				_color.x = 1;
 			break;
-		case LightColor::Green:
-			_color.y += 0.05;
+		case Color::Green:
+			_color.y += 0.01;
 			if (_color.y > 1)
 				_color.y = 1;
 			break;
-		case LightColor::Blue:
-			_color.z += 0.05;
+		case Color::Blue:
+			_color.z += 0.01;
 			if (_color.z > 1)
 				_color.z = 1;
 			break;
 	}
 };
-void Light::decreaseColor(LightColor color)
+void Light::decreaseColor(Color color)
 {
 	switch (color)
 	{
-		case LightColor::Red:
-			_color.x -= 0.05;
+		case Color::Red:
+			_color.x -= 0.01;
 			if (_color.x < 0)
 				_color.x = 0;
 			break;
-		case LightColor::Green:
-			_color.y -= 0.05;
+		case Color::Green:
+			_color.y -= 0.01;
 			if (_color.y < 0)
 				_color.y = 0;
 			break;
-		case LightColor::Blue:
-			_color.z -= 0.05;
+		case Color::Blue:
+			_color.z -= 0.01;
 			if (_color.z < 0)
 				_color.z = 0;
 			break;

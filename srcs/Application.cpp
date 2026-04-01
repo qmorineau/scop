@@ -1,6 +1,11 @@
 #include "Application.hpp"
 
-Application::Application(char *file) : _camera(SCR_WIDTH, SCR_HEIGHT), _mesh(std::string(file)) {}
+Application::Application(char *file) : _camera(SCR_WIDTH, SCR_HEIGHT), _mesh(std::string(file))
+{
+	_lights.push_back(new Light(vec3(5,5,5), vec3(1,0,0), 2));
+	_lights.push_back(new Light(vec3(-5,5,5), vec3(0,1,0), 2));
+	_lights.push_back(new Light(vec3(-5,-5,5), vec3(0,0,1), 2));
+}
 		
 
 Application::~Application()
@@ -68,18 +73,25 @@ void Application::renderLoop()
 	GLMesh glMesh;
 	glMesh.upload(_mesh);
 
+	// glfwSwapInterval(0); // disable vsync
+
 	while (!glfwWindowShouldClose(_window))
 	{
 		float currentFrame = static_cast<float>(glfwGetTime());
 		_deltaTime = currentFrame - _lastFrame;
 		_lastFrame = currentFrame;
-		// processInput(_window, _camera, _deltaTime);
+		if (_editLight)
+			_windowTitle = "Scop [Edit Light Mode] ";
+		else
+			_windowTitle = "Scop ";
+		_windowTitle.append("[" + std::to_string(static_cast<int>(1 / _deltaTime)) + " fps]");
+		glfwSetWindowTitle(_window, _windowTitle.c_str());
 		glfwSetKeyCallback(_window, Application::keyCallback);
 		processInput();
 
 		 // Rendering
 		_renderer->beginFrame();
-        _renderer->draw(glMesh, _camera);
+        _renderer->draw(glMesh, _camera, _lights);
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
@@ -102,6 +114,34 @@ void Application::processInput()
 		_camera.ProcessKeyboard(LEFT, _deltaTime);
 	if (_keys[GLFW_KEY_D])
 		_camera.ProcessKeyboard(RIGHT, _deltaTime);
+	if (_editLight)
+	{
+		if (_keys[GLFW_KEY_0])
+		{
+			if (_red)
+				for (auto light : _lights)
+					light->increaseColor(Color::Red);
+			if (_green)
+				for (auto light : _lights)
+					light->increaseColor(Color::Green);
+			if (_blue)
+				for (auto light : _lights)
+					light->increaseColor(Color::Blue);
+		}
+		if (_keys[GLFW_KEY_9])
+		{
+			if (_red)
+				for (auto light : _lights)
+					light->decreaseColor(Color::Red);
+			if (_green)
+				for (auto light : _lights)
+					light->decreaseColor(Color::Green);
+			if (_blue)
+				for (auto light : _lights)
+					light->decreaseColor(Color::Blue);
+		}
+	}
+
 };
 
 void Application::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
@@ -115,24 +155,56 @@ void Application::keyCallback(GLFWwindow* window, int key, int scancode, int act
 	if (action == GLFW_PRESS) {app->_keys[key] = true;}
     else if (action == GLFW_RELEASE) {app->_keys[key] = false;}
 
-	switch (key)
+	if (action == GLFW_RELEASE)
 	{
-		case GLFW_KEY_ESCAPE:
-			glfwSetWindowShouldClose(window, true);
-			break;
-		case GLFW_KEY_1:
-			app->_renderer->setMode(RenderMode::Phong);
-			break;
-		case GLFW_KEY_2:
-			app->_renderer->setMode(RenderMode::Texture);
-			break;
-		case GLFW_KEY_3:
-			app->_renderer->setMode(RenderMode::Face);
-			break;
-		case GLFW_KEY_P:
-			if (action == GLFW_RELEASE)
+		switch (key)
+		{
+			case GLFW_KEY_ESCAPE:
+				glfwSetWindowShouldClose(window, true);
+				break;
+			case GLFW_KEY_1:
+				app->_renderer->setMode(RenderMode::Phong);
+				break;
+			case GLFW_KEY_2:
+				app->_renderer->setMode(RenderMode::Texture);
+				break;
+			case GLFW_KEY_3:
+				app->_renderer->setMode(RenderMode::Face);
+				break;
+			case GLFW_KEY_P:
 				app->_renderer->toggleWireframe();
-			break;
+				break;
+			case GLFW_KEY_L:
+				app->toggleEditLight();
+				app->_red = false;
+				app->_green = false;
+				app->_blue = false;
+				break;
+			case GLFW_KEY_R:
+				if (app->_editLight)
+				{
+					app->_red = true;
+					app->_green = false;
+					app->_blue = false;
+				}
+				break;
+			case GLFW_KEY_G:
+				if (app->_editLight)
+				{
+					app->_red = false;
+					app->_green = true;
+					app->_blue = false;
+				}
+				break;
+			case GLFW_KEY_B:
+				if (app->_editLight)
+				{
+					app->_red = false;
+					app->_green = false;
+					app->_blue = true;
+				}
+				break;
+		}
 	}
 }
 

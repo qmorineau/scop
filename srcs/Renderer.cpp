@@ -3,6 +3,7 @@
 #include "Matrix4.hpp"
 #include "Math.hpp"
 #include "Camera.hpp"
+#include "Light.hpp"
 
 #include "stb_images.h"
 
@@ -21,7 +22,7 @@ void Renderer::beginFrame()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-void Renderer::draw(GLMesh& mesh, Camera& camera)
+void Renderer::draw(GLMesh& mesh, Camera& camera, std::vector<Light*> lights)
 {
 	if (_wireframe)
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -43,14 +44,21 @@ void Renderer::draw(GLMesh& mesh, Camera& camera)
     _light.setMat4("model", model);
 
 	_light.setVec3("viewPos", vec3(camera.Position));
-	_light.setVec3("lightPos", vec3(5., 5., 5.));
+	_light.setVec3("lightPos", vec3(5., 5., 5.)); // light pos getPosition
 
 	if (_mode == RenderMode::Phong)
-		_light.setVec3("lightColor", vec3(0.,1.,0.));
-	else if  (_mode == RenderMode::Face)
-		_light.setVec3("lightColor", vec3(1.,0.,0.));
-	else if (_mode == RenderMode::Texture)
-		_light.setVec3("lightColor", vec3(0.,0.,1.));
+	{
+		_light.setInt("lightCount", lights.size());
+		for (size_t i = 0; i < lights.size(); i++)
+		{
+			_light.setVec3("lights[" + std::to_string(i) + "].position", lights[i]->getPosition());
+			_light.setVec3("lights[" + std::to_string(i) + "].color", lights[i]->getColor());
+		}
+	}
+	// else if  (_mode == RenderMode::Face)
+	// 	_light.setVec3("lightColor", light.getColor());
+	// else if (_mode == RenderMode::Texture)
+	// 	_light.setVec3("lightColor", light.getColor());
 
 	_light.setVec3("objectColor", vec3(0.5, 0.5, 0.5));
 

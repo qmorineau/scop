@@ -8,6 +8,7 @@
 
 class GLMesh;
 class Camera;
+class Light;
 
 enum class RenderMode
 {
@@ -24,7 +25,7 @@ class Renderer
 
 		void beginFrame();
 		void setMode(RenderMode mode);
-		void draw(GLMesh& mesh, Camera& camera);
+		void draw(GLMesh& mesh, Camera& camera, std::vector<Light*> lights);
 		void toggleWireframe() {_wireframe = !_wireframe;}
 		void test();
 	private:
