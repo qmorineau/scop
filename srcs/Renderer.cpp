@@ -7,7 +7,8 @@
 #include "stb_images.h"
 
 Renderer::Renderer() :	_light("assets/shaders/light.vs", "assets/shaders/light.fs"),
-						_texture("assets/shaders/texture.vs", "assets/shaders/texture.fs")
+						_texture("assets/shaders/texture.vs", "assets/shaders/texture.fs"),
+						_mode(RenderMode::Phong)
 {
 	test();
 };
@@ -22,6 +23,10 @@ void Renderer::beginFrame()
 
 void Renderer::draw(GLMesh& mesh, Camera& camera)
 {
+	if (_wireframe)
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	else
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     _light.use();
 	// _texture.use();
 
@@ -39,13 +44,27 @@ void Renderer::draw(GLMesh& mesh, Camera& camera)
 
 	_light.setVec3("viewPos", vec3(camera.Position));
 	_light.setVec3("lightPos", vec3(5., 5., 5.));
-	_light.setVec3("lightColor", vec3(1.,1.,1.));
+
+	if (_mode == RenderMode::Phong)
+		_light.setVec3("lightColor", vec3(0.,1.,0.));
+	else if  (_mode == RenderMode::Face)
+		_light.setVec3("lightColor", vec3(1.,0.,0.));
+	else if (_mode == RenderMode::Texture)
+		_light.setVec3("lightColor", vec3(0.,0.,1.));
+
 	_light.setVec3("objectColor", vec3(0.5, 0.5, 0.5));
 
 	_light.setFloat("shininess", 32.f);
 
+	_light.setInt("mode", static_cast<int>(_mode));
+
     mesh.draw();
 }
+
+void Renderer::setMode(RenderMode mode)
+{
+	_mode = mode;
+};
 
 void Renderer::test()
 {

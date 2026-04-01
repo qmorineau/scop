@@ -9,6 +9,13 @@
 class GLMesh;
 class Camera;
 
+enum class RenderMode
+{
+	Phong,
+	Texture,
+	Face
+};
+
 class Renderer
 {
 	public:
@@ -16,11 +23,15 @@ class Renderer
 		~Renderer();
 
 		void beginFrame();
+		void setMode(RenderMode mode);
 		void draw(GLMesh& mesh, Camera& camera);
+		void toggleWireframe() {_wireframe = !_wireframe;}
 		void test();
 	private:
-		Shader	_light;
-		Shader	_texture;
+		Shader		_light;
+		Shader		_texture;
+		RenderMode	_mode;
+		bool		_wireframe;
 };
 
 #endif

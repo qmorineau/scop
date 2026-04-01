@@ -11,6 +11,7 @@
 #include "Renderer.hpp"
 #include "ObjMeshData.hpp"
 #include "GLMesh.hpp"
+#include "Light.hpp"
 
 #define SCR_WIDTH 1920
 #define SCR_HEIGHT 1080
@@ -33,21 +34,25 @@ class Application
 
 	public:
 		Application(char *file);
+		void processInput();
 		~Application();
 		void run();
 
-		static void processInput(GLFWwindow *window, Camera &camera, const float deltaTime);
+		// static void processInput(GLFWwindow *window, Camera &camera, const float deltaTime);
+		static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
 		static void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 		static void mouse_callback(GLFWwindow* window, double xposIn, double yposIn);
 		static void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
-	private:
-		Camera		_camera;
-		Renderer*	_renderer;
-		ObjMeshData	_mesh;
-		GLFWwindow* _window;
 
-		float		_deltaTime = 0.0f;
-		float		_lastFrame = 0.0f;
+		bool _keys[1024] = {false};
+	private:
+		Camera				_camera;
+		Renderer*			_renderer;
+		ObjMeshData			_mesh;
+		GLFWwindow* 		_window;
+		std::vector<Light>	_lights;
+		float				_deltaTime = 0.0f;
+		float				_lastFrame = 0.0f;
 
 		void initWindow();
 		void renderLoop();

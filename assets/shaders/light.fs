@@ -5,7 +5,8 @@ out vec4 FragColor;
 in vec3 Normal;  
 in vec3 FragPos;
 in vec3 FaceColor; 
-  
+
+uniform int mode;
 uniform vec3 lightPos;
 uniform vec3 viewPos;
 uniform vec3 lightColor;
@@ -38,6 +39,19 @@ void main()
     vec3 diffuse = diff * lightColor;
 	vec3 specular = specularStrength * spec * lightColor;
 
-    vec3 result = (ambient + diffuse + specular) * FaceColor;
+	vec3 result;
+	switch (mode)
+	{
+		case 1:
+			result = (ambient + diffuse + specular) * vec3(1,1,1);
+			break;
+		case 2:
+		 	result = (ambient + diffuse + specular) * FaceColor;
+			break;
+		default:
+			result = (ambient + diffuse + specular) * vec3(1,1,1);
+			break;
+	}
+	  
     FragColor = vec4(result, 1.0);
 }
