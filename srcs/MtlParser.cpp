@@ -1,0 +1,162 @@
+#include "MtlParser.hpp"
+
+using Handler = void (MtlParser::*)(std::istringstream& iss);
+
+static const std::map<std::string, Handler> handlers =
+{
+	{"Ns", &MtlParser::parseSpecularExponent},
+	{"Ka", &MtlParser::parseAmbiantColor},
+	{"Kd", &MtlParser::parseDiffuseColor},
+	{"Ks", &MtlParser::parseSpecularColor},
+	{"Ke", &MtlParser::parseEmissiveColor},
+	{"Ni", &MtlParser::parseOpticalDensity},
+	{"d", &MtlParser::parseTransparency},
+	{"map_Kd", &MtlParser::parseTextureFile},
+	{"illum", &MtlParser::parseIlluminationModel}
+};
+
+std::map<std::string, Material*> MtlParser::parse()
+{
+	std::string line;
+	std::string token;
+	while (std::getline(_file, line))
+	{
+		std::istringstream iss(line);
+		if (iss >> token)
+		{
+			if (token.empty() || token.c_str()[0] == '#')
+				continue;
+			else if (token == "newmtl")
+			{
+				createNewMaterial(iss);
+				continue;
+			}
+
+			auto iterator = handlers.find(token);
+			if (iterator == handlers.end())
+				throw ParseError("MtlParser: Unknown token: " + token);
+			Handler h = iterator->second;
+			(this->*h)(iss);
+		}
+	}
+	return _materials;
+}
+
+void MtlParser::createNewMaterial(std::istringstream& iss)
+{
+	std::string name;
+	if (!(iss >> name))
+		throw ParseError("MtlParser: 'newmtl' expect 1 string values");
+	std::string extra;
+	if (iss >> extra)
+		throw ParseError("MtlParser: Unexpected extra value: " + extra);
+	_materials[name] = new Material();
+	_actualMaterial = name;
+};
+
+void MtlParser::parseSpecularExponent(std::istringstream& iss)
+{
+	float f;
+	if (!(iss >> f))
+		throw ParseError("MtlParser: 'Ns' expect 1 floats values");
+	std::string extra;
+	if (iss >> extra)
+		throw ParseError("MtlParser: Unexpected extra value: " + extra);
+	_materials[_actualMaterial]->_Ns = f;
+};
+
+void MtlParser::parseAmbiantColor(std::istringstream& iss)
+{
+	float r, g, b;
+	if (!(iss >> r >> g >> b))
+		throw ParseError("MtlParser: 'Ka' expect 3 floats values");
+	std::string extra;
+	if (iss >> extra)
+		throw ParseError("MtlParser: Unexpected extra value: " + extra);
+	if (r < 0.f || r > 1.f || g < 0.f || g > 1.f || b < 0.f || b > 1.f)
+    	throw ParseError("'Ka' values must be between 0 and 1");
+	_materials[_actualMaterial]->_Ka = vec3(r, g, b);
+};
+
+void MtlParser::parseDiffuseColor(std::istringstream& iss)
+{
+	float r, g, b;
+	if (!(iss >> r >> g >> b))
+		throw ParseError("MtlParser: 'Kd' expect 3 floats values");
+	std::string extra;
+	if (iss >> extra)
+		throw ParseError("MtlParser: Unexpected extra value: " + extra);
+	if (r < 0.f || r > 1.f || g < 0.f || g > 1.f || b < 0.f || b > 1.f)
+    	throw ParseError("'Kd' values must be between 0 and 1");
+	_materials[_actualMaterial]->_Kd = vec3(r, g, b);
+};
+
+void MtlParser::parseSpecularColor(std::istringstream& iss)
+{
+	float r, g, b;
+	if (!(iss >> r >> g >> b))
+		throw ParseError("MtlParser: 'Ks' expect 3 floats values");
+	std::string extra;
+	if (iss >> extra)
+		throw ParseError("MtlParser: Unexpected extra value: " + extra);
+	if (r < 0.f || r > 1.f || g < 0.f || g > 1.f || b < 0.f || b > 1.f)
+    	throw ParseError("'Ks' values must be between 0 and 1");
+	_materials[_actualMaterial]->_Ks = vec3(r, g, b);
+};
+
+void MtlParser::parseEmissiveColor(std::istringstream& iss)
+{
+	float r, g, b;
+	if (!(iss >> r >> g >> b))
+		throw ParseError("MtlParser: 'Ke' expect 3 floats values");
+	std::string extra;
+	if (iss >> extra)
+		throw ParseError("MtlParser: Unexpected extra value: " + extra);
+	if (r < 0.f || r > 1.f || g < 0.f || g > 1.f || b < 0.f || b > 1.f)
+    	throw ParseError("'Ke' values must be between 0 and 1");
+	_materials[_actualMaterial]->_Ke = vec3(r, g, b);
+};
+
+void MtlParser::parseOpticalDensity(std::istringstream& iss)
+{
+	float f;
+	if (!(iss >> f))
+		throw ParseError("MtlParser: 'Ni' expect 1 floats values");
+	std::string extra;
+	if (iss >> extra)
+		throw ParseError("MtlParser: Unexpected extra value: " + extra);
+	_materials[_actualMaterial]->_Ni = f;
+};
+
+void MtlParser::parseTransparency(std::istringstream& iss)
+{
+	float f;
+	if (!(iss >> f))
+		throw ParseError("MtlParser: 'd' expect 1 floats values");
+	std::string extra;
+	if (iss >> extra)
+		throw ParseError("MtlParser: Unexpected extra value: " + extra);
+	_materials[_actualMaterial]->_Ni = f;
+};
+
+void MtlParser::parseTextureFile(std::istringstream& iss)
+{
+	std::string file;
+	if (!(iss >> file))
+		throw ParseError("MtlParser: 'map_Kd' expect 1 floats values");
+	std::string extra;
+	if (iss >> extra)
+		throw ParseError("MtlParser: Unexpected extra value: " + extra);
+	_materials[_actualMaterial]->_map_Kd = file;
+};
+
+void MtlParser::parseIlluminationModel(std::istringstream& iss)
+{
+	int i;
+	if (!(iss >> i))
+		throw ParseError("MtlParser: 'illum' expect 1 floats values");
+	std::string extra;
+	if (iss >> extra)
+		throw ParseError("MtlParser: Unexpected extra value: " + extra);
+	_materials[_actualMaterial]->_illum = i;
+}

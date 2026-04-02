@@ -47,6 +47,7 @@ class ObjMeshData
 		void parseTexture(std::istringstream&);
 		VertexIndex parseVertex(const std::string& vertex);
 		void createFace(std::istringstream& iss);
+		void parseMtlFile(std::istringstream& iss);
 		int  findDuplicatePosition(vec3& v);
 		int  findDuplicateNormal(vec3& v);
 		int	 findDuplicateVertex(Vertex& v);

@@ -11,15 +11,17 @@ Application::Application(char *file) : _camera(SCR_WIDTH, SCR_HEIGHT), _mesh(std
 Application::~Application()
 {
 	delete _renderer;
+	for (auto l : _lights)
+		delete l;
 }
 
 void Application::run()
 {
 	try
 	{
+		_mesh.parse();
 		initWindow();
 		_renderer = new Renderer();
-		_mesh.parse();
 		// _mesh.print();
 		renderLoop();
 	}

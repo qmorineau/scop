@@ -14,7 +14,8 @@ enum class RenderMode
 {
 	Phong,
 	Texture,
-	Face
+	Face,
+	Material
 };
 
 class Renderer

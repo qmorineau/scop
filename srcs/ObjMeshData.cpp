@@ -1,5 +1,7 @@
 #include "ObjMeshData.hpp"
 #include "Vertex.hpp"
+#include "MtlParser.hpp"
+
 
 ObjMeshData::ObjMeshData() {}
 
@@ -254,24 +256,51 @@ void ObjMeshData::parse()
 		{
 			if (token.c_str()[0] == '#')
 				continue;
-			else if (!std::strcmp("v", token.c_str()))
+			else if (token == "v")
 				parsePosition(iss);
-			else if (!std::strcmp("vt", token.c_str()))
+			else if (token == "vt")
 				parseTexture(iss);
-			else if (!std::strcmp("vn", token.c_str()))
+			else if (token == "vn")
 				parseVertexNormal(iss);
-			else if (!std::strcmp("vp", token.c_str()))
+			else if (token == "vp")
 				continue;
-			else if (!std::strcmp("f", token.c_str()))
+			else if (token == "f")
 				createFace(iss);
+			else if (token == "mtllib")
+				parseMtlFile(iss);
+			else if (token == "o")
+				continue;
+			else if (token == "usemtl")
+				continue;
+			else if (token == "s")
+				continue;
 			else
-				continue; // wrong token, error ?
+				throw std::runtime_error("Unknown token \"" + token + "\"");
 		}
 	}
 	centerMesh();
 	createNormal();
 	createTextCoord();
 	convertToGpuData();
+}
+
+void ObjMeshData::parseMtlFile(std::istringstream& iss)
+{
+	std::string path = _filePath;
+	path = path.substr(0, path.find_last_of('/') + 1); // safe ????
+
+	std::string word;
+
+	while (iss >> word)
+	{
+		MtlParser parser(path, word);
+		auto map = parser.parse();
+		for (auto m : map)
+		{
+			m.second->print();
+			delete m.second;
+		}
+	}
 }
 
 void ObjMeshData::print()

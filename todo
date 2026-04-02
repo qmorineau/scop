@@ -27,3 +27,5 @@ f ...
 
 
 if .obj doens4t exist / noo perm
+wrong data send with parsing, manage error(don't run)
+vec3 with not 3 params (more/less) => stop
