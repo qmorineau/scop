@@ -27,7 +27,7 @@ class MeshBuilder
 		{
 			int vertex = 0;
 			int normal = 0;
-			int textCoord = 0;
+			int uv = 0;
 		};
 
 		struct Face

@@ -9,8 +9,6 @@
 #include "Mesh.hpp"
 #include "Types.hpp"
 
-// class ObjMeshData;
-
 class GLMesh
 {
 	public:

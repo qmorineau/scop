@@ -1,5 +1,4 @@
 #include "GLMesh.hpp"
-#include "ObjMeshData.hpp"
 
 GLMesh::GLMesh() {}
 

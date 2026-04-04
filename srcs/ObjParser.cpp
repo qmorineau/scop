@@ -6,11 +6,11 @@ ObjParser::ObjParser(std::string file) :
 	_file(file),
 	_actualMaterial("__default_42scop_material")
 {
-	_builder = std::make_unique<MeshBuilder>(_positions, _normals, _uvs, "__default_42scop_mesh");
 	if (!_file.is_open())
 		throw ParseError("ObjParser: Can't open \"" + file + "\"");
-	_materials.try_emplace(_actualMaterial, Material(_actualMaterial));
 	parse();
+	centerPositions();
+	normalizePositions();
 	build();
 };
 
@@ -49,12 +49,20 @@ void ObjParser::parse()
 			(this->*h)(iss);
 		}
 	}
-	_meshes.push_back(_builder->build());
 }
 
 void ObjParser::build()
 {
-
+	for (auto& object : _rawData)
+	{
+		MeshBuilder builder(_positions, _normals, _uvs, object.name);
+		for (auto& [material, faces] : object.faces)
+		{
+			for (auto& face : faces)
+				builder.addFace(face, _materials.at(material));
+		}
+		_meshes.push_back(builder.build());
+	}
 };
 
 void ObjParser::parsePosition(std::istringstream& iss)
@@ -98,16 +106,9 @@ void ObjParser::parseObjectName(std::istringstream& iss)
 	std::string extra;
 	if (iss >> extra)
 		throw ParseError("ObjParser: Unexpected extra value: " + extra);
-	try
-	{
-		Mesh newMesh = _builder->build();
-		_meshes.push_back(newMesh);
-	}
-	catch(const std::exception& e)
-	{
-		std::cerr << "ObjParser: " << e.what() << std::endl;
-	}
-	_builder = std::make_unique<MeshBuilder>(_positions, _normals, _uvs, name);
+	ObjectData newObj;
+	newObj.name = name;
+	_rawData.push_back(newObj);
 }
 
 MeshBuilder::VertexIndex ObjParser::parseVertex(const std::string& indices)
@@ -121,7 +122,7 @@ MeshBuilder::VertexIndex ObjParser::parseVertex(const std::string& indices)
 
 	MeshBuilder::VertexIndex index;
 	index.vertex = vStr.empty() ? -1 : std::stoi(vStr.c_str()) - 1;
-	index.textCoord = vtStr.empty() ? -1 : std::stoi(vtStr.c_str()) - 1;
+	index.uv = vtStr.empty() ? -1 : std::stoi(vtStr.c_str()) - 1;
 	index.normal = vnStr.empty() ? -1 : std::stoi(vnStr.c_str()) - 1;
 	return (index);
 }
@@ -133,7 +134,12 @@ void ObjParser::createFace(std::istringstream& iss)
 
 	while (iss >> word)
 		face.vertices.push_back(parseVertex(word));
-	_builder->addFace(face, _materials.at(_actualMaterial));
+	if (!_rawData.at(_rawData.size() - 1).faces.size())
+	{
+		std::vector<MeshBuilder::Face> faces;
+		_rawData.at(_rawData.size() - 1).faces.try_emplace(_actualMaterial, faces);
+	}
+	_rawData.at(_rawData.size() - 1).faces.at(_actualMaterial).push_back(face);
 };
 
 void ObjParser::parseMtlFile(std::istringstream& iss)
@@ -177,7 +183,7 @@ void ObjParser::useMtl(std::istringstream& iss)
 	_actualMaterial = word;
 }
 
-void ObjParser::centerMeshes()
+void ObjParser::centerPositions()
 {
 	vec3 objMin(FLT_MAX);
 	vec3 objMax(-FLT_MAX);
@@ -191,4 +197,37 @@ void ObjParser::centerMeshes()
 	vec3 offset((objMin + objMax) * 0.5f);
 	for (auto& v : _positions)
 		v += offset;
+}
+
+void ObjParser::normalizePositions()
+{
+	float maxR2 = 0.f;
+
+	for (const auto& v : _positions)
+		maxR2 = std::max(maxR2, v.lengthSquared());
+
+	float maxRadius = std::sqrt(maxR2);
+
+	float scale = 1.0f / maxRadius;
+
+	for (auto& v : _positions)
+		v *= scale;
+}
+
+void ObjParser::printRawData()
+{
+	for (auto& object : _rawData)
+	{
+		std::cerr << "Object = " << object.name << std::endl;
+		for (auto& [material, faces] : object.faces)
+		{
+			std::cerr << "Material = " << material << std::endl;
+			for (auto& face : faces)
+			{
+				std::cerr << "has normal = " << face.hasNormal << ", has texture = " << face.hasTextCoord << std::endl;
+				for (auto& v : face.vertices)
+					std::cerr << v.vertex << "/" << v.normal << "/" << v.uv << std::endl; 
+			}
+		}
+	}
 }

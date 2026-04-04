@@ -64,6 +64,11 @@ struct Vector3
 		return (*this);
 	}
 
+	float lengthSquared() const
+	{
+		return x * x + y * y + z * z;
+	}
+
 	static Vector3 min(const Vector3& a, const Vector3& b)
 	{
 		return Vector3(

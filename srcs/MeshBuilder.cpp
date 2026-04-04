@@ -28,7 +28,7 @@ void MeshBuilder::addTriangle(VertexIndex a, VertexIndex b, VertexIndex c, vec3 
 	{
 		const vec3& pos = _positions[index[i].vertex];
 		const vec3& norm = _allNormals[index[i].normal];
-		const vec2& uv = _allUvs[index[i].textCoord];
+		const vec2& uv = _allUvs[index[i].uv];
 		Vertex v = Vertex(pos, norm, uv, color);
 		_mesh.addVertex(v);
 	}
@@ -103,7 +103,7 @@ void MeshBuilder::createUvs()
 	{
 		for (Face& face : faces)
 		{
-			if (!face.vertices.empty() && face.vertices[0].textCoord != -1)
+			if (!face.vertices.empty() && face.vertices[0].uv != -1)
 				continue;
 
 			for (auto& v : face.vertices)
@@ -120,8 +120,8 @@ void MeshBuilder::createUvs()
 				else
 					uv = vec2(mx* 5, my* 5);
 
-				for (auto& t : face.vertices)
-					t.textCoord = _uvs.size();
+				for (auto& v : face.vertices)
+					v.uv = _uvs.size();
 
 				_allUvs.push_back(uv);
 			}

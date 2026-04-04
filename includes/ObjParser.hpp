@@ -27,26 +27,20 @@ class ObjParser
 		std::vector<Mesh> getMeshes() {return _meshes;};
 
 	private:
-		class Face
-		{
-			std::vector<int> index;
-		};
-		class ObjectData
+		struct ObjectData
 		{
 			std::string name;
-			std::unordered_map<std::string, std::vector<Face>> faces;
+			std::unordered_map<std::string, std::vector<MeshBuilder::Face>> faces;
 		};
 
 		std::string									_pathFile;
 		std::ifstream								_file;
 		std::string									_actualMaterial;
-		std::vector<Vertex> 						_vertices;
-		std::vector<uint32_t> 						_indices;
 		std::vector<vec3>	 						_positions;
 		std::vector<vec3>	 						_normals;
 		std::vector<vec2>	 						_uvs;
+		std::vector<ObjectData>						_rawData;
 		std::unordered_map<std::string, Material>	_materials;
-		std::unique_ptr<MeshBuilder>				_builder;
 		std::vector<Mesh>							_meshes;
 
 		using Handler = void (ObjParser::*)(std::istringstream&);
@@ -65,11 +59,13 @@ class ObjParser
 		void useMtl(std::istringstream&);
 		MeshBuilder::VertexIndex parseVertex(const std::string&);
 
-		void centerMeshes();
+		void centerPositions();
+		void normalizePositions();
 
 		int findDuplicateNormal(vec3&);
 		void createNormals();
 		void createUvs();
+		void printRawData();
 };
 
 #endif
