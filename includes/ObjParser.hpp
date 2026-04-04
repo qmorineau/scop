@@ -1,6 +1,7 @@
 #ifndef OBJPARSER_HPP
 #define OBJPARSER_HPP
 
+#include <memory>
 #include <vector>
 #include <cfloat>  
 #include <string>
@@ -35,7 +36,8 @@ class ObjParser
 		std::vector<vec3>	 						_normals;
 		std::vector<vec2>	 						_uvs;
 		std::unordered_map<std::string, Material>	_materials;
-		MeshBuilder									_builder;
+		std::unique_ptr<MeshBuilder>				_builder;
+		std::vector<Mesh>							_meshes;
 
 		using Handler = void (ObjParser::*)(std::istringstream&);
  		static const std::unordered_map<std::string, Handler> handlers; // Dispatch Table
@@ -48,6 +50,7 @@ class ObjParser
 		void parseObjectName(std::istringstream&);
 		void createFace(std::istringstream&);
 		void parseMtlFile(std::istringstream&);
+		void useMtl(std::istringstream&);
 		MeshBuilder::VertexIndex parseVertex(const std::string&);
 
 		

@@ -1,43 +1,43 @@
 #include "MeshBuilder.hpp"
 
-MeshBuilder::MeshBuilder(const std::vector<vec3>& p, const std::vector<vec3>& n, const std::vector<vec2>& uv) :
-	_positions(p), _normals(n), _uvs(uv) {};
+MeshBuilder::MeshBuilder(const std::vector<vec3>& p, const std::vector<vec3>& n, const std::vector<vec2>& uv, std::string name) :
+	_positions(p),
+	_normals(n),
+	_uvs(uv),
+	_mesh(name) {};
 
-// int Mesh::findDuplicateVertex(Vertex& v)
-// {
-// 	for (unsigned int i = 0; i < _vertices.size(); i++)
-// 	{
-// 		if (v == _vertices[i])
-// 			return (i);
-// 	}
-// 	return (-1);
-// }
-
-// void Mesh::addTriangle(Vertex& a, Vertex& b, Vertex& c, vec3 color)
-// {
-// 	Vertex vertex[] = {a, b, c};
-// 	for (int i = 0; i < 3; i++)
-// 	{
-// 		int id = findDuplicateVertex(vertex[i]);
-// 		if (id != -1)
-// 			_indices.push_back(id);
-// 		else
-// 		{
-// 			_indices.push_back(_vertices.size());
-// 			_vertices.push_back(vertex[i]);
-// 		}
-// 	}
-// }
-
-void MeshBuilder::build()
+Mesh MeshBuilder::build()
 {
-
+	if (_faces.empty())
+		throw EmptyMesh("");
+	convertToGpuData();
+	return _mesh;
 }
 
-void MeshBuilder::addMesh(std::string name)
+void MeshBuilder::addTriangle(VertexIndex a, VertexIndex b, VertexIndex c, vec3 color)
 {
-	Mesh newMesh(name);
-	_meshes.push_back(newMesh);
+	VertexIndex index[] = {a, b, c};
+	Vertex vertex[3];
+	for (int i = 0; i < 3; i++)
+	{
+		vertex[i] = Vertex(_positions[index[i].vertex], _normals[index[i].normal], _uvs[index[i].textCoord], color);
+		_mesh.addVertex(vertex[i]);
+	}
+}
+
+void MeshBuilder::convertToGpuData()
+{
+	for (auto it : _faces)
+	{
+		size_t i = 0;
+		for (auto face : it.second)
+		{
+			std::vector<VertexIndex> &v = face.vertices;
+			for (unsigned int j = 1; j < v.size() - 1; j++)
+				addTriangle(v[0], v[j], v[j + 1], faceColors[i % 4]); // choose good mesh
+			i++;
+		}
+	}
 }
 
 void MeshBuilder::addFace(Face& f, Material& m)

@@ -1,8 +1,12 @@
 #include "ObjParser.hpp"
 
 // Constructor
-ObjParser::ObjParser(std::string file) : _pathFile(file), _file(file), _actualMaterial("__default_42scop_material"), _builder(_positions, _normals, _uvs)
+ObjParser::ObjParser(std::string file) :
+	_pathFile(file),
+	_file(file),
+	_actualMaterial("__default_42scop_material")
 {
+	_builder = std::make_unique<MeshBuilder>(_positions, _normals, _uvs, "__default_42scop_mesh");
 	if (!_file.is_open())
 		throw ParseError("ObjParser: Can't open \"" + file + "\"");
 	_materials.try_emplace(_actualMaterial, Material(_actualMaterial));
@@ -19,7 +23,7 @@ const std::unordered_map<std::string, ObjParser::Handler> ObjParser::handlers =
 	{"f", &ObjParser::createFace},
 	{"mtllib", &ObjParser::parseMtlFile},
 	{"o", &ObjParser::parseObjectName}, // object name
-	// {"usemtl", &ObjParser::}, // use material for the face that comes
+	{"usemtl", &ObjParser::useMtl}, // use material for the face that comes
 	// {"s", &ObjParser::}, // on/off smoothing, flat rendering or not
 	// {"g", &ObjParser::} // group faces togeter (wheel, door etc.. for a car)
 };
@@ -44,7 +48,7 @@ void ObjParser::parse()
 			(this->*h)(iss);
 		}
 	}
-	_builder.build();
+	_builder->build();
 }
 
 void ObjParser::parsePosition(std::istringstream& iss)
@@ -88,7 +92,15 @@ void ObjParser::parseObjectName(std::istringstream& iss)
 	std::string extra;
 	if (iss >> extra)
 		throw ParseError("ObjParser: Unexpected extra value: " + extra);
-	_builder.addMesh(name);
+	try
+	{
+		_meshes.push_back(_builder->build());
+	}
+	catch(const std::exception& e)
+	{
+		std::cerr << "ObjParser: " << e.what() << std::endl;
+	}
+	_builder = std::make_unique<MeshBuilder>(_positions, _normals, _uvs, name);
 }
 
 MeshBuilder::VertexIndex ObjParser::parseVertex(const std::string& indices)
@@ -114,7 +126,7 @@ void ObjParser::createFace(std::istringstream& iss)
 
 	while (iss >> word)
 		face.vertices.push_back(parseVertex(word));
-	_builder.addFace(face, _materials.at(_actualMaterial));
+	_builder->addFace(face, _materials.at(_actualMaterial));
 };
 
 void ObjParser::parseMtlFile(std::istringstream& iss)
@@ -130,6 +142,18 @@ void ObjParser::parseMtlFile(std::istringstream& iss)
 		for (auto m : map)
 			_materials.try_emplace(m.first, m.second);
 	}
+}
+
+void ObjParser::useMtl(std::istringstream& iss)
+{
+
+	std::string word;
+	if (!(iss >> word))
+		throw ParseError("ObjParser: 'usemtl' expect 1 string value");
+	std::string extra;
+	if (iss >> extra)
+		throw ParseError("ObjParser: Unexpected extra value: " + extra);
+	_actualMaterial = word;
 }
 
 void ObjParser::centerMeshes()

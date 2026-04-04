@@ -1,6 +1,6 @@
 #include "Application.hpp"
 
-Application::Application(char *file) : _camera(SCR_WIDTH, SCR_HEIGHT), _mesh(std::string(file))
+Application::Application(char *file) : _camera(SCR_WIDTH, SCR_HEIGHT), _renderer(nullptr), _mesh(std::string(file))
 {
 	_lights.push_back(new Light(vec3(5,5,5), vec3(1,0,0), 2));
 	_lights.push_back(new Light(vec3(-5,5,5), vec3(0,1,0), 2));
@@ -10,7 +10,8 @@ Application::Application(char *file) : _camera(SCR_WIDTH, SCR_HEIGHT), _mesh(std
 
 Application::~Application()
 {
-	delete _renderer;
+	if (_renderer)
+		delete _renderer;
 	for (auto l : _lights)
 		delete l;
 }

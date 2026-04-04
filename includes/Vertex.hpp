@@ -12,7 +12,7 @@ struct Vertex
 	Vector3 color;
 
 	Vertex() {};
-	Vertex(Vector3& pos, Vector3& norm, Vector2& text, Vector3& color) : position(pos), normale(norm), texture(text), color(color) {};
+	Vertex(const Vector3& pos, const Vector3& norm, const Vector2& text, const Vector3& color) : position(pos), normale(norm), texture(text), color(color) {};
 
 	void print()
 	{

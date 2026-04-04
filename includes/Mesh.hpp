@@ -12,12 +12,14 @@ class Mesh
 	public:
 		Mesh(std::string name) : _name(name) {};
 		
-		void addVertex(Vertex& v) {_vertices.push_back(v);};
+		void addVertex(Vertex& v);
 
 	private:
 		std::string				_name;
 		std::vector<Vertex>		_vertices;
 		std::vector<uint32_t>	_indices;
+
+		int findDuplicateVertex(Vertex& v);
 };
 
 #endif
