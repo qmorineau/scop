@@ -48,11 +48,18 @@ class MeshBuilder
 		const std::vector<vec3>&							_positions;
 		const std::vector<vec3>&							_normals;
 		const std::vector<vec2>&							_uvs;
+		std::vector<vec3>									_allNormals;
+		std::vector<vec2>									_allUvs;
 		std::unordered_map<std::string, std::vector<Face>>	_faces;
 		Mesh 												_mesh;
 
 		void addTriangle(VertexIndex a, VertexIndex b, VertexIndex c, vec3 color);
 		void convertToGpuData();
+
+		int findDuplicateNormal(vec3& v);
+		void createNormals();
+		void createUvs();
+
 };
 
 #endif

@@ -5,7 +5,7 @@ GLMesh::GLMesh() {}
 
 GLMesh::~GLMesh() {}
 
-void GLMesh::upload(const ObjMeshData& mesh)
+void GLMesh::upload(const Mesh& mesh)
 {
 	_indexCount = mesh._indices.size();
 

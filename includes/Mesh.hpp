@@ -7,17 +7,16 @@
 #include "Material.hpp"
 #include "Types.hpp"
 
-class Mesh
+struct Mesh
 {
 	public:
 		Mesh(std::string name) : _name(name) {};
-		
-		void addVertex(Vertex& v);
-
-	private:
 		std::string				_name;
 		std::vector<Vertex>		_vertices;
 		std::vector<uint32_t>	_indices;
+		
+		void addVertex(Vertex& v);
+	private:
 
 		int findDuplicateVertex(Vertex& v);
 };

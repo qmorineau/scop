@@ -7,9 +7,10 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h> 
 
+#include "ObjParser.hpp"
 #include "Camera.hpp"
 #include "Renderer.hpp"
-#include "ObjMeshData.hpp"
+// #include "ObjMeshData.hpp"
 #include "GLMesh.hpp"
 #include "Light.hpp"
 
@@ -56,7 +57,8 @@ class Application
 	private:
 		Camera				_camera;
 		Renderer*			_renderer;
-		ObjMeshData			_mesh;
+		ObjParser			_parser;
+		// ObjMeshData			_mesh;
 		GLFWwindow* 		_window;
 		std::vector<Light*>	_lights;
 		

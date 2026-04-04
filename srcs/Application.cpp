@@ -1,6 +1,6 @@
 #include "Application.hpp"
 
-Application::Application(char *file) : _camera(SCR_WIDTH, SCR_HEIGHT), _renderer(nullptr), _mesh(std::string(file))
+Application::Application(char *file) : _camera(SCR_WIDTH, SCR_HEIGHT), _renderer(nullptr), _parser(std::string(file))
 {
 	_lights.push_back(new Light(vec3(5,5,5), vec3(1,0,0), 2));
 	_lights.push_back(new Light(vec3(-5,5,5), vec3(0,1,0), 2));
@@ -20,7 +20,7 @@ void Application::run()
 {
 	try
 	{
-		_mesh.parse();
+		// _mesh.parse();
 		initWindow();
 		_renderer = new Renderer();
 		// _mesh.print();
@@ -73,8 +73,14 @@ void Application::initWindow()
 
 void Application::renderLoop()
 {
-	GLMesh glMesh;
-	glMesh.upload(_mesh);
+	std::vector<GLMesh> glMeshes;
+	std::vector<Mesh>	meshes = _parser.getMeshes();
+	for (auto mesh : meshes)
+	{
+		GLMesh glMesh;
+		glMesh.upload(mesh);		
+		glMeshes.push_back(glMesh);
+	}
 
 	// glfwSwapInterval(0); // disable vsync
 
@@ -94,7 +100,8 @@ void Application::renderLoop()
 
 		 // Rendering
 		_renderer->beginFrame();
-        _renderer->draw(glMesh, _camera, _lights);
+		for (auto glMesh : glMeshes)
+	        _renderer->draw(glMesh, _camera, _lights);
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
