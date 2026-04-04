@@ -6,6 +6,7 @@
 
 #include "Shader.hpp"
 
+class Mesh;
 class GLMesh;
 class Camera;
 class Light;
@@ -21,19 +22,20 @@ enum class RenderMode
 class Renderer
 {
 	public:
-		Renderer();
+		Renderer(std::vector<Mesh>&);
 		~Renderer();
 
 		void beginFrame();
 		void setMode(RenderMode mode);
-		void draw(GLMesh& mesh, Camera& camera, std::vector<Light*> lights);
+		void draw(Camera& camera, std::vector<Light*> lights);
 		void toggleWireframe() {_wireframe = !_wireframe;}
 		void test();
 	private:
-		Shader		_phong;
-		// Shader		_texture;
-		RenderMode	_mode;
-		bool		_wireframe = false;
+		Shader				_phong;
+		// Shader			_texture;
+		RenderMode			_mode;
+		bool				_wireframe = false;
+		std::vector<GLMesh>	_glMeshes;
 
 		void configureMode();
 };

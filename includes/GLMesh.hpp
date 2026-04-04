@@ -12,17 +12,19 @@
 class GLMesh
 {
 	public:
-		GLMesh();
+		GLMesh(Mesh&);
 		~GLMesh();
 
-		void upload(const Mesh&);
-		void draw() const;
+		void draw(Shader&) const;
 
 	private:
-		GLuint _vao = 0;
-		GLuint _vbo = 0;
-		GLuint _ebo = 0;
-		GLsizei _indexCount = 0;
+		GLuint		_vao = 0;
+		GLuint		_vbo = 0;
+		GLuint		_ebo = 0;
+		GLsizei		_indexCount = 0;
+		Mesh&	_mesh;
+
+		void upload();
 };
 
 #endif

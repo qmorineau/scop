@@ -143,7 +143,7 @@ void MtlParser::parseTextureFile(std::istringstream& iss)
 {
 	std::string file;
 	if (!(iss >> file))
-		throw ParseError("MtlParser: 'map_Kd' expect 1 floats values");
+		throw ParseError("MtlParser: 'map_Kd' expect 1 string values");
 	std::string extra;
 	if (iss >> extra)
 		throw ParseError("MtlParser: Unexpected extra value: " + extra);

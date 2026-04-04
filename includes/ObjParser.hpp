@@ -24,7 +24,7 @@ class ObjParser
 		ObjParser(std::string file);
 		~ObjParser() {};
 
-		std::vector<Mesh> getMeshes() {return _meshes;};
+		std::vector<Mesh>& getMeshes() {return _meshes;};
 
 	private:
 		struct ObjectData

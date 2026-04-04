@@ -20,10 +20,8 @@ void Application::run()
 {
 	try
 	{
-		// _mesh.parse();
 		initWindow();
-		_renderer = new Renderer();
-		// _mesh.print();
+		_renderer = new Renderer(_parser.getMeshes());
 		renderLoop();
 	}
 	catch(const std::exception& e)
@@ -73,15 +71,6 @@ void Application::initWindow()
 
 void Application::renderLoop()
 {
-	std::vector<GLMesh> glMeshes;
-	std::vector<Mesh>	meshes = _parser.getMeshes();
-	for (auto mesh : meshes)
-	{
-		GLMesh glMesh;
-		glMesh.upload(mesh);		
-		glMeshes.push_back(glMesh);
-	}
-
 	// glfwSwapInterval(0); // disable vsync
 
 	while (!glfwWindowShouldClose(_window))
@@ -100,8 +89,7 @@ void Application::renderLoop()
 
 		 // Rendering
 		_renderer->beginFrame();
-		for (auto glMesh : glMeshes)
-	        _renderer->draw(glMesh, _camera, _lights);
+		_renderer->draw(_camera, _lights);
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------

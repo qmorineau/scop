@@ -7,9 +7,14 @@
 
 #include "stb_images.h"
 
-Renderer::Renderer() :	_phong("assets/shaders/phong.vs", "assets/shaders/phong.fs"),
+Renderer::Renderer(std::vector<Mesh>& meshes) :	_phong("assets/shaders/phong.vs", "assets/shaders/phong.fs"),
 						_mode(RenderMode::Phong)
 {
+	for (auto& mesh : meshes)
+	{
+		GLMesh glMesh(mesh);
+		_glMeshes.push_back(glMesh);
+	}
 	test();
 };
 
@@ -21,7 +26,7 @@ void Renderer::beginFrame()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-void Renderer::draw(GLMesh& mesh, Camera& camera, std::vector<Light*> lights)
+void Renderer::draw(Camera& camera, std::vector<Light*> lights)
 {
 	// Wireframe
 	glPolygonMode(GL_FRONT_AND_BACK, _wireframe ? GL_LINE : GL_FILL);
@@ -54,7 +59,8 @@ void Renderer::draw(GLMesh& mesh, Camera& camera, std::vector<Light*> lights)
 	}
 
 	// Draw
-    mesh.draw();
+	for (auto& mesh : _glMeshes)
+		mesh.draw(_phong);
 }
 
 void Renderer::setMode(RenderMode mode)

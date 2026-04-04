@@ -61,7 +61,7 @@ void ObjParser::build()
 			for (auto& face : faces)
 				builder.addFace(face, _materials.at(material));
 		}
-		_meshes.push_back(builder.build());
+		_meshes.push_back(builder.build(_materials));
 	}
 };
 

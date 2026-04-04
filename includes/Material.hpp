@@ -37,7 +37,7 @@ struct Material
 		std::cout << "illum: " << _illum << std::endl;
 	}
 
-	void apply(Shader& shader)
+	void apply(Shader& shader) const
 	{
 		shader.setFloat("material.Ns", _Ns);
 		shader.setVec3("material.Ka", _Ka);

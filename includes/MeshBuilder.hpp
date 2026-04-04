@@ -41,7 +41,7 @@ class MeshBuilder
 		MeshBuilder(const MeshBuilder&) = default;
 		MeshBuilder& operator=(const MeshBuilder&) = default;
 
-		Mesh build();
+		Mesh build(const std::unordered_map<std::string, Material>&);
 		void addFace(Face& f, Material& m);
 
 	private:
@@ -51,10 +51,10 @@ class MeshBuilder
 		std::vector<vec3>									_allNormals;
 		std::vector<vec2>									_allUvs;
 		std::unordered_map<std::string, std::vector<Face>>	_faces;
-		Mesh 												_mesh;
+		Mesh							 					_mesh;
 
-		void addTriangle(VertexIndex a, VertexIndex b, VertexIndex c, vec3 color);
-		void convertToGpuData();
+		void addTriangle(VertexIndex&, VertexIndex&, VertexIndex&, vec3, const Material&);
+		void convertToGpuData(const std::unordered_map<std::string, Material>&);
 
 		int findDuplicateNormal(vec3& v);
 		void createNormals();

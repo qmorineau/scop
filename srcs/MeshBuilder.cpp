@@ -10,17 +10,33 @@ MeshBuilder::MeshBuilder(const std::vector<vec3>& p, const std::vector<vec3>& n,
 	_allUvs = uv;
 };
 
-Mesh MeshBuilder::build()
+Mesh MeshBuilder::build(const std::unordered_map<std::string, Material>& materials)
 {
 	if (_faces.empty())
 		throw EmptyMesh("");
 	createNormals();
 	createUvs();
-	convertToGpuData();
+	convertToGpuData(materials);
 	return _mesh;
 }
 
-void MeshBuilder::addTriangle(VertexIndex a, VertexIndex b, VertexIndex c, vec3 color)
+void MeshBuilder::convertToGpuData(const std::unordered_map<std::string, Material>& materials)
+{
+	for (auto& [materialName, faces] : _faces)
+	{
+		const Material& mat = materials.at(materialName);
+		size_t i = 0;
+		for (auto face : faces)
+		{
+			std::vector<VertexIndex> &v = face.vertices;
+			for (unsigned int j = 1; j < v.size() - 1; j++)
+				addTriangle(v[0], v[j], v[j + 1], faceColors[i % 4], mat); // choose good mesh
+			i++;
+		}
+	}
+}
+
+void MeshBuilder::addTriangle(VertexIndex& a, VertexIndex& b, VertexIndex& c, vec3 color, const Material& mat)
 {
 	VertexIndex index[] = {a, b, c};
 
@@ -30,22 +46,7 @@ void MeshBuilder::addTriangle(VertexIndex a, VertexIndex b, VertexIndex c, vec3 
 		const vec3& norm = _allNormals[index[i].normal];
 		const vec2& uv = _allUvs[index[i].uv];
 		Vertex v = Vertex(pos, norm, uv, color);
-		_mesh.addVertex(v);
-	}
-}
-
-void MeshBuilder::convertToGpuData()
-{
-	for (auto it : _faces)
-	{
-		size_t i = 0;
-		for (auto face : it.second)
-		{
-			std::vector<VertexIndex> &v = face.vertices;
-			for (unsigned int j = 1; j < v.size() - 1; j++)
-				addTriangle(v[0], v[j], v[j + 1], faceColors[i % 4]); // choose good mesh
-			i++;
-		}
+		_mesh.addVertex(v, &mat);
 	}
 }
 

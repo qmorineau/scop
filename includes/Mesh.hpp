@@ -10,14 +10,22 @@
 struct Mesh
 {
 	public:
-		Mesh(std::string name) : _name(name) {};
-		std::string				_name;
-		std::vector<Vertex>		_vertices;
-		std::vector<uint32_t>	_indices;
-		
-		void addVertex(Vertex& v);
-	private:
+		struct SubMesh
+		{
+			SubMesh(const Material* m) : material(m) {};
 
+			GLuint					ebo = 0;
+			std::vector<uint32_t>	indices;
+			const Material*			material;
+		};
+		Mesh(std::string n) : name(n) {};
+
+		std::string				name;
+		std::vector<Vertex>		vertices;
+		std::vector<SubMesh>	subMeshes;
+		
+		void addVertex(Vertex& v, const Material* material);
+	private:
 		int findDuplicateVertex(Vertex& v);
 };
 
