@@ -53,7 +53,7 @@ class ObjMeshData
 		int	 findDuplicateVertex(Vertex& v);
 		void centerMesh();
 		void createNormal();
-		void createTextCoord();
+		void createTextCoord();	
 		void createTextureCoord();
 		void convertToGpuData();
 		void addTriangle(VertexIndex a, VertexIndex b, VertexIndex c, vec3 color);

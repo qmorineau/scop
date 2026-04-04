@@ -2,7 +2,7 @@
 
 using Handler = void (MtlParser::*)(std::istringstream& iss);
 
-static const std::map<std::string, Handler> handlers =
+static const std::unordered_map<std::string, Handler> handlers =
 {
 	{"Ns", &MtlParser::parseSpecularExponent},
 	{"Ka", &MtlParser::parseAmbiantColor},
@@ -15,7 +15,7 @@ static const std::map<std::string, Handler> handlers =
 	{"illum", &MtlParser::parseIlluminationModel}
 };
 
-std::map<std::string, Material*> MtlParser::parse()
+std::unordered_map<std::string, Material> MtlParser::parse()
 {
 	std::string line;
 	std::string token;
@@ -50,7 +50,7 @@ void MtlParser::createNewMaterial(std::istringstream& iss)
 	std::string extra;
 	if (iss >> extra)
 		throw ParseError("MtlParser: Unexpected extra value: " + extra);
-	_materials[name] = new Material();
+	_materials.try_emplace(name, Material(name));
 	_actualMaterial = name;
 };
 
@@ -62,7 +62,7 @@ void MtlParser::parseSpecularExponent(std::istringstream& iss)
 	std::string extra;
 	if (iss >> extra)
 		throw ParseError("MtlParser: Unexpected extra value: " + extra);
-	_materials[_actualMaterial]->_Ns = f;
+	_materials.at(_actualMaterial)._Ns = f;
 };
 
 void MtlParser::parseAmbiantColor(std::istringstream& iss)
@@ -75,7 +75,7 @@ void MtlParser::parseAmbiantColor(std::istringstream& iss)
 		throw ParseError("MtlParser: Unexpected extra value: " + extra);
 	if (r < 0.f || r > 1.f || g < 0.f || g > 1.f || b < 0.f || b > 1.f)
     	throw ParseError("'Ka' values must be between 0 and 1");
-	_materials[_actualMaterial]->_Ka = vec3(r, g, b);
+	_materials.at(_actualMaterial)._Ka = vec3(r, g, b);
 };
 
 void MtlParser::parseDiffuseColor(std::istringstream& iss)
@@ -88,7 +88,7 @@ void MtlParser::parseDiffuseColor(std::istringstream& iss)
 		throw ParseError("MtlParser: Unexpected extra value: " + extra);
 	if (r < 0.f || r > 1.f || g < 0.f || g > 1.f || b < 0.f || b > 1.f)
     	throw ParseError("'Kd' values must be between 0 and 1");
-	_materials[_actualMaterial]->_Kd = vec3(r, g, b);
+	_materials.at(_actualMaterial)._Kd = vec3(r, g, b);
 };
 
 void MtlParser::parseSpecularColor(std::istringstream& iss)
@@ -101,7 +101,7 @@ void MtlParser::parseSpecularColor(std::istringstream& iss)
 		throw ParseError("MtlParser: Unexpected extra value: " + extra);
 	if (r < 0.f || r > 1.f || g < 0.f || g > 1.f || b < 0.f || b > 1.f)
     	throw ParseError("'Ks' values must be between 0 and 1");
-	_materials[_actualMaterial]->_Ks = vec3(r, g, b);
+	_materials.at(_actualMaterial)._Ks = vec3(r, g, b);
 };
 
 void MtlParser::parseEmissiveColor(std::istringstream& iss)
@@ -114,7 +114,7 @@ void MtlParser::parseEmissiveColor(std::istringstream& iss)
 		throw ParseError("MtlParser: Unexpected extra value: " + extra);
 	if (r < 0.f || r > 1.f || g < 0.f || g > 1.f || b < 0.f || b > 1.f)
     	throw ParseError("'Ke' values must be between 0 and 1");
-	_materials[_actualMaterial]->_Ke = vec3(r, g, b);
+	_materials.at(_actualMaterial)._Ke = vec3(r, g, b);
 };
 
 void MtlParser::parseOpticalDensity(std::istringstream& iss)
@@ -125,7 +125,7 @@ void MtlParser::parseOpticalDensity(std::istringstream& iss)
 	std::string extra;
 	if (iss >> extra)
 		throw ParseError("MtlParser: Unexpected extra value: " + extra);
-	_materials[_actualMaterial]->_Ni = f;
+	_materials.at(_actualMaterial)._Ni = f;
 };
 
 void MtlParser::parseTransparency(std::istringstream& iss)
@@ -136,7 +136,7 @@ void MtlParser::parseTransparency(std::istringstream& iss)
 	std::string extra;
 	if (iss >> extra)
 		throw ParseError("MtlParser: Unexpected extra value: " + extra);
-	_materials[_actualMaterial]->_Ni = f;
+	_materials.at(_actualMaterial)._Ni = f;
 };
 
 void MtlParser::parseTextureFile(std::istringstream& iss)
@@ -147,7 +147,8 @@ void MtlParser::parseTextureFile(std::istringstream& iss)
 	std::string extra;
 	if (iss >> extra)
 		throw ParseError("MtlParser: Unexpected extra value: " + extra);
-	_materials[_actualMaterial]->_map_Kd = file;
+	_materials.at(_actualMaterial)._map_Kd = file;
+	_materials.at(_actualMaterial)._hasTexture = true;
 };
 
 void MtlParser::parseIlluminationModel(std::istringstream& iss)
@@ -158,5 +159,5 @@ void MtlParser::parseIlluminationModel(std::istringstream& iss)
 	std::string extra;
 	if (iss >> extra)
 		throw ParseError("MtlParser: Unexpected extra value: " + extra);
-	_materials[_actualMaterial]->_illum = i;
+	_materials.at(_actualMaterial)._illum = i;
 }

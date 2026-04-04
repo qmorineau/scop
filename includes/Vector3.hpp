@@ -63,6 +63,24 @@ struct Vector3
 		z -= other.z;
 		return (*this);
 	}
+
+	static Vector3 min(const Vector3& a, const Vector3& b)
+	{
+		return Vector3(
+			std::min(a.x, b.x),
+			std::min(a.y, b.y),
+			std::min(a.z, b.z)
+		);
+	}
+
+	static Vector3 max(const Vector3& a, const Vector3& b)
+	{
+		return Vector3(
+			std::max(a.x, b.x),
+			std::max(a.y, b.y),
+			std::max(a.z, b.z)
+		);
+	}
 };
 
 inline Vector3 operator*(float s, const Vector3& v)
@@ -81,7 +99,7 @@ inline Vector3 operator*=(const float s, Vector3& v)
 
 inline std::ostream& operator<<(std::ostream& out_stream, const Vector3& vec)
 {
-	out_stream << "[" << vec.x << " ," << vec.y << ", " << vec.z << "]";
+	out_stream << "[" << vec.x << ", " << vec.y << ", " << vec.z << "]";
 	return (out_stream);
 };
 

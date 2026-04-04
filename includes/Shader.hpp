@@ -6,6 +6,9 @@
 #include <sstream>
 #include <iostream>
 
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+
 #include "Matrix4.hpp"
 
 class Shader

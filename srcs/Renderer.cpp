@@ -7,8 +7,7 @@
 
 #include "stb_images.h"
 
-Renderer::Renderer() :	_light("assets/shaders/light.vs", "assets/shaders/light.fs"),
-						_texture("assets/shaders/texture.vs", "assets/shaders/texture.fs"),
+Renderer::Renderer() :	_phong("assets/shaders/phong.vs", "assets/shaders/phong.fs"),
 						_mode(RenderMode::Phong)
 {
 	test();
@@ -24,54 +23,74 @@ void Renderer::beginFrame()
 
 void Renderer::draw(GLMesh& mesh, Camera& camera, std::vector<Light*> lights)
 {
-	if (_wireframe)
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	else
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-    _light.use();
-	// _texture.use();
+	// Wireframe
+	glPolygonMode(GL_FRONT_AND_BACK, _wireframe ? GL_LINE : GL_FILL);
 
-    // Projection
+	// Use shader
+    _phong.use();
+
+	// Camera
     mat4 projection = mat4::perspective(math::radians(camera.Zoom), camera.aspectRatio, 0.1f, 100.0f);
-    _light.setMat4("projection", projection);
+    _phong.setMat4("projection", projection);
+    _phong.setMat4("view", camera.GetViewMatrix());
+	_phong.setVec3("viewPos", vec3(camera.Position));
 
-    // View
-    mat4 view = camera.GetViewMatrix();
-    _light.setMat4("view", view);
+	// Model
+    _phong.setMat4("model", mat4::identity());
 
-    // Model
-    mat4 model = mat4::identity();
-    _light.setMat4("model", model);
+	// Configure Rendering Mode
+	configureMode();
 
-	_light.setVec3("viewPos", vec3(camera.Position));
-	_light.setVec3("lightPos", vec3(5., 5., 5.)); // light pos getPosition
-
-	if (_mode == RenderMode::Phong)
+	if (true) // to change
 	{
-		_light.setInt("lightCount", lights.size());
+		_phong.setInt("lightCount", lights.size());
 		for (size_t i = 0; i < lights.size(); i++)
 		{
-			_light.setVec3("lights[" + std::to_string(i) + "].position", lights[i]->getPosition());
-			_light.setVec3("lights[" + std::to_string(i) + "].color", lights[i]->getColor());
+			_phong.setVec3("lights[" + std::to_string(i) + "].position", lights[i]->getPosition());
+			_phong.setVec3("lights[" + std::to_string(i) + "].color", lights[i]->getColor());
+			_phong.setInt("lights[" + std::to_string(i) + "].intensity", 100);
+			_phong.setBool("lights[" + std::to_string(i) + "].enabled", true);
 		}
 	}
-	// else if  (_mode == RenderMode::Face)
-	// 	_light.setVec3("lightColor", light.getColor());
-	// else if (_mode == RenderMode::Texture)
-	// 	_light.setVec3("lightColor", light.getColor());
 
-	_light.setVec3("objectColor", vec3(0.5, 0.5, 0.5));
-
-	_light.setFloat("shininess", 32.f);
-
-	_light.setInt("mode", static_cast<int>(_mode));
-
+	// Draw
     mesh.draw();
 }
 
 void Renderer::setMode(RenderMode mode)
 {
 	_mode = mode;
+}
+
+void Renderer::configureMode()
+{
+	 switch (_mode)
+    {
+        case RenderMode::Phong:
+            _phong.setBool("u_useLighting", true);
+            _phong.setBool("u_useTexture", false);
+            _phong.setBool("u_overrideColor", false);
+            break;
+
+        case RenderMode::Texture:
+            _phong.setBool("u_useLighting", false);
+            _phong.setBool("u_useTexture", true);
+            _phong.setBool("u_overrideColor", false);
+            break;
+
+        case RenderMode::Face:
+            _phong.setBool("u_useLighting", false);
+            _phong.setBool("u_useTexture", false);
+            _phong.setBool("u_overrideColor", true);
+            _phong.setVec3("u_overrideColorValue", vec3(1,0,0)); // exemple
+            break;
+
+        case RenderMode::Material:
+            _phong.setBool("u_useLighting", true);
+            _phong.setBool("u_useTexture", true);
+            _phong.setBool("u_overrideColor", false);
+            break;
+    }
 };
 
 void Renderer::test()
@@ -130,6 +149,6 @@ void Renderer::test()
 	
 	// _texture.use();
 
-	glUniform1i(glGetUniformLocation(_texture.ID, "texture1"), 0);
-	_texture.setInt("texture2", 1);
+	// glUniform1i(glGetUniformLocation(_texture.ID, "texture1"), 0);
+	// _texture.setInt("texture2", 1);
 }

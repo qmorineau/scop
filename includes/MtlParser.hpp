@@ -3,7 +3,7 @@
 
 #include <string>
 #include <vector>
-#include <map>
+#include <unordered_map>
 #include <fstream>
 #include <sstream>
 
@@ -24,7 +24,7 @@ class MtlParser
 		};
 		~MtlParser() {};
 
-		std::map<std::string, Material*> parse();
+		std::unordered_map<std::string, Material> parse();
 
 		void createNewMaterial(std::istringstream& iss);
 
@@ -41,7 +41,7 @@ class MtlParser
 		std::string							_path;
 		std::ifstream						_file;
 		std::string							_actualMaterial;
-		std::map<std::string, Material*>	_materials;
+		std::unordered_map<std::string, Material>	_materials;
 };
 
 #endif

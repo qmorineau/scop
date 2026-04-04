@@ -296,10 +296,7 @@ void ObjMeshData::parseMtlFile(std::istringstream& iss)
 		MtlParser parser(path, word);
 		auto map = parser.parse();
 		for (auto m : map)
-		{
-			m.second->print();
-			delete m.second;
-		}
+			m.second.print();
 	}
 }
 

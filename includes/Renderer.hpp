@@ -30,10 +30,12 @@ class Renderer
 		void toggleWireframe() {_wireframe = !_wireframe;}
 		void test();
 	private:
-		Shader		_light;
-		Shader		_texture;
+		Shader		_phong;
+		// Shader		_texture;
 		RenderMode	_mode;
-		bool		_wireframe;
+		bool		_wireframe = false;
+
+		void configureMode();
 };
 
 #endif
