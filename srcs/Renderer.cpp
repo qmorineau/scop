@@ -7,9 +7,10 @@
 
 #include "stb_images.h"
 
-Renderer::Renderer(std::vector<Mesh>& meshes) :	_phong("assets/shaders/phong.vs", "assets/shaders/phong.fs"),
-						_mode(RenderMode::Phong)
-{
+Renderer::Renderer(std::vector<Mesh>& meshes) :
+	_phong("assets/shaders/phong.vs", "assets/shaders/phong.fs"),
+	_mode(RenderMode::Phong)
+{	
 	for (auto& mesh : meshes)
 	{
 		GLMesh glMesh(mesh);
@@ -53,7 +54,7 @@ void Renderer::draw(Camera& camera, std::vector<Light*> lights)
 		{
 			_phong.setVec3("lights[" + std::to_string(i) + "].position", lights[i]->getPosition());
 			_phong.setVec3("lights[" + std::to_string(i) + "].color", lights[i]->getColor());
-			_phong.setInt("lights[" + std::to_string(i) + "].intensity", 100);
+			_phong.setFloat("lights[" + std::to_string(i) + "].intensity", 10.f);
 			_phong.setBool("lights[" + std::to_string(i) + "].enabled", true);
 		}
 	}
@@ -107,7 +108,7 @@ void Renderer::test()
     // texture 1
     // ---------
     glGenTextures(1, &texture1);
-    glBindTexture(GL_TEXTURE_2D, texture1); 
+    glBindTexture(GL_TEXTURE_2D, texture1); 		
      // set the texture wrapping parameters
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	// set texture wrapping to GL_REPEAT (default wrapping method)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);

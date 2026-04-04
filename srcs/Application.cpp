@@ -1,6 +1,6 @@
 #include "Application.hpp"
 
-Application::Application(char *file) : _camera(SCR_WIDTH, SCR_HEIGHT), _renderer(nullptr), _parser(std::string(file))
+Application::Application(char *file) : _camera(SCR_WIDTH, SCR_HEIGHT), _renderer(nullptr), _parser(std::string(file)), _window(nullptr)
 {
 	_lights.push_back(new Light(vec3(5,5,5), vec3(1,0,0), 2));
 	_lights.push_back(new Light(vec3(-5,5,5), vec3(0,1,0), 2));
@@ -14,21 +14,19 @@ Application::~Application()
 		delete _renderer;
 	for (auto l : _lights)
 		delete l;
+	if (_window)
+	{
+		glfwDestroyWindow(_window);
+		_window = nullptr;
+	}
+	glfwTerminate();
 }
 
 void Application::run()
 {
-	try
-	{
-		initWindow();
-		_renderer = new Renderer(_parser.getMeshes());
-		renderLoop();
-	}
-	catch(const std::exception& e)
-	{
-		std::cerr << e.what() << '\n';
-	}
-	
+	initWindow();
+	_renderer = new Renderer(_parser.getMeshes());
+	renderLoop();
 }
 
 void Application::initWindow()

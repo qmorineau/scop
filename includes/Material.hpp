@@ -13,7 +13,7 @@ struct Material
 	float			_Ns = 32; // Specular Exponent
 	vec3			_Ka = vec3(0.2f, 0.2f, 0.2f); // Ambiant Color
 	vec3			_Kd = vec3(0.8f, 0.8f, 0.8f); // Diffuse Color
-	vec3			_Ks; // Specular Color
+	vec3			_Ks = vec3(1.f, 1.f, 1.f); // Specular Color
 	vec3			_Ke; // Emissive Color
 	float			_Ni = 1.0f; // Optical Density
 	float			_d = 1.0f; // Transparency

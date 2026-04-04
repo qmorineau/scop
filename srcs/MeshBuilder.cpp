@@ -52,7 +52,9 @@ void MeshBuilder::addTriangle(VertexIndex& a, VertexIndex& b, VertexIndex& c, ve
 
 void MeshBuilder::addFace(Face& f, Material& m)
 {
-	_faces[m._name].push_back(f);
+	if (!_faces.size())
+		_faces.try_emplace(m._name, std::vector<Face>());
+	_faces.at(m._name).push_back(f);
 }
 
 int MeshBuilder::findDuplicateNormal(vec3& v)
@@ -71,14 +73,14 @@ void MeshBuilder::createNormals()
 	{
 		for (Face& face : faces)
 		{
-			if (!face.vertices.empty() && face.vertices[0].normal != -1)
-				continue;
+			// if (!face.vertices.empty() && face.vertices[0].normal != -1)
+			// 	continue;
 
 			const vec3& p0 = _positions[face.vertices[0].vertex];
 			const vec3& p1 = _positions[face.vertices[1].vertex];
 			const vec3& p2 = _positions[face.vertices[2].vertex];
 
-			vec3 n = math::normalize(math::cross(p1 - p0, p2 - p0));
+			vec3 n = math::normalize(math::cross(p2 - p0, p1 - p0));
 
 			int id = -1;
 			for (size_t i = 0; i < _allNormals.size(); i++)
@@ -104,8 +106,8 @@ void MeshBuilder::createUvs()
 	{
 		for (Face& face : faces)
 		{
-			if (!face.vertices.empty() && face.vertices[0].uv != -1)
-				continue;
+			// if (!face.vertices.empty() && face.vertices[0].uv != -1)
+			// 	continue;
 
 			for (auto& v : face.vertices)
 			{
@@ -121,10 +123,8 @@ void MeshBuilder::createUvs()
 				else
 					uv = vec2(mx* 5, my* 5);
 
-				for (auto& v : face.vertices)
-					v.uv = _uvs.size();
-
 				_allUvs.push_back(uv);
+				v.uv = _uvs.size();
 			}
 		}
 	}

@@ -6,6 +6,7 @@ ObjParser::ObjParser(std::string file) :
 	_file(file),
 	_actualMaterial("__default_42scop_material")
 {
+	_materials.try_emplace("__default_42scop_material", Material(_actualMaterial));
 	if (!_file.is_open())
 		throw ParseError("ObjParser: Can't open \"" + file + "\"");
 	parse();
@@ -134,6 +135,8 @@ void ObjParser::createFace(std::istringstream& iss)
 
 	while (iss >> word)
 		face.vertices.push_back(parseVertex(word));
+	if (!_rawData.size())
+		_rawData.push_back(ObjectData());
 	if (!_rawData.at(_rawData.size() - 1).faces.size())
 	{
 		std::vector<MeshBuilder::Face> faces;
@@ -196,7 +199,7 @@ void ObjParser::centerPositions()
 
 	vec3 offset((objMin + objMax) * 0.5f);
 	for (auto& v : _positions)
-		v += offset;
+		v -= offset;
 }
 
 void ObjParser::normalizePositions()

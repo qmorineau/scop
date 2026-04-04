@@ -6,8 +6,15 @@ int main(int argc, char **argv)
 {
 	if (argc == 2)
 	{
-		Application app(argv[1]);
-		app.run();
+		try
+		{
+			Application app(argv[1]);
+			app.run();
+		}
+		catch(const std::exception& e)
+		{
+			std::cerr << e.what() << '\n';
+		}
 	}
 	else
 	{

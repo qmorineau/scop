@@ -65,6 +65,7 @@ vec3 applyPhong(vec3 baseColor)
         result += ambient + diffuse + specular;
     }
 
+	// return result;
     return result * baseColor;
 }
 
@@ -88,6 +89,7 @@ void main()
     // Lighting toggle
     if (!u_useLighting)
     {
+		// FragColor = vec4(normalize(Normal) * 0.5 + 0.5, 1.0);
         FragColor = vec4(baseColor, 1.0);
         return;
     }

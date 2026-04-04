@@ -1,9 +1,14 @@
 #ifndef TEXTURELOADER_HPP
 #define TEXTURELOADER_HPP
 
-class TextureLoade
-{
+#include <string>
 
+class TextureLoader
+{
+	public:
+		TextureLoader(std::string file) {};
+
+	private:
 };
 
 #endif
