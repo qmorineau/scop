@@ -1,6 +1,12 @@
 #include "Application.hpp"
 
-Application::Application(char *file) : _camera(SCR_WIDTH, SCR_HEIGHT), _renderer(nullptr), _parser(std::string(file)), _window(nullptr)
+Application::Application(char *file) :
+	_camera(SCR_WIDTH, SCR_HEIGHT),
+	_renderer(nullptr),
+	_parser(std::string(file)),
+	_window(nullptr),
+	_isRotAxes(0., 1., 0.),
+	_rotations(vec3(0.01, 0.01, 0.01))
 {
 	_lights.push_back(new Light(vec3(5,5,5), vec3(1,0,0), 2));
 	_lights.push_back(new Light(vec3(-5,5,5), vec3(0,1,0), 2));
@@ -67,6 +73,16 @@ void Application::initWindow()
     glEnable(GL_DEPTH_TEST);
 }
 
+void Application::applyRotation()
+{
+	if (_isRotAxes.x)
+		_rotAngle.x += _rotations.x;
+	if (_isRotAxes.y)
+		_rotAngle.y += _rotations.y;
+	if (_isRotAxes.z)
+		_rotAngle.z += _rotations.z;
+}
+
 void Application::renderLoop()
 {
 	// glfwSwapInterval(0); // disable vsync
@@ -84,10 +100,10 @@ void Application::renderLoop()
 		glfwSetWindowTitle(_window, _windowTitle.c_str());
 		glfwSetKeyCallback(_window, Application::keyCallback);
 		processInput();
-
+		applyRotation();
 		 // Rendering
 		_renderer->beginFrame();
-		_renderer->draw(_camera, _lights);
+		_renderer->draw(_camera, _rotAngle, _lights);
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
@@ -169,6 +185,33 @@ void Application::keyCallback(GLFWwindow* window, int key, int scancode, int act
 				break;
 			case GLFW_KEY_P:
 				app->_renderer->toggleWireframe();
+				break;
+			case GLFW_KEY_X:
+				if (app->_isRotAxes.x)
+					app->_isRotAxes.x = 0.f;
+				else
+				{
+					app->_isRotAxes.x = 1.f;
+					app->_rotations.x = -app->_rotations.x;
+				}
+				break;
+			case GLFW_KEY_Y:
+				if (app->_isRotAxes.y)
+					app->_isRotAxes.y = 0.f;
+				else
+				{
+					app->_isRotAxes.y = 1.f;
+					app->_rotations.y = -app->_rotations.y;
+				}
+				break;
+			case GLFW_KEY_Z:
+				if (app->_isRotAxes.z)
+					app->_isRotAxes.z = 0.f;
+				else
+				{
+					app->_isRotAxes.z = 1.f;
+					app->_rotations.z = -app->_rotations.z;
+				}
 				break;
 			case GLFW_KEY_L:
 				app->toggleEditLight();

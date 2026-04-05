@@ -27,7 +27,7 @@ void Renderer::beginFrame()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-void Renderer::draw(Camera& camera, std::vector<Light*> lights)
+void Renderer::draw(Camera& camera, vec3& angle, std::vector<Light*> lights)
 {
 	// Wireframe
 	glPolygonMode(GL_FRONT_AND_BACK, _wireframe ? GL_LINE : GL_FILL);
@@ -42,7 +42,10 @@ void Renderer::draw(Camera& camera, std::vector<Light*> lights)
 	_phong.setVec3("viewPos", vec3(camera.Position));
 
 	// Model
-    _phong.setMat4("model", mat4::identity());
+	mat4 model = mat4::rotateX(angle.x)
+		.mul_mat(mat4::rotateY(angle.y))
+		.mul_mat(mat4::rotateZ(angle.z));
+    _phong.setMat4("model", model);
 
 	// Configure Rendering Mode
 	configureMode();

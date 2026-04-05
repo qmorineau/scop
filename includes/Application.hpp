@@ -61,12 +61,16 @@ class Application
 		// ObjMeshData			_mesh;
 		GLFWwindow* 		_window;
 		std::vector<Light*>	_lights;
+		vec3				_isRotAxes;
+		vec3				_rotations;
+		vec3				_rotAngle;
 		
 		std::string			_windowTitle;
 		float				_deltaTime = 0.0f;
 		float				_lastFrame = 0.0f;
 
 		void initWindow();
+		void applyRotation();
 		void renderLoop();
 };
 

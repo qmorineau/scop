@@ -99,6 +99,42 @@ class Matrix4
 			return data.data();
 		}
 
+		static Matrix4 rotateX(float angle)
+		{
+			float cos = std::cos(angle);
+    		float sin = std::sin(angle);
+			std::vector mat(16, 0.0f);
+			mat[0]  = 1;
+			mat[5]  = cos;  mat[9]  = -sin;
+			mat[6]  = sin;  mat[10] = cos;
+			mat[15] = 1;
+			return (Matrix4(mat));
+		}
+
+		static Matrix4 rotateY(float angle)
+		{
+			float cos = std::cos(angle);
+    		float sin = std::sin(angle);
+			std::vector mat(16, 0.0f);
+			mat[0]  = cos;  mat[8]  = sin;
+			mat[5]  = 1;
+			mat[2]  = -sin; mat[10] = cos;
+			mat[15] = 1;
+			return (Matrix4(mat));
+		}
+
+		static Matrix4 rotateZ(float angle)
+		{
+			float cos = std::cos(angle);
+    		float sin = std::sin(angle);
+			std::vector mat(16, 0.0f);
+			mat[0]  = cos;  mat[4]  = -sin;
+			mat[1]  = sin;  mat[5]  = cos;
+			mat[10] = 1;
+			mat[15] = 1;
+			return (Matrix4(mat));
+		}
+
 	private:
 		std::vector<float> data;
 };
