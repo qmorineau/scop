@@ -120,13 +120,13 @@ void Application::renderLoop()
 void Application::processInput()
 {
 	if (_keys[GLFW_KEY_W])
-		_camera.processKeyboard(FORWARD, _deltaTime);
+		_camera.processKeyboard(Camera::FORWARD, _deltaTime);
 	if (_keys[GLFW_KEY_S])
-		_camera.processKeyboard(BACKWARD, _deltaTime);
+		_camera.processKeyboard(Camera::BACKWARD, _deltaTime);
 	if (_keys[GLFW_KEY_A])
-		_camera.processKeyboard(LEFT, _deltaTime);
+		_camera.processKeyboard(Camera::LEFT, _deltaTime);
 	if (_keys[GLFW_KEY_D])
-		_camera.processKeyboard(RIGHT, _deltaTime);
+		_camera.processKeyboard(Camera::RIGHT, _deltaTime);
 	if (_editLight)
 	{
 		if (_keys[GLFW_KEY_0])
@@ -186,6 +186,9 @@ void Application::keyCallback(GLFWwindow* window, int key, int scancode, int act
 				break;
 			case GLFW_KEY_P:
 				app->_renderer->toggleWireframe();
+				break;
+			case GLFW_KEY_M:
+				app->_camera.changeMode();
 				break;
 			case GLFW_KEY_X:
 				if (app->_isRotAxes.x)

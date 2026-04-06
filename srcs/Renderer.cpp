@@ -39,7 +39,7 @@ void Renderer::draw(Camera& camera, vec3& angle, std::vector<Light*> lights)
 	// Camera
     mat4 projection = mat4::perspective(math::radians(camera.getZoom()), camera.getAspectRatio(), 0.1f, 100.0f);
     _phong.setMat4("projection", projection);
-    _phong.setMat4("view", camera.GetViewMatrix());
+    _phong.setMat4("view", camera.getViewMatrix());
 	_phong.setVec3("viewPos", vec3(camera.getPosition()));
 
 	// Model

@@ -11,6 +11,7 @@ static const std::unordered_map<std::string, Handler> handlers =
 	{"Ke", &MtlParser::parseEmissiveColor},
 	{"Ni", &MtlParser::parseOpticalDensity},
 	{"d", &MtlParser::parseTransparency},
+	// {"d", &MtlParser::parseTransparency}, 
 	{"map_Kd", &MtlParser::parseTextureFile},
 	{"illum", &MtlParser::parseIlluminationModel}
 };

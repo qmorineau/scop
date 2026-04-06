@@ -105,8 +105,8 @@ class Matrix4
     		float sin = std::sin(angle);
 			std::vector mat(16, 0.0f);
 			mat[0]  = 1;
-			mat[5]  = cos;  mat[9]  = -sin;
-			mat[6]  = sin;  mat[10] = cos;
+			mat[5]  = cos;  mat[9]  = sin;
+			mat[6]  = -sin;  mat[10] = cos;
 			mat[15] = 1;
 			return (Matrix4(mat));
 		}
@@ -116,9 +116,9 @@ class Matrix4
 			float cos = std::cos(angle);
     		float sin = std::sin(angle);
 			std::vector mat(16, 0.0f);
-			mat[0]  = cos;  mat[8]  = sin;
+			mat[0]  = cos;  mat[8]  = -sin;
 			mat[5]  = 1;
-			mat[2]  = -sin; mat[10] = cos;
+			mat[2]  = sin; mat[10] = cos;
 			mat[15] = 1;
 			return (Matrix4(mat));
 		}
@@ -128,8 +128,8 @@ class Matrix4
 			float cos = std::cos(angle);
     		float sin = std::sin(angle);
 			std::vector mat(16, 0.0f);
-			mat[0]  = cos;  mat[4]  = -sin;
-			mat[1]  = sin;  mat[5]  = cos;
+			mat[0]  = cos;  mat[4]  = sin;
+			mat[1]  = -sin;  mat[5]  = cos;
 			mat[10] = 1;
 			mat[15] = 1;
 			return (Matrix4(mat));
