@@ -23,7 +23,8 @@ Renderer::~Renderer() {};
 
 void Renderer::beginFrame()
 {
-	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+	// glClearColor(0.2f, 0.3f, 0.3f, 1.0f); // default opengl color
+	glClearColor(0.2f, 0.2f, 0.2f, 1.f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
@@ -36,10 +37,10 @@ void Renderer::draw(Camera& camera, vec3& angle, std::vector<Light*> lights)
     _phong.use();
 
 	// Camera
-    mat4 projection = mat4::perspective(math::radians(camera.Zoom), camera.aspectRatio, 0.1f, 100.0f);
+    mat4 projection = mat4::perspective(math::radians(camera.getZoom()), camera.getAspectRatio(), 0.1f, 100.0f);
     _phong.setMat4("projection", projection);
     _phong.setMat4("view", camera.GetViewMatrix());
-	_phong.setVec3("viewPos", vec3(camera.Position));
+	_phong.setVec3("viewPos", vec3(camera.getPosition()));
 
 	// Model
 	mat4 model = mat4::rotateX(angle.x)
@@ -57,7 +58,7 @@ void Renderer::draw(Camera& camera, vec3& angle, std::vector<Light*> lights)
 		{
 			_phong.setVec3("lights[" + std::to_string(i) + "].position", lights[i]->getPosition());
 			_phong.setVec3("lights[" + std::to_string(i) + "].color", lights[i]->getColor());
-			_phong.setFloat("lights[" + std::to_string(i) + "].intensity", 10.f);
+			_phong.setFloat("lights[" + std::to_string(i) + "].intensity", lights[i]->getIntensity());
 			_phong.setBool("lights[" + std::to_string(i) + "].enabled", true);
 		}
 	}

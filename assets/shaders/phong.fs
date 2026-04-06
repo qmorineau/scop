@@ -40,6 +40,7 @@ uniform vec3 u_overrideColorValue;
 vec3 applyPhong(vec3 baseColor)
 {
     vec3 norm = normalize(Normal);
+	// vec3 viewDir = normalize(FragPos - viewPos);
     vec3 viewDir = normalize(viewPos - FragPos);
 
     vec3 result = vec3(0.0);
@@ -55,8 +56,12 @@ vec3 applyPhong(vec3 baseColor)
         float diff = max(dot(norm, lightDir), 0.0);
 
         // Specular
-        vec3 reflectDir = reflect(-lightDir, norm);
-        float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.Ns);
+		float spec = 0.0;
+		if (diff > 0.0)
+		{
+        	vec3 reflectDir = reflect(-lightDir, norm);
+        	spec = pow(max(dot(viewDir, reflectDir), 0.0), material.Ns);
+		}
 
         vec3 ambient  = material.Ka * lights[i].color * lights[i].intensity;
         vec3 diffuse  = material.Kd * diff * lights[i].color * lights[i].intensity;
@@ -66,7 +71,7 @@ vec3 applyPhong(vec3 baseColor)
     }
 
 	// return result;
-    return result * baseColor;
+    return result;
 }
 
 void main()
@@ -90,6 +95,8 @@ void main()
     if (!u_useLighting)
     {
 		// FragColor = vec4(normalize(Normal) * 0.5 + 0.5, 1.0);
+		// FragColor = vec4(normalize(lights[0].position - FragPos) * 0.5 + 0.5, 1.0);
+
         FragColor = vec4(baseColor, 1.0);
         return;
     }

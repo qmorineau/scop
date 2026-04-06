@@ -58,6 +58,7 @@ class MeshBuilder
 
 		int findDuplicateNormal(vec3& v);
 		void createNormals();
+		void createSmoothNormals();
 		void createUvs();
 
 };

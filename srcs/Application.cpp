@@ -8,9 +8,10 @@ Application::Application(char *file) :
 	_isRotAxes(0., 1., 0.),
 	_rotations(vec3(0.01, 0.01, 0.01))
 {
-	_lights.push_back(new Light(vec3(5,5,5), vec3(1,0,0), 2));
-	_lights.push_back(new Light(vec3(-5,5,5), vec3(0,1,0), 2));
-	_lights.push_back(new Light(vec3(-5,-5,5), vec3(0,0,1), 2));
+	_lights.push_back(new Light(vec3(5,5,0), vec3(1,0,0), 0.5));
+	_lights.push_back(new Light(vec3(-5,5,0), vec3(0,1,0), 0.5));
+	_lights.push_back(new Light(vec3(0,-4,0), vec3(0,0,1), 0.5));
+	// _lights.push_back(new Light(vec3(5,-5,5), vec3(1,1,0), 0.5));
 }
 		
 
@@ -119,13 +120,13 @@ void Application::renderLoop()
 void Application::processInput()
 {
 	if (_keys[GLFW_KEY_W])
-		_camera.ProcessKeyboard(FORWARD, _deltaTime);
+		_camera.processKeyboard(FORWARD, _deltaTime);
 	if (_keys[GLFW_KEY_S])
-		_camera.ProcessKeyboard(BACKWARD, _deltaTime);
+		_camera.processKeyboard(BACKWARD, _deltaTime);
 	if (_keys[GLFW_KEY_A])
-		_camera.ProcessKeyboard(LEFT, _deltaTime);
+		_camera.processKeyboard(LEFT, _deltaTime);
 	if (_keys[GLFW_KEY_D])
-		_camera.ProcessKeyboard(RIGHT, _deltaTime);
+		_camera.processKeyboard(RIGHT, _deltaTime);
 	if (_editLight)
 	{
 		if (_keys[GLFW_KEY_0])
@@ -226,6 +227,8 @@ void Application::keyCallback(GLFWwindow* window, int key, int scancode, int act
 					app->_green = false;
 					app->_blue = false;
 				}
+				else
+					app->_camera.resetPosition();
 				break;
 			case GLFW_KEY_G:
 				if (app->_editLight)

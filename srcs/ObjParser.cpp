@@ -28,6 +28,7 @@ const std::unordered_map<std::string, ObjParser::Handler> ObjParser::handlers =
 	{"usemtl", &ObjParser::useMtl}, // use material for the face that comes
 	{"s", &ObjParser::parseSmoothing}, // on/off smoothing, flat rendering or not
 	// {"g", &ObjParser::} // group faces togeter (wheel, door etc.. for a car)
+	{"l", &ObjParser::createLine}
 };
 
 // Parser
@@ -142,7 +143,34 @@ void ObjParser::createFace(std::istringstream& iss)
 		std::vector<MeshBuilder::Face> faces;
 		_rawData.at(_rawData.size() - 1).faces.try_emplace(_actualMaterial, faces);
 	}
+	try
+	{
+		_rawData.at(_rawData.size() - 1).faces.at(_actualMaterial);
+	}
+	catch(const std::exception& e)
+	{
+		std::vector<MeshBuilder::Face> faces;
+		_rawData.at(_rawData.size() - 1).faces.try_emplace(_actualMaterial, faces);
+	}
 	_rawData.at(_rawData.size() - 1).faces.at(_actualMaterial).push_back(face);
+};
+
+void ObjParser::createLine(std::istringstream& iss)
+{
+	(void) iss;
+	/* std::string word;
+	MeshBuilder::Face face;
+
+	while (iss >> word)
+		face.vertices.push_back(parseVertex(word));
+	if (!_rawData.size())
+		_rawData.push_back(ObjectData());
+	if (!_rawData.at(_rawData.size() - 1).faces.size())
+	{
+		std::vector<MeshBuilder::Face> faces;
+		_rawData.at(_rawData.size() - 1).faces.try_emplace(_actualMaterial, faces);
+	}
+	_rawData.at(_rawData.size() - 1).faces.at(_actualMaterial).push_back(face); */
 };
 
 void ObjParser::parseMtlFile(std::istringstream& iss)
@@ -162,13 +190,14 @@ void ObjParser::parseMtlFile(std::istringstream& iss)
 
 void ObjParser::parseSmoothing(std::istringstream& iss)
 {
-	std::string name;
-	if (!(iss >> name))
+	std::string value;
+	if (!(iss >> value))
 		throw ParseError("ObjParser: 's' expect 1 string value");
 	std::string extra;
 	if (iss >> extra)
 		throw ParseError("ObjParser: Unexpected extra value: " + extra);
-	if (name != "on" && name != "off")
+
+	if (value != "off" && value != "1")
 		throw ParseError("ObjParser: 's' expect 'on' / 'off' value");
 	// do something from on or off
 }

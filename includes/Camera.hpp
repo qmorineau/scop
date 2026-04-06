@@ -15,143 +15,58 @@ enum Camera_Movement {
     RIGHT
 };
 
-// Default camera values
-const float YAW         = -90.0f;
-const float PITCH       =  0.0f;
-const float SPEED       =  2.5f;
-const float SENSITIVITY =  0.1f;
-const float ZOOM        =  45.0f;
-
+const vec3 basePosition(0.0f, 0.0f, 2.0f);
 
 // An abstract camera class that processes input and calculates the corresponding Euler Angles, Vectors and Matrices for use in OpenGL
 class Camera
 {
 	public:
-		// camera Attributes
-		vec3 Position;
-		vec3 Front;
-		vec3 Up;
-		vec3 Right;
-		vec3 WorldUp;
-		// euler Angles
-		float Yaw;
-		float Pitch;
-		// camera options
-		float MovementSpeed;
-		float MouseSensitivity;
-		float Zoom;
-		float aspectRatio;
 
-		int _width;
-		int _height;
-		bool firstMouse = true;
-		float lastX = 0.0f;
-		float lastY = 0.0f;
-
-		// constructor with vectors
-		Camera(int width = 800, int height = 600, vec3 position = vec3(0.0f, 0.0f, 2.0f), vec3 up = vec3(0.0f, 1.0f, 0.0f), float yaw = YAW, float pitch = PITCH) : Front(vec3(0.0f, 0.0f, -1.0f)), MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY), Zoom(ZOOM), _width(width), _height(height)
-		{
-			aspectRatio = static_cast<float>(_width) / static_cast<float>(_height);
-			Position = position;
-			WorldUp = up;
-			Yaw = yaw;
-			Pitch = pitch;
-			updateCameraVectors();
-		}
-		// constructor with scalar values
-		Camera(float posX, float posY, float posZ, float upX, float upY, float upZ, float yaw, float pitch) : Front(vec3(0.0f, 0.0f, -1.0f)), MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY), Zoom(ZOOM)
-		{
-			Position = vec3(posX, posY, posZ);
-			WorldUp = vec3(upX, upY, upZ);
-			Yaw = yaw;
-			Pitch = pitch;
-			updateCameraVectors();
-		}
+		Camera(int width = 800, 
+			int height = 600, 
+			vec3 position = basePosition, 
+			vec3 up = vec3(0.0f, 1.0f, 0.0f), 
+			float yaw = -90.0f, 
+			float pitch = 0.0f);
 
 		// returns the view matrix calculated using Euler Angles and the LookAt Matrix
-		mat4 GetViewMatrix()
-		{
-			return mat4::lookAt(Position, Position + Front, Up);
-		}
-
-		void resize(int width, int height)
-		{
-			_width = width;
-			_height = height;
-			aspectRatio = static_cast<float>(_width) / static_cast<float>(_height);
-		}
-
+		mat4 GetViewMatrix() {return mat4::lookAt(_position, _position + _front, _up);}
+		void resize(int width, int height);
 		// processes input received from any keyboard-like input system. Accepts input parameter in the form of camera defined ENUM (to abstract it from windowing systems)
-		void ProcessKeyboard(Camera_Movement direction, float deltaTime)
-		{
-			float velocity = MovementSpeed * deltaTime;
-			if (direction == FORWARD)
-				Position += Front * velocity;
-			if (direction == BACKWARD)
-				Position -= Front * velocity;
-			if (direction == LEFT)
-				Position -= Right * velocity;
-			if (direction == RIGHT)
-				Position += Right * velocity;
-		}
-
-		void onMouseMove(double xposIn, double yposIn)
-		{
-			float xpos = static_cast<float>(xposIn);
-			float ypos = static_cast<float>(yposIn);
-
-			if (firstMouse)
-			{
-				lastX = xpos;
-				lastY = ypos;
-				firstMouse = false;
-			}
-
-			float xoffset = xpos - lastX;
-			float yoffset = lastY - ypos; // reversed since y-coordinates go from bottom to top
-			lastX = xpos;
-			lastY = ypos;
-
-			float sensitivity = 0.1f; // change this value to your liking
-			xoffset *= sensitivity;
-			yoffset *= sensitivity;
-
-			Yaw += xoffset;
-			Pitch += yoffset;
-
-			// make sure that when pitch is out of bounds, screen doesn't get flipped
-			if (Pitch > 89.0f)
-				Pitch = 89.0f;
-			if (Pitch < -89.0f)
-				Pitch = -89.0f;
-
-			updateCameraVectors();
-		}
-
-		void onMouseScroll(double xoffset, double yoffset)
-		{
-			(void) xoffset;
-			Zoom -= (float)yoffset;
-			if (Zoom < 1.0f)
-				Zoom = 1.0f;
-			if (Zoom > 45.0f)
-				Zoom = 45.0f;
-		}
-
+		void processKeyboard(Camera_Movement direction, float deltaTime);
+		void onMouseMove(double xposIn, double yposIn);
+		void onMouseScroll(double xoffset, double yoffset);
+		void resetPosition();
+		// getter
+		float getZoom() {return _zoom;};
+		float getAspectRatio() {return _aspectRatio;};
+		vec3  getPosition() {return _position;};
 	private:
+		// camera Attributes
+		vec3 		_position;
+		vec3 		_front;
+		vec3 		_up;
+		vec3 		_right;
+		vec3 		_worldUp;
+		// euler Angles
+		float 		_yaw;
+		float 		_pitch;
+		// camera options
+		float 		_movementSpeed = 2.5f;
+		float 		_mouseSensitivity = 0.1f;
+		float 		_zoom = 45.0f;
+		float 		_aspectRatio;
+
+		int 		_width;
+		int 		_height;
+		bool 		_firstMouse = true;
+		float 		_lastX = 0.0f;
+		float 		_lastY = 0.0f;
+		const float _speed = 2.5f;
+		const float _sensitivity = 0.1f;
+
 		// calculates the front vector from the Camera's (updated) Euler Angles
-		void updateCameraVectors()
-		{
-			// calculate the new Front vector
-			vec3 front;
-			front.x = cos(math::radians(Yaw)) * cos(math::radians(Pitch));
-			front.y = sin(math::radians(Pitch));
-			front.z = sin(math::radians(Yaw)) * cos(math::radians(Pitch));
-			Front = math::normalize(front);
-			// also re-calculate the Right and Up vector
-			Right = math::normalize(math::cross(Front, WorldUp));  // normalize the vectors, because their length gets closer to 0 the more you look up or down which results in slower movement.
-			Up    = math::normalize(math::cross(Right, Front));
-		}
+		void updateCameraVectors();
 };
 
 #endif

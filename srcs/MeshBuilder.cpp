@@ -12,9 +12,13 @@ MeshBuilder::MeshBuilder(const std::vector<vec3>& p, const std::vector<vec3>& n,
 
 Mesh MeshBuilder::build(const std::unordered_map<std::string, Material>& materials)
 {
-	if (_faces.empty())
-		throw EmptyMesh("");
-	createNormals();
+	
+	// if (_faces.empty())
+	// 	throw EmptyMesh(""); // ICI to readd after adding the line of the model
+	// if (smooth)
+
+	// else
+		createNormals();
 	createUvs();
 	convertToGpuData(materials);
 	return _mesh;
@@ -30,7 +34,7 @@ void MeshBuilder::convertToGpuData(const std::unordered_map<std::string, Materia
 		{
 			std::vector<VertexIndex> &v = face.vertices;
 			for (unsigned int j = 1; j < v.size() - 1; j++)
-				addTriangle(v[0], v[j], v[j + 1], faceColors[i % 4], mat); // choose good mesh
+				addTriangle(v[0], v[j + 1], v[j], faceColors[i % 4], mat); // choose good mesh
 			i++;
 		}
 	}
@@ -80,7 +84,8 @@ void MeshBuilder::createNormals()
 			const vec3& p1 = _positions[face.vertices[1].vertex];
 			const vec3& p2 = _positions[face.vertices[2].vertex];
 
-			vec3 n = math::normalize(math::cross(p2 - p0, p1 - p0));
+			vec3 n = math::normalize(math::cross(p1 - p0, p2 - p0));
+			// n = vec3(-n.x, -n.y, -n.z);
 
 			int id = -1;
 			for (size_t i = 0; i < _allNormals.size(); i++)
@@ -100,14 +105,70 @@ void MeshBuilder::createNormals()
 	}
 }
 
+void MeshBuilder::createSmoothNormals()
+{
+    // accumulate face normals into each vertex position
+    std::unordered_map<int, vec3> vertexNormalAccum;
+    std::unordered_map<int, int>  vertexNormalCount;
+
+    for (auto& [material, faces] : _faces)
+    {
+        for (Face& face : faces)
+        {
+            const vec3& p0 = _positions[face.vertices[0].vertex];
+            const vec3& p1 = _positions[face.vertices[1].vertex];
+            const vec3& p2 = _positions[face.vertices[2].vertex];
+
+            vec3 n = math::normalize(math::cross(p2 - p0, p1 - p0));
+
+            for (auto& v : face.vertices)
+            {
+                vertexNormalAccum[v.vertex] += n;
+                vertexNormalCount[v.vertex]++;
+            }
+        }
+    }
+
+    // normalize accumulated normals and store them
+    for (auto& [material, faces] : _faces)
+    {
+        for (Face& face : faces)
+        {
+            for (auto& v : face.vertices)
+            {
+                vec3 smoothNormal = math::normalize(
+                    vertexNormalAccum[v.vertex]
+                );
+
+                // find or add this normal in _allNormals
+                int id = -1;
+                for (size_t i = 0; i < _allNormals.size(); i++)
+                {
+                    if (_allNormals[i] == smoothNormal)
+                    {
+                        id = static_cast<int>(i);
+                        break;
+                    }
+                }
+                if (id == -1)
+                {
+                    id = static_cast<int>(_allNormals.size());
+                    _allNormals.push_back(smoothNormal);
+                }
+                v.normal = id;
+            }
+        }
+    }
+}
+
 void MeshBuilder::createUvs()
 {
 	for (auto& [material, faces] : _faces)
 	{
 		for (Face& face : faces)
 		{
-			// if (!face.vertices.empty() && face.vertices[0].uv != -1)
-			// 	continue;
+			if (!face.vertices.empty() && face.vertices[0].uv != -1)
+				continue;
 
 			for (auto& v : face.vertices)
 			{

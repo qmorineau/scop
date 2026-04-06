@@ -54,6 +54,7 @@ class ObjParser
 		void parseVertexNormal(std::istringstream&);
 		void parseObjectName(std::istringstream&);
 		void createFace(std::istringstream&);
+		void createLine(std::istringstream&);
 		void parseMtlFile(std::istringstream&);
 		void parseSmoothing(std::istringstream&);
 		void useMtl(std::istringstream&);

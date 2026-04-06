@@ -38,9 +38,9 @@ class MtlParser
 		void parseTextureFile(std::istringstream& iss);
 		void parseIlluminationModel(std::istringstream& iss);
 	private:
-		std::string							_path;
-		std::ifstream						_file;
-		std::string							_actualMaterial;
+		std::string									_path;
+		std::ifstream								_file;
+		std::string									_actualMaterial;
 		std::unordered_map<std::string, Material>	_materials;
 };
 
