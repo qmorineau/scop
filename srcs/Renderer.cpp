@@ -57,17 +57,17 @@ void Renderer::draw(Camera& camera, vec3& angle, std::vector<Light*> lights)
 	// Configure Rendering Mode
 	configureMode();
 
-	// if (true) // to change
-	// {
-	// 	_phong.setInt("lightCount", lights.size());
-	// 	for (size_t i = 0; i < lights.size(); i++)
-	// 	{
-	// 		_phong.setVec3("lights[" + std::to_string(i) + "].position", lights[i]->getPosition());
-	// 		_phong.setVec3("lights[" + std::to_string(i) + "].color", lights[i]->getColor());
-	// 		_phong.setFloat("lights[" + std::to_string(i) + "].intensity", lights[i]->getIntensity());
-	// 		_phong.setBool("lights[" + std::to_string(i) + "].enabled", true);
-	// 	}
-	// }
+	if (true) // to change
+	{
+		_phong.setInt("lightCount", lights.size());
+		for (size_t i = 0; i < lights.size(); i++)
+		{
+			_phong.setVec3("lights[" + std::to_string(i) + "].position", lights[i]->getPosition());
+			_phong.setVec3("lights[" + std::to_string(i) + "].color", lights[i]->getColor());
+			_phong.setFloat("lights[" + std::to_string(i) + "].intensity", lights[i]->getIntensity());
+			_phong.setBool("lights[" + std::to_string(i) + "].enabled", true);
+		}
+	}
 	(void) lights;
 	_phong.setBool("u_useTexture", true);
 	_phong.setBool("u_useLighting", false);   // for testing
