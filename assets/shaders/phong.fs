@@ -5,6 +5,7 @@ out vec4 FragColor;
 in vec3 FragPos;
 in vec3 Normal;
 in vec2 TexCoords;
+flat in vec3 FaceColor;
 
 #define MAX_LIGHTS 8
 
@@ -40,7 +41,6 @@ uniform vec3 u_overrideColorValue;
 vec3 applyPhong(vec3 baseColor)
 {
     vec3 norm = normalize(Normal);
-	// vec3 viewDir = normalize(FragPos - viewPos);
     vec3 viewDir = normalize(viewPos - FragPos);
 
     vec3 result = vec3(0.0);
@@ -83,13 +83,12 @@ void main()
 	if (u_useTexture && material.hasTexture)
 	{
 		vec3 texColor = texture(material_mapKd, TexCoords).rgb;
-		if (texColor != vec3(0.0))  // crude but works
-			baseColor *= texColor;
+		baseColor *= texColor;
 	}
 
     // Color override mode
     if (u_overrideColor)
-        baseColor = u_overrideColorValue;
+        baseColor = FaceColor;
 
     // Lighting toggle
     if (!u_useLighting)
@@ -102,5 +101,7 @@ void main()
     }
 
     vec3 finalColor = applyPhong(baseColor);
-    FragColor = vec4(finalColor, 1.0);
+	// FragColor = vec4(TexCoords, 0.0, 1.0);
+	FragColor = vec4(texture(material_mapKd, TexCoords).rgb, 1.0);
+    // FragColor = vec4(finalColor, 1.0);
 }

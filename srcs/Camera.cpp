@@ -31,10 +31,14 @@ void Camera::moveSphereMode(CameraMovement dir, float deltaTime)
 {
 	float angle = _movementSpeed * deltaTime;
 
-    if (dir == LEFT)      _yaw   -= angle;
-    if (dir == RIGHT)     _yaw   += angle;
-    if (dir == FORWARD)   _pitch += angle;
-    if (dir == BACKWARD)  _pitch -= angle;
+    if (dir == LEFT)
+		_yaw -= angle;
+    if (dir == RIGHT)
+		_yaw += angle;
+    if (dir == FORWARD)
+		_pitch += angle;
+    if (dir == BACKWARD)
+		_pitch -= angle;
 
     // clamp pitch
 	float clamp = math::radians(89.f);

@@ -6,7 +6,7 @@ layout (location = 3) in vec3 aFaceColor;
 
 out vec3 FragPos;
 out vec3 Normal;
-out vec3 FaceColor;
+flat out vec3 FaceColor;
 out vec2 TexCoords;
 
 uniform mat4 model;

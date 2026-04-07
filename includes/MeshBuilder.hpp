@@ -7,14 +7,6 @@
 #include "Mesh.hpp"
 #include "Types.hpp"
 
-const vec3 faceColors[4] =
-{
-	vec3(0.0f, 0.0f, 0.0f),
-	vec3(0.25f, 0.25f, 0.25f),
-	vec3(0.5f, 0.5f, 0.5f),
-	vec3(0.75f, 0.75f, 0.75f)
-};
-
 class MeshBuilder
 {
 	public:
@@ -53,7 +45,7 @@ class MeshBuilder
 		std::unordered_map<std::string, std::vector<Face>>	_faces;
 		Mesh							 					_mesh;
 
-		void addTriangle(VertexIndex&, VertexIndex&, VertexIndex&, vec3, const Material&);
+		void addTriangle(VertexIndex&, VertexIndex&, VertexIndex&, const Material&);
 		void convertToGpuData(const std::unordered_map<std::string, Material>&);
 
 		int findDuplicateNormal(vec3& v);

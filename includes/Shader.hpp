@@ -9,6 +9,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#include "TextureLoader.hpp"
 #include "Matrix4.hpp"
 
 class Shader
@@ -107,6 +108,11 @@ public:
     { 
         glUniform3f(glGetUniformLocation(ID, name.c_str()), x, y, z); 
     }
+	void linkTexture(int i)
+	{
+		setInt("material_mapKd", i);
+	}
+
 private:
     // utility function for checking shader compilation/linking errors.
     // ------------------------------------------------------------------------

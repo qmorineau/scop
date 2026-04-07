@@ -43,12 +43,13 @@ struct Material
 		shader.setVec3("material.Ka", _Ka);
 		shader.setVec3("material.Kd", _Kd);
 		shader.setVec3("material.Ks", _Ks);
-		shader.setBool("material.hasTexture", _hasTexture);
+		// shader.setBool("material.hasTexture", _hasTexture);
+		shader.setBool("material.hasTexture", true);
 		if (_hasTexture)
 		{
-			// glActiveTexture(GL_TEXTURE0);
-			// glBindTexture(GL_TEXTURE_2D, textureID);
-			// shader.setInt("material_mapKd", 0);
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_2D, 1);
+			shader.setInt("material_mapKd", 1);
 		}
 		// shader.setVec3("material.Ke", _Ke);
 		// shader.setFloat("material.Ni", _Ni);

@@ -34,13 +34,13 @@ void MeshBuilder::convertToGpuData(const std::unordered_map<std::string, Materia
 		{
 			std::vector<VertexIndex> &v = face.vertices;
 			for (unsigned int j = 1; j < v.size() - 1; j++)
-				addTriangle(v[0], v[j + 1], v[j], faceColors[i % 4], mat); // choose good mesh
+				addTriangle(v[0], v[j + 1], v[j], mat); // choose good mesh
 			i++;
 		}
 	}
 }
 
-void MeshBuilder::addTriangle(VertexIndex& a, VertexIndex& b, VertexIndex& c, vec3 color, const Material& mat)
+void MeshBuilder::addTriangle(VertexIndex& a, VertexIndex& b, VertexIndex& c, const Material& mat)
 {
 	VertexIndex index[] = {a, b, c};
 
@@ -49,7 +49,7 @@ void MeshBuilder::addTriangle(VertexIndex& a, VertexIndex& b, VertexIndex& c, ve
 		const vec3& pos = _positions[index[i].vertex];
 		const vec3& norm = _allNormals[index[i].normal];
 		const vec2& uv = _allUvs[index[i].uv];
-		Vertex v = Vertex(pos, norm, uv, color);
+		Vertex v = Vertex(pos, norm, uv, vec3((float)std::rand() / RAND_MAX, (float)std::rand() / RAND_MAX,(float) std::rand() / RAND_MAX));
 		_mesh.addVertex(v, &mat);
 	}
 }
@@ -85,7 +85,6 @@ void MeshBuilder::createNormals()
 			const vec3& p2 = _positions[face.vertices[2].vertex];
 
 			vec3 n = math::normalize(math::cross(p1 - p0, p2 - p0));
-			// n = vec3(-n.x, -n.y, -n.z);
 
 			int id = -1;
 			for (size_t i = 0; i < _allNormals.size(); i++)
@@ -161,32 +160,59 @@ void MeshBuilder::createSmoothNormals()
     }
 }
 
+// void MeshBuilder::createUvs()
+// {
+// 	for (auto& [material, faces] : _faces)
+// 	{
+// 		for (Face& face : faces)
+// 		{
+// 			if (!face.vertices.empty() && face.vertices[0].uv != -1)
+// 				continue;
+
+// 			for (auto& v : face.vertices)
+// 			{
+// 				vec2 uv;
+// 				float mx = std::abs(_allNormals[v.normal].x);
+// 				float my = std::abs(_allNormals[v.normal].y);
+// 				float mz = std::abs(_allNormals[v.normal].z);
+
+// 				if (mx >= my && mx >= mz)
+// 					uv = vec2(mz * 5, my * 5);
+// 				else if (my >= mz && my >= mx)
+// 					uv = vec2(mx * 5 , mz* 5);
+// 				else
+// 					uv = vec2(mx* 5, my* 5);
+
+// 				_allUvs.push_back(uv);
+// 				v.uv = static_cast<int>(_allUvs.size() - 1);
+// 				std::cerr << _allUvs[v.uv] << std::endl;
+// 			}
+// 		}
+// 	}
+// }
+
 void MeshBuilder::createUvs()
 {
-	for (auto& [material, faces] : _faces)
-	{
-		for (Face& face : faces)
-		{
-			if (!face.vertices.empty() && face.vertices[0].uv != -1)
-				continue;
+    _allUvs.clear();
 
-			for (auto& v : face.vertices)
-			{
-				vec2 uv;
-				float mx = std::abs(_allNormals[v.normal].x);
-				float my = std::abs(_allNormals[v.normal].y);
-				float mz = std::abs(_allNormals[v.normal].z);
+    for (auto& [material, faces] : _faces)
+    {
+        for (Face& face : faces)
+        {
+            for (auto& v : face.vertices)
+            {
+                const vec3& p = _positions[v.vertex];
 
-				if (mx >= my && mx >= mz)
-					uv = vec2(mz * 5, my * 5);
-				if (my >= mz && my >= mx)
-					uv = vec2(mx * 5 , mz* 5);
-				else
-					uv = vec2(mx* 5, my* 5);
+                // Spherical projection
+                float u = 0.5f + atan2(p.z, p.x) / (2.0f * M_PI);
+                float vcoord = 0.5f - asin(p.y / std::sqrt(p.x * p.x + p.y * p.y + p.z * p.z)) / M_PI;
 
-				_allUvs.push_back(uv);
-				v.uv = _uvs.size();
-			}
-		}
-	}
+                vec2 uv(u, vcoord);
+
+                // Store and index
+                _allUvs.push_back(uv);
+                v.uv = static_cast<int>(_allUvs.size() - 1);
+            }
+        }
+    }
 }

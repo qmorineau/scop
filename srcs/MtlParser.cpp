@@ -13,6 +13,7 @@ static const std::unordered_map<std::string, Handler> handlers =
 	{"d", &MtlParser::parseTransparency},
 	// {"d", &MtlParser::parseTransparency}, 
 	{"map_Kd", &MtlParser::parseTextureFile},
+	{"map_d", &MtlParser::parseTextureFile},
 	{"illum", &MtlParser::parseIlluminationModel}
 };
 
