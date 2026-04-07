@@ -22,7 +22,7 @@ enum class RenderMode
 class Renderer
 {
 	public:
-		Renderer(std::vector<Mesh>&);
+		Renderer(Mesh&);
 		~Renderer();
 
 		void beginFrame();
@@ -32,7 +32,6 @@ class Renderer
 		void test();
 	private:
 		Shader				_phong;
-		// Shader			_texture;
 		RenderMode			_mode;
 		bool				_wireframe = false;
 		std::vector<GLMesh>	_glMeshes;

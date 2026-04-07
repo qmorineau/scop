@@ -13,6 +13,25 @@ struct Vector2
 	{
 		return (x == other.x && y == other.y);
 	}
+
+
+	// To use Hash Table w/ vec2
+	struct Vec2Hash
+	{
+		std::size_t operator()(const Vector2& v) const noexcept {
+			std::size_t h1 = std::hash<float>{}(v.x);
+			std::size_t h2 = std::hash<float>{}(v.y);
+			return h1 ^ (h2 << 1);
+		}
+	};
+
+	struct Vec2Eq
+	{
+		bool operator()(const Vector2& a, const Vector2& b) const noexcept {
+			return a.x == b.x && a.y == b.y;
+		}
+	};
+
 };
 
 inline std::ostream& operator<<(std::ostream& out_stream, const Vector2& vec)

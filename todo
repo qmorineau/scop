@@ -30,5 +30,5 @@ if .obj doens4t exist / noo perm
 wrong data send with parsing, manage error(don't run)
 vec3 with not 3 params (more/less) => stop
 parseVertex error management ? (more /)
-faire des subsmesh pour les groupings etc.. actuellement 1 Mesh = les vertices qui utilise x materiel
-ajouter implementation smoothing from the objparser (parsed but never store/used)
+
+never change hasTexture / hasNormals if the face have it

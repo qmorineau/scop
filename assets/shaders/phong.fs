@@ -69,8 +69,6 @@ vec3 applyPhong(vec3 baseColor)
 
         result += ambient + diffuse + specular;
     }
-
-	// return result;
     return result;
 }
 

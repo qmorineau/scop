@@ -1,12 +1,35 @@
 #include "ObjParser.hpp"
 
+// Helpers
+
+static int getIndex(const std::string& name,
+	std::vector<std::string>& names,
+	std::unordered_map<std::string, int>& map)
+{
+    auto it = map.find(name);
+    if (it != map.end())
+        return it->second;
+
+    int index = names.size();
+    names.push_back(name);
+    map[name] = index;
+    return index;
+}
+
+static bool toInt(const std::string& s, int& out) {
+    std::stringstream ss(s);
+    ss >> out;
+    return !ss.fail() && ss.eof();
+}
+
 // Constructor
 ObjParser::ObjParser(std::string file) :
 	_pathFile(file),
-	_file(file),
-	_actualMaterial("__default_42scop_material")
+	_file(file)
 {
-	_materials.try_emplace("__default_42scop_material", Material(_actualMaterial));
+	std::string defaultMaterialName("__default_42scop_material");
+	_materials.try_emplace("__default_42scop_material", Material(defaultMaterialName));
+	materialNames.push_back(defaultMaterialName);
 	if (!_file.is_open())
 		throw ParseError("ObjParser: Can't open \"" + file + "\"");
 	parse();
@@ -18,17 +41,17 @@ ObjParser::ObjParser(std::string file) :
 // Dispatch Table
 const std::unordered_map<std::string, ObjParser::Handler> ObjParser::handlers =
 {
-	{"v", &ObjParser::parsePosition},
-	{"vt", &ObjParser::parseUvs},
-	{"vn", &ObjParser::parseVertexNormal},
-	// {"vp", &ObjParser::}, // ne les fait pas, complex courbe etc...
-	{"f", &ObjParser::createFace},
-	{"mtllib", &ObjParser::parseMtlFile},
-	{"o", &ObjParser::parseObjectName}, // object name
-	{"usemtl", &ObjParser::useMtl}, // use material for the face that comes
-	{"s", &ObjParser::parseSmoothing}, // on/off smoothing, flat rendering or not
-	// {"g", &ObjParser::} // group faces togeter (wheel, door etc.. for a car)
-	{"l", &ObjParser::createLine}
+	{"v", &ObjParser::parsePosition},	// new vertex
+	{"vt", &ObjParser::parseUvs},	// new Uvs / Vertex Texture
+	{"vn", &ObjParser::parseVertexNormal}, // new Vertex Normal
+	{"vp", &ObjParser::parseParameterSpaceVertex}, // New Space Vertex Parameter
+	{"f", &ObjParser::createFace},	// new Face
+	{"mtllib", &ObjParser::parseMtlFile}, // new Material File
+	{"o", &ObjParser::parseObjectName}, // change Object Name State
+	{"usemtl", &ObjParser::useMtl}, // change Material State
+	{"s", &ObjParser::parseSmoothing}, // define Smoothing Group (average normal for each faces)
+	{"g", &ObjParser::parseGroupName}, // change Group Name State
+	{"l", &ObjParser::createLine} // define new Lines
 };
 
 // Parser
@@ -51,20 +74,23 @@ void ObjParser::parse()
 			(this->*h)(iss);
 		}
 	}
+	std::cout << "Parsing of '"<<_pathFile << "' is done" << std::endl;
 }
 
 void ObjParser::build()
 {
-	for (auto& object : _rawData)
+	size_t facesNumber = 0;
+	for (auto& [material, faces] : _rawData.faces)
+		facesNumber += faces.size();
+	std::cerr << "faces = " << facesNumber << std::endl;
+	MeshBuilder builder(_positions, _positionsIdx, _normals, _normalsIdx, _uvs, _uvsIdx, facesNumber);
+	for (auto& [material, faces] : _rawData.faces)
 	{
-		MeshBuilder builder(_positions, _normals, _uvs, object.name);
-		for (auto& [material, faces] : object.faces)
-		{
-			for (auto& face : faces)
-				builder.addFace(face, _materials.at(material));
-		}
-		_meshes.push_back(builder.build(_materials));
+		for (auto& face : faces)
+			builder.addFace(face, _materials.at(material));
 	}
+	_mesh = builder.build(_materials);
+	std::cout << "Build done" << std::endl;
 };
 
 void ObjParser::parsePosition(std::istringstream& iss)
@@ -108,9 +134,15 @@ void ObjParser::parseObjectName(std::istringstream& iss)
 	std::string extra;
 	if (iss >> extra)
 		throw ParseError("ObjParser: Unexpected extra value: " + extra);
-	ObjectData newObj;
-	newObj.name = name;
-	_rawData.push_back(newObj);
+	idxActualObject = getIndex(name, objectNames, objectIndices);
+}
+
+void ObjParser::parseGroupName(std::istringstream& iss)
+{
+	std::string name;
+	idxActualGroups.clear();
+	while (iss >> name)
+		idxActualGroups.push_back(getIndex(name, groupNames, groupIndices));
 }
 
 MeshBuilder::VertexIndex ObjParser::parseVertex(const std::string& indices)
@@ -129,55 +161,50 @@ MeshBuilder::VertexIndex ObjParser::parseVertex(const std::string& indices)
 	return (index);
 }
 
+void ObjParser::parseParameterSpaceVertex(std::istringstream& iss)
+{
+	(void) iss;
+	std::cerr << "ObjParser: 'vp' key not yet supported" << std::endl;
+}
+
 void ObjParser::createFace(std::istringstream& iss)
 {
 	std::string word;
-	MeshBuilder::Face face;
+	MeshBuilder::Face face(idxActualObject, idxActualMaterial, idxActualGroups, actualSmoothingGroup);
 
 	while (iss >> word)
 		face.vertices.push_back(parseVertex(word));
-	if (!_rawData.size())
-		_rawData.push_back(ObjectData());
-	if (!_rawData.at(_rawData.size() - 1).faces.size())
+	std::string materialName = materialNames[idxActualMaterial];
+	if (!_rawData.faces.size())
 	{
 		std::vector<MeshBuilder::Face> faces;
-		_rawData.at(_rawData.size() - 1).faces.try_emplace(_actualMaterial, faces);
+		_rawData.faces.try_emplace(materialName, faces);
 	}
 	try
 	{
-		_rawData.at(_rawData.size() - 1).faces.at(_actualMaterial);
+		_rawData.faces.at(materialName);
 	}
 	catch(const std::exception& e)
 	{
 		std::vector<MeshBuilder::Face> faces;
-		_rawData.at(_rawData.size() - 1).faces.try_emplace(_actualMaterial, faces);
+		_rawData.faces.try_emplace(materialName, faces);
 	}
-	_rawData.at(_rawData.size() - 1).faces.at(_actualMaterial).push_back(face);
+	_rawData.faces.at(materialName).push_back(face);
 };
 
 void ObjParser::createLine(std::istringstream& iss)
 {
 	(void) iss;
-	/* std::string word;
-	MeshBuilder::Face face;
-
-	while (iss >> word)
-		face.vertices.push_back(parseVertex(word));
-	if (!_rawData.size())
-		_rawData.push_back(ObjectData());
-	if (!_rawData.at(_rawData.size() - 1).faces.size())
-	{
-		std::vector<MeshBuilder::Face> faces;
-		_rawData.at(_rawData.size() - 1).faces.try_emplace(_actualMaterial, faces);
-	}
-	_rawData.at(_rawData.size() - 1).faces.at(_actualMaterial).push_back(face); */
 };
 
 void ObjParser::parseMtlFile(std::istringstream& iss)
 {
 	std::string path = _pathFile;
-	path = path.substr(0, path.find_last_of('/') + 1); // safe ????
-
+	size_t pos = path.find_last_of("/\\");
+	if (pos == std::string::npos)
+		path = "";
+	else
+		path = path.substr(0, pos + 1);
 	std::string word;
 	while (iss >> word)
 	{
@@ -196,10 +223,15 @@ void ObjParser::parseSmoothing(std::istringstream& iss)
 	std::string extra;
 	if (iss >> extra)
 		throw ParseError("ObjParser: Unexpected extra value: " + extra);
-
-	if (value != "off" && value != "1")
-		throw ParseError("ObjParser: 's' expect 'on' / 'off' value");
-	// do something from on or off
+	if (value != "off")
+	{
+		int intValue;
+		if (!toInt(value, intValue))
+			throw ParseError("ObjParser: 's' expect 'off' or 'int value' ");
+		if (intValue < 0)
+			throw ParseError("ObjParser: 's' expect positive int value");
+		actualSmoothingGroup = intValue;
+	}
 }
 
 
@@ -212,7 +244,7 @@ void ObjParser::useMtl(std::istringstream& iss)
 	std::string extra;
 	if (iss >> extra)
 		throw ParseError("ObjParser: Unexpected extra value: " + extra);
-	_actualMaterial = word;
+	idxActualMaterial = getIndex(word, materialNames, materialIndices);
 }
 
 void ObjParser::centerPositions()
@@ -248,18 +280,14 @@ void ObjParser::normalizePositions()
 
 void ObjParser::printRawData()
 {
-	for (auto& object : _rawData)
+	for (auto& [material, faces] : _rawData.faces)
 	{
-		std::cerr << "Object = " << object.name << std::endl;
-		for (auto& [material, faces] : object.faces)
+		std::cerr << "Material = " << material << std::endl;
+		for (auto& face : faces)
 		{
-			std::cerr << "Material = " << material << std::endl;
-			for (auto& face : faces)
-			{
-				std::cerr << "has normal = " << face.hasNormal << ", has texture = " << face.hasTextCoord << std::endl;
-				for (auto& v : face.vertices)
-					std::cerr << v.vertex << "/" << v.normal << "/" << v.uv << std::endl; 
-			}
+			std::cerr << "has normal = " << face.hasNormal << ", has texture = " << face.hasTextCoord << std::endl;
+			for (auto& v : face.vertices)
+				std::cerr << v.vertex << "/" << v.normal << "/" << v.uv << std::endl; 
 		}
 	}
 }

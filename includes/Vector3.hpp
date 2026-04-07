@@ -86,6 +86,22 @@ struct Vector3
 			std::max(a.z, b.z)
 		);
 	}
+
+	// To use Hash Table w/ vec3
+	struct Vec3Hash {
+		std::size_t operator()(const Vector3& v) const noexcept {
+			std::size_t h1 = std::hash<float>{}(v.x);
+			std::size_t h2 = std::hash<float>{}(v.y);
+			std::size_t h3 = std::hash<float>{}(v.z);
+			return h1 ^ (h2 << 1) ^ (h3 << 2);
+		}
+	};
+
+	struct Vec3Eq {
+		bool operator()(const Vector3& a, const Vector3& b) const noexcept {
+			return a.x == b.x && a.y == b.y && a.z == b.z;
+		}
+	};
 };
 
 inline Vector3 operator*(float s, const Vector3& v)

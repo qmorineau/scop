@@ -1,24 +1,37 @@
 #include "MeshBuilder.hpp"
 
-MeshBuilder::MeshBuilder(const std::vector<vec3>& p, const std::vector<vec3>& n, const std::vector<vec2>& uv, std::string name) :
-	_positions(p),
-	_normals(n),
-	_uvs(uv),
-	_mesh(name)
+MeshBuilder::MeshBuilder(const std::vector<vec3>& p,
+	const std::unordered_map<vec3, int,
+		vec3::Vec3Hash, vec3::Vec3Eq>& pidx,
+	const std::vector<vec3>& n,
+	const std::unordered_map<vec3, int,
+		vec3::Vec3Hash, vec3::Vec3Eq>& nidx,
+	const std::vector<vec2>& uv,
+	const std::unordered_map<vec2, int,
+		vec2::Vec2Hash, vec2::Vec2Eq>& uvidx,
+	size_t facesNbr) :
+		_positions(p),
+		_posIndices(pidx),
+		_normals(n),
+		_normIndices(nidx),
+		_uvs(uv),
+		_uvsIndices(uvidx)
 {
+	_faces.reserve(facesNbr);
+	_mesh.vertices.reserve(facesNbr * 3);
 	_allNormals = n;
 	_allUvs = uv;
 };
 
 Mesh MeshBuilder::build(const std::unordered_map<std::string, Material>& materials)
 {
-	
+	std::cerr << "Mesh Builder : Build" << std::endl;
 	// if (_faces.empty())
 	// 	throw EmptyMesh(""); // ICI to readd after adding the line of the model
 	// if (smooth)
 
 	// else
-		createNormals();
+	createNormals();
 	createUvs();
 	convertToGpuData(materials);
 	return _mesh;
@@ -26,11 +39,12 @@ Mesh MeshBuilder::build(const std::unordered_map<std::string, Material>& materia
 
 void MeshBuilder::convertToGpuData(const std::unordered_map<std::string, Material>& materials)
 {
+	std::cerr << "Begin to convert to Gpu Data" << std::endl;
 	for (auto& [materialName, faces] : _faces)
 	{
 		const Material& mat = materials.at(materialName);
 		size_t i = 0;
-		for (auto face : faces)
+		for (auto& face : faces)
 		{
 			std::vector<VertexIndex> &v = face.vertices;
 			for (unsigned int j = 1; j < v.size() - 1; j++)
@@ -38,27 +52,28 @@ void MeshBuilder::convertToGpuData(const std::unordered_map<std::string, Materia
 			i++;
 		}
 	}
+	std::cerr << "Finish to convert to Gpu Data" << std::endl;
 }
 
-void MeshBuilder::addTriangle(VertexIndex& a, VertexIndex& b, VertexIndex& c, const Material& mat)
+void MeshBuilder::addTriangle(const VertexIndex& a, const VertexIndex& b, const VertexIndex& c, const Material& mat)
 {
-	VertexIndex index[] = {a, b, c};
-
+	const VertexIndex index[3] = {a, b, c};
+	
+	float rand = (float) std::rand() / RAND_MAX;
 	for (int i = 0; i < 3; i++)
 	{
 		const vec3& pos = _positions[index[i].vertex];
 		const vec3& norm = _allNormals[index[i].normal];
 		const vec2& uv = _allUvs[index[i].uv];
-		Vertex v = Vertex(pos, norm, uv, vec3((float)std::rand() / RAND_MAX, (float)std::rand() / RAND_MAX,(float) std::rand() / RAND_MAX));
+		Vertex v = Vertex(pos, norm, uv, vec3(rand, rand, rand));
 		_mesh.addVertex(v, &mat);
 	}
 }
 
 void MeshBuilder::addFace(Face& f, Material& m)
 {
-	if (!_faces.size())
-		_faces.try_emplace(m._name, std::vector<Face>());
-	_faces.at(m._name).push_back(f);
+	auto [it, isNew] = _faces.try_emplace(m._name);
+	it->second.push_back(f);
 }
 
 int MeshBuilder::findDuplicateNormal(vec3& v)
@@ -73,6 +88,7 @@ int MeshBuilder::findDuplicateNormal(vec3& v)
 
 void MeshBuilder::createNormals()
 {
+	std::cerr << "Create Normals" << std::endl;
 	for (auto& [material, faces] : _faces)
 	{
 		for (Face& face : faces)
@@ -87,10 +103,13 @@ void MeshBuilder::createNormals()
 			vec3 n = math::normalize(math::cross(p1 - p0, p2 - p0));
 
 			int id = -1;
-			for (size_t i = 0; i < _allNormals.size(); i++)
-			{
-				if (_allNormals[i] == n)
-					id = static_cast<int>(i);
+			auto it = _normIndices.find(n);
+			if (it != _normIndices.end()) {
+				id = it->second;
+			} else {
+				id = _allNormals.size();
+				_allNormals.push_back(n);
+				_normIndices[n] = id;
 			}
 			if (id == -1)
 			{
@@ -106,10 +125,13 @@ void MeshBuilder::createNormals()
 
 void MeshBuilder::createSmoothNormals()
 {
-    // accumulate face normals into each vertex position
-    std::unordered_map<int, vec3> vertexNormalAccum;
-    std::unordered_map<int, int>  vertexNormalCount;
+    std::cerr << "Create Smooth Normals" << std::endl;
 
+    // Accumulate normals per vertex index
+    std::unordered_map<int, vec3> accum;
+    std::unordered_map<int, int>  count;
+
+    // 1. Accumulate face normals
     for (auto& [material, faces] : _faces)
     {
         for (Face& face : faces)
@@ -122,38 +144,36 @@ void MeshBuilder::createSmoothNormals()
 
             for (auto& v : face.vertices)
             {
-                vertexNormalAccum[v.vertex] += n;
-                vertexNormalCount[v.vertex]++;
+                accum[v.vertex] += n;
+                count[v.vertex]++;
             }
         }
     }
 
-    // normalize accumulated normals and store them
+    // 2. Normalize and dedupe normals using the hash table
     for (auto& [material, faces] : _faces)
     {
         for (Face& face : faces)
         {
             for (auto& v : face.vertices)
             {
-                vec3 smoothNormal = math::normalize(
-                    vertexNormalAccum[v.vertex]
-                );
+                vec3 smooth = math::normalize(accum[v.vertex]);
 
-                // find or add this normal in _allNormals
-                int id = -1;
-                for (size_t i = 0; i < _allNormals.size(); i++)
+                // Fast O(1) lookup
+                auto it = _normIndices.find(smooth);
+                int id;
+
+                if (it != _normIndices.end())
                 {
-                    if (_allNormals[i] == smoothNormal)
-                    {
-                        id = static_cast<int>(i);
-                        break;
-                    }
+                    id = it->second;
                 }
-                if (id == -1)
+                else
                 {
                     id = static_cast<int>(_allNormals.size());
-                    _allNormals.push_back(smoothNormal);
+                    _allNormals.push_back(smooth);
+                    _normIndices[smooth] = id;
                 }
+
                 v.normal = id;
             }
         }
@@ -193,6 +213,7 @@ void MeshBuilder::createSmoothNormals()
 
 void MeshBuilder::createUvs()
 {
+	std::cerr << "Create Uvs" << std::endl;
     _allUvs.clear();
 
     for (auto& [material, faces] : _faces)

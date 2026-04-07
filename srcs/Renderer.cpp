@@ -7,15 +7,12 @@
 
 int idx;
 
-Renderer::Renderer(std::vector<Mesh>& meshes) :
+Renderer::Renderer(Mesh& mesh) :
 	_phong("assets/shaders/phong.vs", "assets/shaders/phong.fs"),
 	_mode(RenderMode::Phong)
 {	
-	for (auto& mesh : meshes)
-	{
-		GLMesh glMesh(mesh);
-		_glMeshes.push_back(glMesh);
-	}
+	GLMesh glMesh(mesh);
+	_glMeshes.push_back(glMesh);
 	TextureLoader load;
 	idx = load.loadTexture("assets/textures/awesomeface.png");
 };
