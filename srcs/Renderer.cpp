@@ -56,7 +56,7 @@ void Renderer::draw(Camera& camera, vec3& angle, std::vector<Light*> lights)
 
 	if (true) // to change
 	{
-		_phong.setInt("lightCount", lights.size());
+		_phong.setInt("lightCount", static_cast<int>(lights.size()));
 		for (size_t i = 0; i < lights.size(); i++)
 		{
 			_phong.setVec3("lights[" + std::to_string(i) + "].position", lights[i]->getPosition());
@@ -65,9 +65,6 @@ void Renderer::draw(Camera& camera, vec3& angle, std::vector<Light*> lights)
 			_phong.setBool("lights[" + std::to_string(i) + "].enabled", true);
 		}
 	}
-	(void) lights;
-	_phong.setBool("u_useTexture", true);
-	_phong.setBool("u_useLighting", false);   // for testing
 
 	// Draw
 	for (auto& mesh : _glMeshes)

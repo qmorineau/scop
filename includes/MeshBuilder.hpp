@@ -58,13 +58,13 @@ class MeshBuilder
 	private:
 		const std::vector<vec3>&							_positions;
 		std::unordered_map<vec3, int,
-			vec3::Vec3Hash, vec3::Vec3Eq>				_posIndices;
+			vec3::Vec3Hash, vec3::Vec3Eq>					_posIndices;
 		const std::vector<vec3>&							_normals;
 		std::unordered_map<vec3, int,
-			vec3::Vec3Hash, vec3::Vec3Eq>				_normIndices;
+			vec3::Vec3Hash, vec3::Vec3Eq>					_normIndices;
 		const std::vector<vec2>&							_uvs;
 		std::unordered_map<vec2, int,
-			vec2::Vec2Hash, vec2::Vec2Eq>				_uvsIndices;
+			vec2::Vec2Hash, vec2::Vec2Eq>					_uvsIndices;
 		std::vector<vec3>									_allNormals;
 		std::vector<vec2>									_allUvs;
 		std::unordered_map<std::string, std::vector<Face>>	_faces;
@@ -74,6 +74,7 @@ class MeshBuilder
 		void	convertToGpuData(const std::unordered_map<std::string, Material>&);
 
 		int		findDuplicateNormal(vec3& v);
+		void	calculateNormalSmoothingGroup();
 		void	createNormals();
 		void	createSmoothNormals();
 		void	createUvs();

@@ -37,6 +37,7 @@ void GLMesh::upload()
 
 void GLMesh::draw(Shader& shader) const
 {
+	shader.use();
 	glBindVertexArray(_vao);
 
 	for (auto& submesh : _mesh.subMeshes)

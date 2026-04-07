@@ -44,9 +44,9 @@ void Camera::moveSphereMode(CameraMovement dir, float deltaTime)
 	float clamp = math::radians(89.f);
     _pitch = _pitch < -clamp ? -clamp : _pitch > clamp ? clamp : _pitch;
 
-    _position.x = _target.x + 2 * cos(_pitch) * cos(_yaw);
-    _position.y = _target.y + 2 * sin(_pitch);
-    _position.z = _target.z + 2 * cos(_pitch) * sin(_yaw);
+    _position.x = _target.x + 3 * cos(_pitch) * cos(_yaw);
+    _position.y = _target.y + 3 * sin(_pitch);
+    _position.z = _target.z + 3 * cos(_pitch) * sin(_yaw);
 
     // always look at target
     _front = math::normalize(_target - _position);

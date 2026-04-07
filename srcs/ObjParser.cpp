@@ -82,7 +82,6 @@ void ObjParser::build()
 	size_t facesNumber = 0;
 	for (auto& [material, faces] : _rawData.faces)
 		facesNumber += faces.size();
-	std::cerr << "faces = " << facesNumber << std::endl;
 	MeshBuilder builder(_positions, _positionsIdx, _normals, _normalsIdx, _uvs, _uvsIdx, facesNumber);
 	for (auto& [material, faces] : _rawData.faces)
 	{
@@ -90,7 +89,6 @@ void ObjParser::build()
 			builder.addFace(face, _materials.at(material));
 	}
 	_mesh = builder.build(_materials);
-	std::cout << "Build done" << std::endl;
 };
 
 void ObjParser::parsePosition(std::istringstream& iss)
@@ -173,7 +171,15 @@ void ObjParser::createFace(std::istringstream& iss)
 	MeshBuilder::Face face(idxActualObject, idxActualMaterial, idxActualGroups, actualSmoothingGroup);
 
 	while (iss >> word)
+	{
 		face.vertices.push_back(parseVertex(word));
+		int& normal = face.vertices[face.vertices.size() - 1].normal;
+		int& uvs = face.vertices[face.vertices.size() - 1].uv;
+		if (normal != -1)
+			face.hasNormal = true;
+		if (uvs != -1)
+			face.hasTextCoord = true;
+	}
 	std::string materialName = materialNames[idxActualMaterial];
 	if (!_rawData.faces.size())
 	{
@@ -232,6 +238,8 @@ void ObjParser::parseSmoothing(std::istringstream& iss)
 			throw ParseError("ObjParser: 's' expect positive int value");
 		actualSmoothingGroup = intValue;
 	}
+	else
+		actualSmoothingGroup = 0;
 }
 
 

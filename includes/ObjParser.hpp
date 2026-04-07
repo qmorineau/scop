@@ -56,7 +56,7 @@ class ObjParser
 		int											idxActualObject = -1;
 		std::vector<int>							idxActualGroups;
 		int											idxActualMaterial = 0;
-		int											actualSmoothingGroup = -1;
+		int											actualSmoothingGroup = 0;
 
 		std::vector<std::string>					objectNames;
 		std::unordered_map<std::string, int>		objectIndices;

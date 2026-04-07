@@ -91,15 +91,11 @@ void main()
     // Lighting toggle
     if (!u_useLighting)
     {
-		// FragColor = vec4(normalize(Normal) * 0.5 + 0.5, 1.0);
-		// FragColor = vec4(normalize(lights[0].position - FragPos) * 0.5 + 0.5, 1.0);
-
         FragColor = vec4(baseColor, 1.0);
         return;
     }
 
     vec3 finalColor = applyPhong(baseColor);
-	// FragColor = vec4(TexCoords, 0.0, 1.0);
-	FragColor = vec4(texture(material_mapKd, TexCoords).rgb, 1.0);
-    // FragColor = vec4(finalColor, 1.0);
+    FragColor = vec4(finalColor, 1.0);
+	// FragColor = vec4(normalize(Normal) * 0.5 + 0.5, 1.0);
 }

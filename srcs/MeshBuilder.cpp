@@ -25,21 +25,61 @@ MeshBuilder::MeshBuilder(const std::vector<vec3>& p,
 
 Mesh MeshBuilder::build(const std::unordered_map<std::string, Material>& materials)
 {
-	std::cerr << "Mesh Builder : Build" << std::endl;
 	// if (_faces.empty())
 	// 	throw EmptyMesh(""); // ICI to readd after adding the line of the model
-	// if (smooth)
-
-	// else
+	std::cout << "Create Normals" << std::endl;
 	createNormals();
+	std::cout << "Calculate Normal Smoothing Group" << std::endl;
+	calculateNormalSmoothingGroup();
+	std::cout << "Creating Uvs" << std::endl;
 	createUvs();
+	std::cout << "Convert to Gpu Data" << std::endl;
 	convertToGpuData(materials);
 	return _mesh;
 }
 
+void MeshBuilder::calculateNormalSmoothingGroup()
+{
+	std::unordered_map<int, vec3> accum;
+	std::unordered_map<int, int> count;
+
+	for (auto& [materialName, faces] : _faces)
+	{
+		for (auto& face : faces)
+		{
+			if (face.smoothingGroup != 0)
+			{
+				auto [accIt, accIsNew] = accum.try_emplace(face.smoothingGroup);
+				std::cerr << "1";
+				if (!accIsNew)
+					accIt->second += _normIndices.at(_allNormals[face.vertices[0].normal]);
+				std::cerr << "2";
+				auto [countIt, countIsNew] = count.try_emplace(face.smoothingGroup);
+				if (countIsNew)
+					countIt->second = 0;
+				countIt->second += face.vertices.size();
+			}
+		}
+	}
+	for (auto& [group, vec] : accum)
+		vec = vec / count.at(group);
+	for (auto& [materialName, faces] : _faces)
+	{
+		for (auto& face : faces)
+		{
+			if (face.smoothingGroup != 0)
+			{
+				int idx = _allNormals.size();
+				_allNormals.push_back(accum.at(face.smoothingGroup));
+				for (auto& v : face.vertices)
+					v.normal = idx;
+			}
+		}
+	}
+}
+
 void MeshBuilder::convertToGpuData(const std::unordered_map<std::string, Material>& materials)
 {
-	std::cerr << "Begin to convert to Gpu Data" << std::endl;
 	for (auto& [materialName, faces] : _faces)
 	{
 		const Material& mat = materials.at(materialName);
@@ -52,7 +92,6 @@ void MeshBuilder::convertToGpuData(const std::unordered_map<std::string, Materia
 			i++;
 		}
 	}
-	std::cerr << "Finish to convert to Gpu Data" << std::endl;
 }
 
 void MeshBuilder::addTriangle(const VertexIndex& a, const VertexIndex& b, const VertexIndex& c, const Material& mat)
@@ -88,13 +127,12 @@ int MeshBuilder::findDuplicateNormal(vec3& v)
 
 void MeshBuilder::createNormals()
 {
-	std::cerr << "Create Normals" << std::endl;
 	for (auto& [material, faces] : _faces)
 	{
 		for (Face& face : faces)
 		{
-			// if (!face.vertices.empty() && face.vertices[0].normal != -1)
-			// 	continue;
+			if (face.hasNormal)
+				continue;
 
 			const vec3& p0 = _positions[face.vertices[0].vertex];
 			const vec3& p1 = _positions[face.vertices[1].vertex];
@@ -125,8 +163,6 @@ void MeshBuilder::createNormals()
 
 void MeshBuilder::createSmoothNormals()
 {
-    std::cerr << "Create Smooth Normals" << std::endl;
-
     // Accumulate normals per vertex index
     std::unordered_map<int, vec3> accum;
     std::unordered_map<int, int>  count;
@@ -180,46 +216,16 @@ void MeshBuilder::createSmoothNormals()
     }
 }
 
-// void MeshBuilder::createUvs()
-// {
-// 	for (auto& [material, faces] : _faces)
-// 	{
-// 		for (Face& face : faces)
-// 		{
-// 			if (!face.vertices.empty() && face.vertices[0].uv != -1)
-// 				continue;
-
-// 			for (auto& v : face.vertices)
-// 			{
-// 				vec2 uv;
-// 				float mx = std::abs(_allNormals[v.normal].x);
-// 				float my = std::abs(_allNormals[v.normal].y);
-// 				float mz = std::abs(_allNormals[v.normal].z);
-
-// 				if (mx >= my && mx >= mz)
-// 					uv = vec2(mz * 5, my * 5);
-// 				else if (my >= mz && my >= mx)
-// 					uv = vec2(mx * 5 , mz* 5);
-// 				else
-// 					uv = vec2(mx* 5, my* 5);
-
-// 				_allUvs.push_back(uv);
-// 				v.uv = static_cast<int>(_allUvs.size() - 1);
-// 				std::cerr << _allUvs[v.uv] << std::endl;
-// 			}
-// 		}
-// 	}
-// }
-
 void MeshBuilder::createUvs()
 {
-	std::cerr << "Create Uvs" << std::endl;
     _allUvs.clear();
 
     for (auto& [material, faces] : _faces)
     {
         for (Face& face : faces)
         {
+			if (face.hasTextCoord)
+				continue;
             for (auto& v : face.vertices)
             {
                 const vec3& p = _positions[v.vertex];
