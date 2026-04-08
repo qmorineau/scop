@@ -32,7 +32,7 @@ Application::~Application()
 void Application::run()
 {
 	initWindow();
-	_renderer = new Renderer(_parser.getMeshes());
+	_renderer = new Renderer(_parser.getMeshes(), _parser.getPath());
 	renderLoop();
 }
 

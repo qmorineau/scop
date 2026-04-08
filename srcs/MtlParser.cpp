@@ -141,6 +141,8 @@ void MtlParser::parseTransparency(std::istringstream& iss)
 	_materials.at(_actualMaterial)._Ni = f;
 };
 
+#include "TextureLoader.hpp"
+
 void MtlParser::parseTextureFile(std::istringstream& iss)
 {
 	std::string file;
@@ -149,8 +151,6 @@ void MtlParser::parseTextureFile(std::istringstream& iss)
 	std::string extra;
 	if (iss >> extra)
 		throw ParseError("MtlParser: Unexpected extra value: " + extra);
-	// TextureLoader load;
-
 	_materials.at(_actualMaterial)._map_Kd = file;
 	_materials.at(_actualMaterial)._hasTexture = true;
 };

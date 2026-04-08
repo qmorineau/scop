@@ -1,8 +1,9 @@
 #include "GLMesh.hpp"
 
-GLMesh::GLMesh(Mesh& mesh) : _mesh(mesh)
+GLMesh::GLMesh(Mesh& mesh, std::string path) : _mesh(mesh)
 {
 	upload();
+	linkTexture(path);
 }
 
 GLMesh::~GLMesh() {}
@@ -32,6 +33,19 @@ void GLMesh::upload()
 		glGenBuffers(1, &submesh.ebo);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, submesh.ebo);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, submesh.indices.size() * sizeof(uint32_t), submesh.indices.data(), GL_STATIC_DRAW);
+	}
+}
+
+void GLMesh::linkTexture(std::string& path)
+{
+	std::unordered_map<std::string, int> materials;
+
+	TextureLoader loader;
+	for (auto& submesh : _mesh.subMeshes)
+	{
+		auto [it, isNew] = materials.try_emplace(submesh.material->_name);
+		if (isNew)
+			it->second = loader.loadTexture(path + submesh.material->_name);
 	}
 }
 

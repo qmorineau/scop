@@ -5,9 +5,9 @@
 #include <GLFW/glfw3.h>
 
 #include "Shader.hpp"
+#include "GLMesh.hpp"
 
 struct Mesh;
-class GLMesh;
 class Camera;
 class Light;
 
@@ -22,7 +22,7 @@ enum class RenderMode
 class Renderer
 {
 	public:
-		Renderer(Mesh&);
+		Renderer(Mesh&, std::string);
 		~Renderer();
 
 		void beginFrame();
@@ -31,10 +31,10 @@ class Renderer
 		void toggleWireframe() {_wireframe = !_wireframe;}
 		void test();
 	private:
-		Shader				_phong;
-		RenderMode			_mode;
-		bool				_wireframe = false;
-		std::vector<GLMesh>	_glMeshes;
+		Shader		_phong;
+		RenderMode	_mode;
+		bool		_wireframe = false;
+		GLMesh		_glMesh;
 
 		void configureMode();
 };

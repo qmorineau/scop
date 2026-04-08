@@ -25,13 +25,22 @@ static bool toInt(const std::string& s, int& out) {
 // Constructor
 ObjParser::ObjParser(std::string file) :
 	_pathFile(file),
+	_pathFolder(file),
 	_file(file)
 {
+	size_t pos = _pathFolder.find_last_of("/\\");
+	if (pos == std::string::npos)
+		_pathFolder = "";
+	else
+		_pathFolder = _pathFolder.substr(0, pos + 1);
+
 	std::string defaultMaterialName("__default_42scop_material");
 	_materials.try_emplace("__default_42scop_material", Material(defaultMaterialName));
 	materialNames.push_back(defaultMaterialName);
+
 	if (!_file.is_open())
 		throw ParseError("ObjParser: Can't open \"" + file + "\"");
+
 	parse();
 	centerPositions();
 	normalizePositions();
@@ -205,16 +214,10 @@ void ObjParser::createLine(std::istringstream& iss)
 
 void ObjParser::parseMtlFile(std::istringstream& iss)
 {
-	std::string path = _pathFile;
-	size_t pos = path.find_last_of("/\\");
-	if (pos == std::string::npos)
-		path = "";
-	else
-		path = path.substr(0, pos + 1);
 	std::string word;
 	while (iss >> word)
 	{
-		MtlParser parser(path, word);
+		MtlParser parser(_pathFolder, word);
 		auto map = parser.parse();
 		for (auto& m : map)
 			_materials.try_emplace(m.first, m.second);

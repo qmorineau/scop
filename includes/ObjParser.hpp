@@ -27,7 +27,7 @@ class ObjParser
 		~ObjParser() {};
 
 		Mesh& getMeshes() {return _mesh;};
-
+		std::string getPath() {return _pathFolder;};
 	private:
 		struct ObjectData
 		{
@@ -36,6 +36,7 @@ class ObjParser
 		};
 
 		std::string									_pathFile;
+		std::string									_pathFolder;
 		std::ifstream								_file;
 
 		std::vector<vec3>	 						_positions;

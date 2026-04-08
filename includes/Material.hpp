@@ -17,9 +17,10 @@ struct Material
 	vec3			_Ke; // Emissive Color
 	float			_Ni = 1.0f; // Optical Density
 	float			_d = 1.0f; // Transparency
-	std::string 	_map_Kd;
+	std::string	 	_map_Kd;
 	int				_illum = 2; // illumination mod
 	bool			_hasTexture = false;
+	int				_id;
 
 	Material(std::string name) : _name(name) {};
 
@@ -48,7 +49,7 @@ struct Material
 		{
 			glActiveTexture(GL_TEXTURE0);
 			glBindTexture(GL_TEXTURE_2D, 1);
-			shader.setInt("material_mapKd", 0);
+			shader.setInt("material_mapKd", _id);
 		}
 		// shader.setVec3("material.Ke", _Ke);
 		// shader.setFloat("material.Ni", _Ni);

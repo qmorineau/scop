@@ -7,12 +7,11 @@
 
 int idx;
 
-Renderer::Renderer(Mesh& mesh) :
+Renderer::Renderer(Mesh& mesh, std::string path) :
 	_phong("assets/shaders/phong.vs", "assets/shaders/phong.fs"),
-	_mode(RenderMode::Texture)
+	_mode(RenderMode::Texture),
+	_glMesh(mesh, path)
 {	
-	GLMesh glMesh(mesh);
-	_glMeshes.push_back(glMesh);
 	TextureLoader load;
 	idx = load.loadTexture("assets/textures/awesomeface.png");
 };
@@ -69,8 +68,7 @@ void Renderer::draw(Camera& camera, vec3& angle, std::vector<Light*> lights)
 	}
 
 	// Draw
-	for (auto& mesh : _glMeshes)
-		mesh.draw(_phong);
+	_glMesh.draw(_phong);
 }
 
 void Renderer::setMode(RenderMode mode)
