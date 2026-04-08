@@ -4,8 +4,8 @@
 #include <vector>
 #include <string>
 
-#include "Material.hpp"
 #include "Types.hpp"
+#include "Material.hpp"
 
 struct Mesh
 {

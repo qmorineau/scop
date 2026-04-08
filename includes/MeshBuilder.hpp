@@ -49,8 +49,6 @@ class MeshBuilder
 			const std::unordered_map<vec2, int,
 				vec2::Vec2Hash, vec2::Vec2Eq>& uvidx,
 			size_t facesNbr);
-		MeshBuilder(const MeshBuilder&) = default;
-		MeshBuilder& operator=(const MeshBuilder&) = default;
 
 		Mesh build(const std::unordered_map<std::string, Material>&);
 		void addFace(Face& f, Material& m);

@@ -20,7 +20,7 @@ MeshBuilder::MeshBuilder(const std::vector<vec3>& p,
 	_faces.reserve(facesNbr);
 	_mesh.vertices.reserve(facesNbr * 3);
 	_allNormals = n;
-	_allUvs = uv;
+	_allUvs = _uvs;
 };
 
 Mesh MeshBuilder::build(const std::unordered_map<std::string, Material>& materials)
@@ -98,7 +98,7 @@ void MeshBuilder::addTriangle(const VertexIndex& a, const VertexIndex& b, const 
 {
 	const VertexIndex index[3] = {a, b, c};
 	
-	float rand = (float) std::rand() / RAND_MAX;
+	float rand = (float) std::rand() / (float)RAND_MAX;
 	for (int i = 0; i < 3; i++)
 	{
 		const vec3& pos = _positions[index[i].vertex];

@@ -61,7 +61,7 @@ class Camera
 		float 		_pitch;
 		// camera options
 		float 		_movementSpeed = 2.5f;
-		float 		_mouseSensitivity = 0.1f;
+		// float 	_mouseSensitivity = 0.1f;
 		float 		_zoom = defaultZoom;
 		float 		_aspectRatio;
 
@@ -70,8 +70,8 @@ class Camera
 		bool 		_firstMouse = true;
 		float 		_lastX = 0.0f;
 		float 		_lastY = 0.0f;
-		const float _speed = 2.5f;
-		const float _sensitivity = 0.1f;
+		// const float _speed = 2.5f;
+		// const float _sensitivity = 0.1f;
 		CameraMode	_mode;
 
 		const vec3	_target;

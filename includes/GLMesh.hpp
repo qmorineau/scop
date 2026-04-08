@@ -9,6 +9,8 @@
 #include "Mesh.hpp"
 #include "Types.hpp"
 
+class Shader;
+
 class GLMesh
 {
 	public:
@@ -20,8 +22,8 @@ class GLMesh
 	private:
 		GLuint		_vao = 0;
 		GLuint		_vbo = 0;
-		GLuint		_ebo = 0;
-		GLsizei		_indexCount = 0;
+		// GLuint		_ebo = 0;
+		// GLsizei		_indexCount = 0;
 		Mesh&	_mesh;
 
 		void upload();

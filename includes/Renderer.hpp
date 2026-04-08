@@ -6,7 +6,7 @@
 
 #include "Shader.hpp"
 
-class Mesh;
+struct Mesh;
 class GLMesh;
 class Camera;
 class Light;

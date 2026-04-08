@@ -4,7 +4,7 @@ CC = cc
 
 # Flags
 CFLAGS = -Wall -Wextra -Werror
-CPPFLAGS = -Wall -Wextra -Werror -MMD -g #-fsanitize=address -fsanitize=undefined
+CPPFLAGS = -Wall -Wextra -Werror -MMD -g -std=c++17 #-fsanitize=address -fsanitize=undefined
 
 # Project Paths
 SRC_DIR = srcs
@@ -67,7 +67,7 @@ $(GLFW_LIB):
 	@cd $(GLFW_BUILD_DIR) && make -j$(shell nproc)
 
 test: all
-	./$(NAME) ./assets/resources/42.obj
+	./$(NAME) ./assets/resources/teapot.obj
 
 .PHONY: all re clean fclean
 
