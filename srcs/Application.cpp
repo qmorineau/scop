@@ -11,7 +11,7 @@ Application::Application(char *file) :
 	_lights.push_back(new Light(vec3(5,5,0), vec3(1,0,0), 0.5));
 	_lights.push_back(new Light(vec3(-5,5,0), vec3(0,1,0), 0.5));
 	_lights.push_back(new Light(vec3(0,-4,0), vec3(0,0,1), 0.5));
-	// _lights.push_back(new Light(vec3(5,-5,5), vec3(1,1,1), 0.5));
+	// _lights.push_back(new Light(vec3(5,-5,5), vec3(1,1,1), 1));
 }
 		
 

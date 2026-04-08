@@ -11,18 +11,18 @@ struct Mesh
 {
 	struct SubMesh
 	{
-		SubMesh(const Material* m) : material(m) {};
+		SubMesh(Material* m = nullptr) : material(m) {};
 
 		GLuint					ebo = 0;
 		std::vector<uint32_t>	indices;
-		const Material*			material;
+		Material*			material;
 	};
 	Mesh() {};
 
 	std::vector<Vertex>		vertices;
 	std::vector<SubMesh>	subMeshes;
 	
-	void addVertex(Vertex& v, const Material* material);
+	void addVertex(Vertex& v, Material* material);
 };
 
 #endif

@@ -80,6 +80,7 @@ void main()
     // Texture override	
 	if (u_useTexture && material.hasTexture)
 	{
+		baseColor= vec3(1,1,1);
 		vec3 texColor = texture(material_mapKd, TexCoords).rgb;
 		baseColor *= texColor;
 	}
@@ -96,6 +97,7 @@ void main()
     }
 
     vec3 finalColor = applyPhong(baseColor);
+	// vec3 finalColor = baseColor;
     FragColor = vec4(finalColor, 1.0);
 	// FragColor = vec4(normalize(Normal) * 0.5 + 0.5, 1.0);
 }

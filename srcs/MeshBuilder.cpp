@@ -23,7 +23,7 @@ MeshBuilder::MeshBuilder(const std::vector<vec3>& p,
 	_allUvs = _uvs;
 };
 
-Mesh MeshBuilder::build(const std::unordered_map<std::string, Material>& materials)
+Mesh MeshBuilder::build(std::unordered_map<std::string, Material>& materials)
 {
 	// if (_faces.empty())
 	// 	throw EmptyMesh(""); // ICI to readd after adding the line of the model
@@ -38,11 +38,11 @@ Mesh MeshBuilder::build(const std::unordered_map<std::string, Material>& materia
 	return _mesh;
 }
 
-void MeshBuilder::convertToGpuData(const std::unordered_map<std::string, Material>& materials)
+void MeshBuilder::convertToGpuData(std::unordered_map<std::string, Material>& materials)
 {
 	for (auto& [materialName, faces] : _faces)
 	{
-		const Material& mat = materials.at(materialName);
+		Material& mat = materials.at(materialName);
 		size_t i = 0;
 		for (auto& face : faces)
 		{
@@ -54,7 +54,7 @@ void MeshBuilder::convertToGpuData(const std::unordered_map<std::string, Materia
 	}
 }
 
-void MeshBuilder::addTriangle(const VertexIndex& a, const VertexIndex& b, const VertexIndex& c, const Material& mat)
+void MeshBuilder::addTriangle(const VertexIndex& a, const VertexIndex& b, const VertexIndex& c, Material& mat)
 {
 	const VertexIndex index[3] = {a, b, c};
 	

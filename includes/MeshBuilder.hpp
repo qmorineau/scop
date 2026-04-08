@@ -50,7 +50,7 @@ class MeshBuilder
 				vec2::Vec2Hash, vec2::Vec2Eq>& uvidx,
 			size_t facesNbr);
 
-		Mesh build(const std::unordered_map<std::string, Material>&);
+		Mesh build(std::unordered_map<std::string, Material>&);
 		void addFace(Face& f, Material& m);
 
 	private:
@@ -68,8 +68,8 @@ class MeshBuilder
 		std::unordered_map<std::string, std::vector<Face>>	_faces;
 		Mesh							 					_mesh;
 
-		void	addTriangle(const VertexIndex&, const VertexIndex&, const VertexIndex&, const Material&);
-		void	convertToGpuData(const std::unordered_map<std::string, Material>&);
+		void	addTriangle(const VertexIndex&, const VertexIndex&, const VertexIndex&, Material&);
+		void	convertToGpuData(std::unordered_map<std::string, Material>&);
 
 		int		findDuplicateNormal(vec3& v);
 		void	calculateNormalSmoothingGroup();

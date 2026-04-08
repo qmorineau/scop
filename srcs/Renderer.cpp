@@ -12,8 +12,8 @@ Renderer::Renderer(Mesh& mesh, std::string path) :
 	_mode(RenderMode::Texture),
 	_glMesh(mesh, path)
 {	
-	TextureLoader load;
-	idx = load.loadTexture("assets/textures/awesomeface.png");
+	// TextureLoader load;
+	// idx = load.loadTexture("assets/textures/awesomeface.png");
 };
 
 Renderer::~Renderer() {};
@@ -41,7 +41,7 @@ void Renderer::draw(Camera& camera, vec3& angle, std::vector<Light*> lights)
 	}
 
 	// Camera
-    mat4 projection = mat4::perspective(math::radians(camera.getZoom()), camera.getAspectRatio(), 0.1f, 100.0f);
+    mat4 projection = mat4::perspective(math::radians(camera.getZoom()), camera.getAspectRatio(), 0.001f, 100.0f);
     _phong.setMat4("projection", projection);
     _phong.setMat4("view", camera.getViewMatrix());
 	_phong.setVec3("viewPos", vec3(camera.getPosition()));
@@ -87,7 +87,7 @@ void Renderer::configureMode()
             break;
 
         case RenderMode::Texture:
-            _phong.setBool("u_useLighting", false);
+            _phong.setBool("u_useLighting", true);
             _phong.setBool("u_useTexture", true);
             _phong.setBool("u_overrideColor", false);
             break;
@@ -99,7 +99,7 @@ void Renderer::configureMode()
             break;
 
         case RenderMode::Material:
-            _phong.setBool("u_useLighting", true);
+            _phong.setBool("u_useLighting", false);
             _phong.setBool("u_useTexture", true);
             _phong.setBool("u_overrideColor", false);
             break;

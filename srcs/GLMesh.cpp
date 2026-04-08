@@ -47,6 +47,9 @@ void GLMesh::linkTexture(std::string& path)
 		if (isNew)
 			it->second = loader.loadTexture(path + submesh.material->_name);
 	}
+	for (auto& submesh : _mesh.subMeshes)
+		submesh.material->_id = materials.at(submesh.material->_name); 
+
 }
 
 void GLMesh::draw(Shader& shader) const

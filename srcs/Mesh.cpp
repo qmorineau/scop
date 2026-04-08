@@ -1,7 +1,7 @@
 #include "Mesh.hpp"
 #include "MeshBuilder.hpp"
 
-void Mesh::addVertex(Vertex& v, const Material* material)
+void Mesh::addVertex(Vertex& v, Material* material)
 {
 	if (!subMeshes.size() || material != subMeshes[subMeshes.size() - 1].material)
 	{
