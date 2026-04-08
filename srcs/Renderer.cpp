@@ -9,7 +9,7 @@ int idx;
 
 Renderer::Renderer(Mesh& mesh) :
 	_phong("assets/shaders/phong.vs", "assets/shaders/phong.fs"),
-	_mode(RenderMode::Phong)
+	_mode(RenderMode::Texture)
 {	
 	GLMesh glMesh(mesh);
 	_glMeshes.push_back(glMesh);
@@ -21,7 +21,6 @@ Renderer::~Renderer() {};
 
 void Renderer::beginFrame()
 {
-	// glClearColor(0.2f, 0.3f, 0.3f, 1.0f); // default opengl color
 	glClearColor(0.2f, 0.2f, 0.2f, 1.f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
@@ -35,9 +34,12 @@ void Renderer::draw(Camera& camera, vec3& angle, std::vector<Light*> lights)
     _phong.use();
 
 	// texture
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, idx);
-	_phong.linkTexture(0);
+	if (_mode == RenderMode::Texture)
+	{
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, idx);
+		_phong.linkTexture(0);
+	}
 
 	// Camera
     mat4 projection = mat4::perspective(math::radians(camera.getZoom()), camera.getAspectRatio(), 0.1f, 100.0f);
@@ -96,7 +98,6 @@ void Renderer::configureMode()
             _phong.setBool("u_useLighting", false);
             _phong.setBool("u_useTexture", false);
             _phong.setBool("u_overrideColor", true);
-            _phong.setVec3("u_overrideColorValue", vec3(0.5, 0.5, 0.5)); // exemple
             break;
 
         case RenderMode::Material:

@@ -29,53 +29,13 @@ Mesh MeshBuilder::build(const std::unordered_map<std::string, Material>& materia
 	// 	throw EmptyMesh(""); // ICI to readd after adding the line of the model
 	std::cout << "Create Normals" << std::endl;
 	createNormals();
-	std::cout << "Calculate Normal Smoothing Group" << std::endl;
-	calculateNormalSmoothingGroup();
+	std::cout << "Create Smooth Normals" << std::endl;
+	createSmoothNormals();
 	std::cout << "Creating Uvs" << std::endl;
 	createUvs();
 	std::cout << "Convert to Gpu Data" << std::endl;
 	convertToGpuData(materials);
 	return _mesh;
-}
-
-void MeshBuilder::calculateNormalSmoothingGroup()
-{
-	std::unordered_map<int, vec3> accum;
-	std::unordered_map<int, int> count;
-
-	for (auto& [materialName, faces] : _faces)
-	{
-		for (auto& face : faces)
-		{
-			if (face.smoothingGroup != 0)
-			{
-				auto [accIt, accIsNew] = accum.try_emplace(face.smoothingGroup);
-				std::cerr << "1";
-				if (!accIsNew)
-					accIt->second += _normIndices.at(_allNormals[face.vertices[0].normal]);
-				std::cerr << "2";
-				auto [countIt, countIsNew] = count.try_emplace(face.smoothingGroup);
-				if (countIsNew)
-					countIt->second = 0;
-				countIt->second += face.vertices.size();
-			}
-		}
-	}
-	for (auto& [group, vec] : accum)
-		vec = vec / count.at(group);
-	for (auto& [materialName, faces] : _faces)
-	{
-		for (auto& face : faces)
-		{
-			if (face.smoothingGroup != 0)
-			{
-				int idx = _allNormals.size();
-				_allNormals.push_back(accum.at(face.smoothingGroup));
-				for (auto& v : face.vertices)
-					v.normal = idx;
-			}
-		}
-	}
 }
 
 void MeshBuilder::convertToGpuData(const std::unordered_map<std::string, Material>& materials)
@@ -172,17 +132,20 @@ void MeshBuilder::createSmoothNormals()
     {
         for (Face& face : faces)
         {
-            const vec3& p0 = _positions[face.vertices[0].vertex];
-            const vec3& p1 = _positions[face.vertices[1].vertex];
-            const vec3& p2 = _positions[face.vertices[2].vertex];
+			if (face.smoothingGroup != 0)
+			{
+				const vec3& p0 = _positions[face.vertices[0].vertex];
+				const vec3& p1 = _positions[face.vertices[1].vertex];
+				const vec3& p2 = _positions[face.vertices[2].vertex];
 
-            vec3 n = math::normalize(math::cross(p2 - p0, p1 - p0));
+				vec3 n = math::normalize(math::cross(p2 - p0, p1 - p0));
 
-            for (auto& v : face.vertices)
-            {
-                accum[v.vertex] += n;
-                count[v.vertex]++;
-            }
+				for (auto& v : face.vertices)
+				{
+					accum[v.vertex] += n;
+					count[v.vertex]++;
+				}
+			}
         }
     }
 
@@ -191,27 +154,30 @@ void MeshBuilder::createSmoothNormals()
     {
         for (Face& face : faces)
         {
-            for (auto& v : face.vertices)
-            {
-                vec3 smooth = math::normalize(accum[v.vertex]);
+			if (face.smoothingGroup != 0)
+			{
+				for (auto& v : face.vertices)
+				{
+					vec3 smooth = math::normalize(accum[v.vertex]);
 
-                // Fast O(1) lookup
-                auto it = _normIndices.find(smooth);
-                int id;
+					// Fast O(1) lookup
+					auto it = _normIndices.find(smooth);
+					int id;
 
-                if (it != _normIndices.end())
-                {
-                    id = it->second;
-                }
-                else
-                {
-                    id = static_cast<int>(_allNormals.size());
-                    _allNormals.push_back(smooth);
-                    _normIndices[smooth] = id;
-                }
+					if (it != _normIndices.end())
+					{
+						id = it->second;
+					}
+					else
+					{
+						id = static_cast<int>(_allNormals.size());
+						_allNormals.push_back(smooth);
+						_normIndices[smooth] = id;
+					}
 
-                v.normal = id;
-            }
+					v.normal = id;
+				}
+			}
         }
     }
 }

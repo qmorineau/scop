@@ -2,6 +2,7 @@
 
 using Handler = void (MtlParser::*)(std::istringstream& iss);
 
+// Dispath Table
 static const std::unordered_map<std::string, Handler> handlers =
 {
 	{"Ns", &MtlParser::parseSpecularExponent},
@@ -148,6 +149,8 @@ void MtlParser::parseTextureFile(std::istringstream& iss)
 	std::string extra;
 	if (iss >> extra)
 		throw ParseError("MtlParser: Unexpected extra value: " + extra);
+	// TextureLoader load;
+
 	_materials.at(_actualMaterial)._map_Kd = file;
 	_materials.at(_actualMaterial)._hasTexture = true;
 };

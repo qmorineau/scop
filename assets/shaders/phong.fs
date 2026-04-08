@@ -36,7 +36,6 @@ uniform vec3 viewPos;
 uniform bool u_useLighting;
 uniform bool u_useTexture;
 uniform bool u_overrideColor;
-uniform vec3 u_overrideColorValue;
 
 vec3 applyPhong(vec3 baseColor)
 {
@@ -63,9 +62,10 @@ vec3 applyPhong(vec3 baseColor)
         	spec = pow(max(dot(viewDir, reflectDir), 0.0), material.Ns);
 		}
 
-        vec3 ambient  = material.Ka * lights[i].color * lights[i].intensity;
-        vec3 diffuse  = material.Kd * diff * lights[i].color * lights[i].intensity;
-        vec3 specular = material.Ks * spec * lights[i].color * lights[i].intensity;
+        vec3 ambient  = baseColor * material.Ka * lights[i].color * lights[i].intensity;
+		vec3 diffuse  = baseColor * material.Kd * diff * lights[i].color * lights[i].intensity;
+		vec3 specular = material.Ks * spec * lights[i].color * lights[i].intensity;
+
 
         result += ambient + diffuse + specular;
     }

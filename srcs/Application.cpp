@@ -11,7 +11,7 @@ Application::Application(char *file) :
 	_lights.push_back(new Light(vec3(5,5,0), vec3(1,0,0), 0.5));
 	_lights.push_back(new Light(vec3(-5,5,0), vec3(0,1,0), 0.5));
 	_lights.push_back(new Light(vec3(0,-4,0), vec3(0,0,1), 0.5));
-	// _lights.push_back(new Light(vec3(5,-5,5), vec3(1,1,0), 0.5));
+	// _lights.push_back(new Light(vec3(5,-5,5), vec3(1,1,1), 0.5));
 }
 		
 
@@ -183,6 +183,9 @@ void Application::keyCallback(GLFWwindow* window, int key, int scancode, int act
 				break;
 			case GLFW_KEY_3:
 				app->_renderer->setMode(RenderMode::Face);
+				break;
+			case GLFW_KEY_4:
+				app->_renderer->setMode(RenderMode::Material);
 				break;
 			case GLFW_KEY_P:
 				app->_renderer->toggleWireframe();
