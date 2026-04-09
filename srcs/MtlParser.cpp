@@ -19,6 +19,7 @@ static const std::unordered_map<std::string, Handler> handlers =
 
 std::unordered_map<std::string, Material> MtlParser::parse()
 {
+	std::cout << "parsing material" << std::endl;
 	std::string line;
 	std::string token;
 	while (std::getline(_file, line))
@@ -141,16 +142,27 @@ void MtlParser::parseTransparency(std::istringstream& iss)
 	_materials.at(_actualMaterial)._Ni = f;
 };
 
-#include "TextureLoader.hpp"
+static inline void trim(std::string& s)
+{
+    const char* ws = " \t\n\r\f\v";
+
+    size_t start = s.find_first_not_of(ws);
+    if (start == std::string::npos) {
+        s.clear();
+        return;
+    }
+
+    size_t end = s.find_last_not_of(ws);
+    s = s.substr(start, end - start + 1);
+}
 
 void MtlParser::parseTextureFile(std::istringstream& iss)
 {
 	std::string file;
-	if (!(iss >> file))
-		throw ParseError("MtlParser: 'map_Kd' expect 1 string values");
-	std::string extra;
-	if (iss >> extra)
-		throw ParseError("MtlParser: Unexpected extra value: " + extra);
+	std::getline(iss, file);
+	trim(file);
+	if (file.empty())
+		throw ParseError("MtlParser: 'map_Kd' expect a file");
 	_materials.at(_actualMaterial)._map_Kd = file;
 	_materials.at(_actualMaterial)._hasTexture = true;
 };

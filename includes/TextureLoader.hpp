@@ -17,6 +17,7 @@ class TextureLoader
 
 	int loadTexture(std::string file)
 	{
+		std::cerr << "Load Texture : " << file << std::endl;
 		unsigned int texture;
 		glGenTextures(1, &texture);
 		glBindTexture(GL_TEXTURE_2D, texture);
@@ -43,7 +44,7 @@ class TextureLoader
 		}
 		else
 		{
-			std::cout << "Failed load image: " << stbi_failure_reason() << std::endl;
+			std::cout << "Failed load image: " << stbi_failure_reason() << ", file = " << file.c_str() << std::endl;
 		}
 
 		stbi_image_free(data);

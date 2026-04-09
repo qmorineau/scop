@@ -11,7 +11,7 @@ Application::Application(char *file) :
 	_lights.push_back(new Light(vec3(5,5,0), vec3(1,0,0), 0.5));
 	_lights.push_back(new Light(vec3(-5,5,0), vec3(0,1,0), 0.5));
 	_lights.push_back(new Light(vec3(0,-4,0), vec3(0,0,1), 0.5));
-	// _lights.push_back(new Light(vec3(5,-5,5), vec3(1,1,1), 1));
+	// _lights.push_back(new Light(vec3(5,-5,5), vec3(1,1,1), 0.5));
 }
 		
 
@@ -234,7 +234,10 @@ void Application::keyCallback(GLFWwindow* window, int key, int scancode, int act
 					app->_blue = false;
 				}
 				else
+				{
 					app->_camera.resetPosition();
+					app->_rotAngle = vec3(0,0,0);
+				}
 				break;
 			case GLFW_KEY_G:
 				if (app->_editLight)

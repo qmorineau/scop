@@ -29,7 +29,6 @@ class Renderer
 		void setMode(RenderMode mode);
 		void draw(Camera& camera, vec3& angle, std::vector<Light*> lights);
 		void toggleWireframe() {_wireframe = !_wireframe;}
-		void test();
 	private:
 		Shader		_phong;
 		RenderMode	_mode;

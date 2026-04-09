@@ -44,8 +44,8 @@ void GLMesh::linkTexture(std::string& path)
 	for (auto& submesh : _mesh.subMeshes)
 	{
 		auto [it, isNew] = materials.try_emplace(submesh.material->_name);
-		if (isNew)
-			it->second = loader.loadTexture(path + submesh.material->_name);
+		if (isNew && !submesh.material->_map_Kd.empty())
+			it->second = loader.loadTexture(path + submesh.material->_map_Kd);
 	}
 	for (auto& submesh : _mesh.subMeshes)
 		submesh.material->_id = materials.at(submesh.material->_name); 

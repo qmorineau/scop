@@ -49,7 +49,7 @@ struct Material
 		{
 			glActiveTexture(GL_TEXTURE0);
 			glBindTexture(GL_TEXTURE_2D, _id);
-			shader.setInt("material_mapKd", 0);
+			shader.linkTexture(0);
 		}
 		// shader.setVec3("material.Ke", _Ke);
 		// shader.setFloat("material.Ni", _Ni);

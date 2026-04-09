@@ -90,7 +90,10 @@ void ObjParser::build()
 {
 	size_t facesNumber = 0;
 	for (auto& [material, faces] : _rawData.faces)
+	{
 		facesNumber += faces.size();
+	}
+	std::cout << "Number of faces: " << facesNumber << std::endl;
 	MeshBuilder builder(_positions, _positionsIdx, _normals, _normalsIdx, _uvs, _uvsIdx, facesNumber);
 	for (auto& [material, faces] : _rawData.faces)
 	{
@@ -98,6 +101,7 @@ void ObjParser::build()
 			builder.addFace(face, _materials.at(material));
 	}
 	_mesh = builder.build(_materials);
+	std::cout << "End ObjParser Build" << std::endl;
 };
 
 void ObjParser::parsePosition(std::istringstream& iss)
