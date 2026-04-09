@@ -52,6 +52,9 @@ void Camera::moveSphereMode(CameraMovement dir, float deltaTime)
     _front = math::normalize(_target - _position);
     _right = math::normalize(math::cross(_front, _worldUp));
     _up    = math::normalize(math::cross(_right, _front));
+
+	// _yaw   = math::degrees(atan2(_front.z, _front.x));
+	// _pitch = math::degrees(asin(_front.y));
 }
 
 void Camera::moveFreeMode(CameraMovement direction, float deltaTime)
@@ -142,15 +145,7 @@ void Camera::updateCameraVectors()
 
 void Camera::resetPosition()
 {
-	_position = _basePosition;
-	_front = _baseFront;
-
-	_yaw = _baseYaw;
-	_pitch = _basePitch;
-
-	_lastX = 0;
-	_lastY = 0;
-	_firstMouse = true;
+	changePosition(_basePosition);
 }
 
 void Camera::changeMode()
@@ -166,4 +161,18 @@ void Camera::changeMode()
 			break;
 	}
 	updateCameraVectors();
+}
+
+void Camera::changePosition(const vec3& pos)
+{
+    _position = pos;
+
+    // Look at target
+    _front = math::normalize(_target - _position);
+    _right = math::normalize(math::cross(_front, _worldUp));
+    _up    = math::normalize(math::cross(_right, _front));
+
+    // Sync yaw/pitch with new orientation
+    // _yaw   = math::degrees(atan2(_front.z, _front.x));
+    // _pitch = math::degrees(asin(_front.y));
 }

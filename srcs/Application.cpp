@@ -7,20 +7,13 @@ Application::Application(char *file) :
 	_window(nullptr),
 	_isRotAxes(0., 1., 0.),
 	_rotations(vec3(0.01, 0.01, 0.01))
-{
-	_lights.push_back(new Light(vec3(5,5,0), vec3(1,0,0), 0.5));
-	_lights.push_back(new Light(vec3(-5,5,0), vec3(0,1,0), 0.5));
-	_lights.push_back(new Light(vec3(0,-4,0), vec3(0,0,1), 0.5));
-	// _lights.push_back(new Light(vec3(5,-5,5), vec3(1,1,1), 0.5));
-}
+{}
 		
 
 Application::~Application()
 {
 	if (_renderer)
 		delete _renderer;
-	for (auto l : _lights)
-		delete l;
 	if (_window)
 	{
 		glfwDestroyWindow(_window);
@@ -108,7 +101,7 @@ void Application::renderLoop()
 			_blend += _blending;
 		 // Rendering
 		_renderer->beginFrame();
-		_renderer->draw(_camera, _rotAngle, _lights, _blend);
+		_renderer->draw(_camera, _rotAngle, _lightManager.getLights(), _blend);
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
@@ -121,49 +114,67 @@ void Application::renderLoop()
 // ---------------------------------------------------------------------------------------------------------
 // void Application::processInput(GLFWwindow *window, Camera &camera, const float deltaTime)
 
+void Application::lightEditor()
+{
+	if (_keys[GLFW_KEY_1])
+		_lightManager.changeColor(vec3(1, 1, 1));
+	if (_keys[GLFW_KEY_2])
+		_lightManager.changeColor(vec3(1, 0, 0));
+	if (_keys[GLFW_KEY_3])
+		_lightManager.changeColor(vec3(0, 1, 0));
+	if (_keys[GLFW_KEY_4])
+		_lightManager.changeColor(vec3(0, 0, 1));
+	if (_keys[GLFW_KEY_5])
+		_lightManager.changeColor(vec3(1, 1, 0));
+	if (_keys[GLFW_KEY_6])
+		_lightManager.changeColor(vec3(1, 0, 1));
+	if (_keys[GLFW_KEY_7])
+		_lightManager.changeColor(vec3(0, 1, 1));
+	if (_keys[GLFW_KEY_W])
+		_lightManager.intensityUp();
+	if (_keys[GLFW_KEY_S])
+		_lightManager.intensityDown();
+	if (_keys[GLFW_KEY_0])
+	{
+		if (_red)
+			_lightManager.colorUp(Color::Red);
+		if (_green)
+			_lightManager.colorUp(Color::Green);
+		if (_blue)
+			_lightManager.colorUp(Color::Blue);
+	}
+	if (_keys[GLFW_KEY_9])
+	{
+		if (_red)
+			_lightManager.colorDown(Color::Red);
+		if (_green)
+			_lightManager.colorDown(Color::Green);
+		if (_blue)
+			_lightManager.colorDown(Color::Blue);
+	}
+}
+
 void Application::processInput()
 {
-	if (_keys[GLFW_KEY_W])
-		_camera.processKeyboard(Camera::FORWARD, _deltaTime);
-	if (_keys[GLFW_KEY_S])
-		_camera.processKeyboard(Camera::BACKWARD, _deltaTime);
-	if (_keys[GLFW_KEY_A])
-		_camera.processKeyboard(Camera::LEFT, _deltaTime);
-	if (_keys[GLFW_KEY_D])
-		_camera.processKeyboard(Camera::RIGHT, _deltaTime);
-	if (_editLight)
+	if (!_editLight)
 	{
-		if (_keys[GLFW_KEY_0])
-		{
-			if (_red)
-				for (auto light : _lights)
-					light->increaseColor(Color::Red);
-			if (_green)
-				for (auto light : _lights)
-					light->increaseColor(Color::Green);
-			if (_blue)
-				for (auto light : _lights)
-					light->increaseColor(Color::Blue);
-		}
-		if (_keys[GLFW_KEY_9])
-		{
-			if (_red)
-				for (auto light : _lights)
-					light->decreaseColor(Color::Red);
-			if (_green)
-				for (auto light : _lights)
-					light->decreaseColor(Color::Green);
-			if (_blue)
-				for (auto light : _lights)
-					light->decreaseColor(Color::Blue);
-		}
+		if (_keys[GLFW_KEY_W])
+			_camera.processKeyboard(Camera::FORWARD, _deltaTime);
+		if (_keys[GLFW_KEY_S])
+			_camera.processKeyboard(Camera::BACKWARD, _deltaTime);
+		if (_keys[GLFW_KEY_A])
+			_camera.processKeyboard(Camera::LEFT, _deltaTime);
+		if (_keys[GLFW_KEY_D])
+			_camera.processKeyboard(Camera::RIGHT, _deltaTime);
 	}
-
+	else
+		lightEditor();
 };
 
 void Application::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-	(void) scancode /* physical position of a key, not keyboard dependent */; (void) mods; /* bitmask if mod is press, shift, ctrl, alt, super... */
+	(void) scancode /* physical position of a key, not keyboard dependent */;
+	(void) mods; /* bitmask if mod is press, shift, ctrl, alt, super... */
 
     Application* app = static_cast<Application*>(glfwGetWindowUserPointer(window));
     if (!app)
@@ -174,92 +185,114 @@ void Application::keyCallback(GLFWwindow* window, int key, int scancode, int act
 
 	if (action == GLFW_RELEASE)
 	{
-		switch (key)
+		if (app->_editLight)
 		{
-			case GLFW_KEY_ESCAPE:
-				glfwSetWindowShouldClose(window, true);
-				break;
-			case GLFW_KEY_1:
-				app->_renderer->setMode(RenderMode::Phong);
-				break;
-			case GLFW_KEY_2:
-				app->_renderer->setMode(RenderMode::Face);
-				break;
-			case GLFW_KEY_3:
-				app->_renderer->setMode(RenderMode::Material);
-				break;
-			case GLFW_KEY_P:
-				app->_renderer->toggleWireframe();
-				break;
-			case GLFW_KEY_M:
-				app->_camera.changeMode();
-				break;
-			case GLFW_KEY_T:
-				app->_blending = -app->_blending;
-				app->_blend += app->_blending;
-				break;
-			case GLFW_KEY_X:
-				if (app->_isRotAxes.x)
-					app->_isRotAxes.x = 0.f;
-				else
-				{
-					app->_isRotAxes.x = 1.f;
-					app->_rotations.x = -app->_rotations.x;
-				}
-				break;
-			case GLFW_KEY_Y:
-				if (app->_isRotAxes.y)
-					app->_isRotAxes.y = 0.f;
-				else
-				{
-					app->_isRotAxes.y = 1.f;
-					app->_rotations.y = -app->_rotations.y;
-				}
-				break;
-			case GLFW_KEY_Z:
-				if (app->_isRotAxes.z)
-					app->_isRotAxes.z = 0.f;
-				else
-				{
-					app->_isRotAxes.z = 1.f;
-					app->_rotations.z = -app->_rotations.z;
-				}
-				break;
-			case GLFW_KEY_L:
-				app->toggleEditLight();
-				app->_red = false;
-				app->_green = false;
-				app->_blue = false;
-				break;
-			case GLFW_KEY_R:
-				if (app->_editLight)
-				{
+			Light* l;
+			switch(key)
+			{
+				case GLFW_KEY_ESCAPE:
+					glfwSetWindowShouldClose(window, true);
+					break;
+				case GLFW_KEY_A:
+					l = app->_lightManager.prev();
+					if (l)
+						app->_camera.changePosition(l->getPosition());
+					break;
+				case GLFW_KEY_D:
+					l = app->_lightManager.next();
+					if (l)
+						app->_camera.changePosition(l->getPosition());
+					break;
+				case GLFW_KEY_R:
 					app->_red = true;
 					app->_green = false;
 					app->_blue = false;
-				}
-				else
-				{
-					app->_camera.resetPosition();
-					app->_rotAngle = vec3(0,0,0);
-				}
-				break;
-			case GLFW_KEY_G:
-				if (app->_editLight)
-				{
+					break;
+				case GLFW_KEY_G:
 					app->_red = false;
 					app->_green = true;
 					app->_blue = false;
-				}
-				break;
-			case GLFW_KEY_B:
-				if (app->_editLight)
-				{
+					break;
+				case GLFW_KEY_B:
 					app->_red = false;
 					app->_green = false;
 					app->_blue = true;
-				}
-				break;
+					break;
+				case GLFW_KEY_N:
+					app->_lightManager.add(app->_camera.getPosition());
+					break;
+				case GLFW_KEY_E:
+					app->_lightManager.remove();
+					break;
+				case GLFW_KEY_L:
+					app->toggleEditLight();
+					break;
+			}
+		}
+		else
+		{
+			switch (key)
+			{
+				case GLFW_KEY_ESCAPE:
+					glfwSetWindowShouldClose(window, true);
+					break;
+				case GLFW_KEY_1:
+					app->_renderer->setMode(RenderMode::Phong);
+					break;
+				case GLFW_KEY_2:
+					app->_renderer->setMode(RenderMode::Face);
+					break;
+				case GLFW_KEY_3:
+					app->_renderer->setMode(RenderMode::Material);
+					break;
+				case GLFW_KEY_P:
+					app->_renderer->toggleWireframe();
+					break;
+				case GLFW_KEY_M:
+					app->_camera.changeMode();
+					break;
+				case GLFW_KEY_T:
+					app->_blending = -app->_blending;
+					app->_blend += app->_blending;
+					break;
+				case GLFW_KEY_X:
+					if (app->_isRotAxes.x)
+						app->_isRotAxes.x = 0.f;
+					else
+					{
+						app->_isRotAxes.x = 1.f;
+						app->_rotations.x = -app->_rotations.x;
+					}
+					break;
+				case GLFW_KEY_Y:
+					if (app->_isRotAxes.y)
+						app->_isRotAxes.y = 0.f;
+					else
+					{
+						app->_isRotAxes.y = 1.f;
+						app->_rotations.y = -app->_rotations.y;
+					}
+					break;
+				case GLFW_KEY_Z:
+					if (app->_isRotAxes.z)
+						app->_isRotAxes.z = 0.f;
+					else
+					{
+						app->_isRotAxes.z = 1.f;
+						app->_rotations.z = -app->_rotations.z;
+					}
+					break;
+				case GLFW_KEY_L:
+					app->toggleEditLight();
+					app->_red = false;
+					app->_green = false;
+					app->_blue = false;
+					break;
+				case GLFW_KEY_R:
+					app->_camera.resetPosition();
+					app->_rotAngle = vec3(0,0,0);
+					break;
+			}
 		}
 	}
 }
@@ -269,8 +302,6 @@ void Application::keyCallback(GLFWwindow* window, int key, int scancode, int act
 void Application::framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
 	(void) window;
-    // make sure the viewport matches the new window dimensions; note that width and 
-    // height will be significantly larger than specified on retina displays.
     glViewport(0, 0, width, height);
 }
 

@@ -6,7 +6,7 @@
 #include "Light.hpp"
 
 Renderer::Renderer(Mesh& mesh, std::string path) :
-	_shader("assets/shaders/phong.vs", "assets/shaders/phong.fs"),
+	_shader("assets/shaders/shader.vs", "assets/shaders/shader.fs"),
 	_mode(RenderMode::Phong),
 	_glMesh(mesh, path)
 {	

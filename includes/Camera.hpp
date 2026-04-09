@@ -45,6 +45,7 @@ class Camera
 		void onMouseScroll(double xoffset, double yoffset);
 		void resetPosition();
 		void changeMode();
+		void changePosition(const vec3&);
 		// getter
 		float getZoom() {return _zoom;};
 		float getAspectRatio() {return _aspectRatio;};

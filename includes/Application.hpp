@@ -9,8 +9,8 @@
 
 #include "ObjParser.hpp"
 #include "Camera.hpp"
+#include "LightManager.hpp"
 #include "Renderer.hpp"
-// #include "ObjMeshData.hpp"
 #include "GLMesh.hpp"
 #include "Light.hpp"
 
@@ -36,6 +36,7 @@ class Application
 	public:
 		Application(char *file);
 		void processInput();
+		void lightEditor();
 		~Application();
 		void run();
 
@@ -54,13 +55,14 @@ class Application
 		bool				_green = false;
 		bool				_blue = false;
 		bool				_editLight = false;
-	private:
+
+		LightManager		_lightManager;
 		Camera				_camera;
+	private:
 		Renderer*			_renderer;
 		ObjParser			_parser;
-		// ObjMeshData			_mesh;
 		GLFWwindow* 		_window;
-		std::vector<Light*>	_lights;
+		// std::vector<Light*>	_lights;
 		vec3				_isRotAxes;
 		vec3				_rotations;
 		vec3				_rotAngle;
