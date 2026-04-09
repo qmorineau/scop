@@ -72,6 +72,8 @@ void Application::initWindow()
     // configure global opengl state
     // -----------------------------
     glEnable(GL_DEPTH_TEST);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
 void Application::applyRotation()
@@ -102,9 +104,11 @@ void Application::renderLoop()
 		glfwSetKeyCallback(_window, Application::keyCallback);
 		processInput();
 		applyRotation();
+		if (_blend > 0.f && _blend < 1.f)
+			_blend += _blending;
 		 // Rendering
 		_renderer->beginFrame();
-		_renderer->draw(_camera, _rotAngle, _lights);
+		_renderer->draw(_camera, _rotAngle, _lights, _blend);
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
@@ -179,12 +183,9 @@ void Application::keyCallback(GLFWwindow* window, int key, int scancode, int act
 				app->_renderer->setMode(RenderMode::Phong);
 				break;
 			case GLFW_KEY_2:
-				app->_renderer->setMode(RenderMode::Texture);
-				break;
-			case GLFW_KEY_3:
 				app->_renderer->setMode(RenderMode::Face);
 				break;
-			case GLFW_KEY_4:
+			case GLFW_KEY_3:
 				app->_renderer->setMode(RenderMode::Material);
 				break;
 			case GLFW_KEY_P:
@@ -192,6 +193,10 @@ void Application::keyCallback(GLFWwindow* window, int key, int scancode, int act
 				break;
 			case GLFW_KEY_M:
 				app->_camera.changeMode();
+				break;
+			case GLFW_KEY_T:
+				app->_blending = -app->_blending;
+				app->_blend += app->_blending;
 				break;
 			case GLFW_KEY_X:
 				if (app->_isRotAxes.x)

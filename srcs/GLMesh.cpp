@@ -2,6 +2,9 @@
 
 GLMesh::GLMesh(Mesh& mesh, std::string path) : _mesh(mesh)
 {
+	int id = TextureLoader().loadTexture("assets/textures/awesomeface.png");
+	for (auto& submesh : _mesh.subMeshes)
+		submesh.material->_triPlanarId = id;
 	upload();
 	linkTexture(path);
 }
@@ -49,7 +52,6 @@ void GLMesh::linkTexture(std::string& path)
 	}
 	for (auto& submesh : _mesh.subMeshes)
 		submesh.material->_id = materials.at(submesh.material->_name); 
-
 }
 
 void GLMesh::draw(Shader& shader) const

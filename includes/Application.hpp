@@ -64,6 +64,8 @@ class Application
 		vec3				_isRotAxes;
 		vec3				_rotations;
 		vec3				_rotAngle;
+		float				_blend = 0.f;
+		float				_blending = -0.01f;
 		
 		std::string			_windowTitle;
 		float				_deltaTime = 0.0f;

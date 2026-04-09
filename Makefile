@@ -67,7 +67,7 @@ $(GLFW_LIB):
 	@cd $(GLFW_BUILD_DIR) && make -j$(shell nproc)
 
 test: all
-	./$(NAME) ./assets/resources/Ash/Ash_Ketchum.obj
+	./$(NAME) ./assets/resources/teapot.obj
 
 .PHONY: all re clean fclean
 

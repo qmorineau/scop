@@ -14,6 +14,22 @@ struct Vector2
 		return (x == other.x && y == other.y);
 	}
 
+	Vector2 operator+(const Vector2& other) const
+	{
+		return (Vector2(x + other.x, y + other.y));
+	}
+
+	Vector2 operator*(const float s)
+	{
+		return (Vector2(this->x * s, this->y * s));
+	}
+
+	Vector2 operator*=(const float s)
+	{
+		x *= s;
+		y *= s;
+		return (*this);
+	}
 
 	// To use Hash Table w/ vec2
 	struct Vec2Hash
@@ -39,5 +55,13 @@ inline std::ostream& operator<<(std::ostream& out_stream, const Vector2& vec)
 	out_stream << "[" << vec.x << " ," << vec.y << "]";
 	return (out_stream);
 };
+
+inline Vector2 operator*=(const float s, Vector2& v)
+{
+	return (Vector2(
+		v.x * s,
+		v.y * s
+	));
+}
 
 #endif

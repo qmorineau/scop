@@ -56,9 +56,9 @@ void MeshBuilder::convertToGpuData(std::unordered_map<std::string, Material>& ma
 
 void MeshBuilder::addTriangle(const VertexIndex& a, const VertexIndex& b, const VertexIndex& c, Material& mat)
 {
-	const VertexIndex index[3] = {a, b, c};
-	
+	const VertexIndex index[3] = {a, b, c};	
 	float rand = (float) std::rand() / (float)RAND_MAX;
+
 	for (int i = 0; i < 3; i++)
 	{
 		const vec3& pos = _positions[index[i].vertex];

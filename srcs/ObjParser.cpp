@@ -35,7 +35,7 @@ ObjParser::ObjParser(std::string file) :
 		_pathFolder = _pathFolder.substr(0, pos + 1);
 
 	std::string defaultMaterialName("__default_42scop_material");
-	_materials.try_emplace("__default_42scop_material", Material(defaultMaterialName));
+	_materials.try_emplace(defaultMaterialName, Material(defaultMaterialName));
 	materialNames.push_back(defaultMaterialName);
 
 	if (!_file.is_open())

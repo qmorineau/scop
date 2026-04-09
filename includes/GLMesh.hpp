@@ -23,8 +23,6 @@ class GLMesh
 	private:
 		GLuint		_vao = 0;
 		GLuint		_vbo = 0;
-		// GLuint		_ebo = 0;
-		// GLsizei		_indexCount = 0;
 		Mesh&	_mesh;
 
 		void upload();

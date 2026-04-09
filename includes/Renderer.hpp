@@ -10,11 +10,11 @@
 struct Mesh;
 class Camera;
 class Light;
+class Material;
 
 enum class RenderMode
 {
 	Phong,
-	Texture,
 	Face,
 	Material
 };
@@ -27,14 +27,15 @@ class Renderer
 
 		void beginFrame();
 		void setMode(RenderMode mode);
-		void draw(Camera& camera, vec3& angle, std::vector<Light*> lights);
+		void draw(Camera& camera, vec3& angle, std::vector<Light*> lights, float blend);
 		void toggleWireframe() {_wireframe = !_wireframe;}
 	private:
-		Shader		_phong;
+		int			_defaultTexture;
+		Shader		_shader;
 		RenderMode	_mode;
 		bool		_wireframe = false;
 		GLMesh		_glMesh;
-
+		
 		void configureMode();
 };
 
