@@ -4,9 +4,11 @@
 #include <iostream>
 #include <string>
 #include <exception>
+
 #include <glad/glad.h>
 #include <GLFW/glfw3.h> 
 
+#include "KeyHandler.hpp"
 #include "ObjParser.hpp"
 #include "Camera.hpp"
 #include "LightManager.hpp"
@@ -43,34 +45,39 @@ class Application
 		~Application();
 		void run();
 
-		// static void processInput(GLFWwindow *window, Camera &camera, const float deltaTime);
 		static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
 		static void framebuffer_size_callback(GLFWwindow* window, int width, int height);
-		static void mouse_callback(GLFWwindow* window, double xposIn, double yposIn);
-		static void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
-
-		void toggleEditLight() {_editLight = !_editLight;};
+		static void mouseCallback(GLFWwindow* window, double xposIn, double yposIn);
+		static void scrollCallback(GLFWwindow* window, double xoffset, double yoffset);
+		bool isLightEditing() {return _editLight;};
+		void closeWindow() {glfwSetWindowShouldClose(_window, true);};
+		void setColor(LightManager::ActiveColor c) {_lightManager.setColor(c);};
+		void toggleEditLight()
+		{
+			_editLight = !_editLight;
+			_lightManager.setColor(LightManager::ActiveColor::None);
+		};
 		void setWindowTitle(std::string s) {_windowTitle = s;};
+		float	getDelta() {return _deltaTime;};
+		Renderer*	getRenderer() {return _renderer;};
 
-		bool _keys[1024] = {false};
-		// put in private or in another class
-		bool				_red = false;
-		bool				_green = false;
-		bool				_blue = false;
+		LightManager& getLightManager() { return _lightManager;};
+		void setKey(int key, bool state) {_keyHandler.setKey(key, state);};
+		GLFWwindow*	getWindow() {return _window;};
 		bool				_editLight = false;
 
 		LightManager		_lightManager;
 		Camera				_camera;
-	private:
-		Renderer*			_renderer;
-		ObjParser			_parser;
-		GLFWwindow* 		_window;
-		// std::vector<Light*>	_lights;
-		vec3				_isRotAxes;
-		vec3				_rotations;
 		vec3				_rotAngle;
 		float				_blend = 0.f;
 		float				_blending = -0.01f;
+		KeyHandler			_keyHandler;
+		Renderer*			_renderer;
+		ObjParser			_parser;
+		GLFWwindow* 		_window;
+		vec3				_isRotAxes;
+		vec3				_rotations;
+	private:
 		
 		std::string			_windowTitle;
 		float				_deltaTime = 0.0f;
