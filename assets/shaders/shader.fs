@@ -123,22 +123,13 @@ void main()
 		baseColor *= texColor;
 	}
 
-	// if (u_useTexture && material.hasTexture)
-	// {
-	// 	float sharpness = 4;
-	// 	float scale = 10;
-	// 	vec3 texColor = triplanarTexture(material_mapKd, vObjectPos, vObjectNormal, scale, sharpness);
-	// 	baseColor *= texColor;
-	// }
-
-
     // Color override mode
     if (u_overrideColor)
         baseColor = FaceColor;
 
 
 	// Apply final blend between original color and textured result
-	float sharpness = 4;
+	float sharpness = 15;
 	float scale = 10;
 	vec3 texColor = triplanarTexture(material_triPlanar, vObjectPos, vObjectNormal, scale, sharpness);
 	baseColor = mix(baseColor, texColor, u_textureBlend);

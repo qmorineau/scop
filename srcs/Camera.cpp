@@ -5,8 +5,8 @@ Camera::Camera(int width, int height, vec3 position, vec3 up, float yaw, float p
 	_width(width), 
 	_height(height),
 	_target(0, 0, 0),
-	_baseYaw(yaw),
-	_basePitch(pitch),
+	// _baseYaw(yaw),
+	// _basePitch(pitch),
 	_baseFront(_front),
 	_baseUp(up),
 	_basePosition(position)
@@ -29,8 +29,10 @@ void Camera::resize(int width, int height)
 
 void Camera::moveSphereMode(CameraMovement dir, float deltaTime)
 {
+	int radius = 3;
 	float angle = _movementSpeed * deltaTime;
 
+	angle = math::degrees(angle);
     if (dir == LEFT)
 		_yaw -= angle;
     if (dir == RIGHT)
@@ -41,20 +43,18 @@ void Camera::moveSphereMode(CameraMovement dir, float deltaTime)
 		_pitch -= angle;
 
     // clamp pitch
-	float clamp = math::radians(89.f);
+	float clamp = 89.f;
     _pitch = _pitch < -clamp ? -clamp : _pitch > clamp ? clamp : _pitch;
 
-    _position.x = _target.x + 3 * cos(_pitch) * cos(_yaw);
-    _position.y = _target.y + 3 * sin(_pitch);
-    _position.z = _target.z + 3 * cos(_pitch) * sin(_yaw);
+	float yawRad = math::radians(_yaw);
+	float pitchRad = math::radians(_pitch);
 
-    // always look at target
-    _front = math::normalize(_target - _position);
-    _right = math::normalize(math::cross(_front, _worldUp));
-    _up    = math::normalize(math::cross(_right, _front));
+	vec3 newPos;
+    newPos.x = _target.x + radius * cos(pitchRad) * cos(yawRad);
+    newPos.y = _target.y + radius * sin(pitchRad);
+    newPos.z = _target.z + radius * cos(pitchRad) * sin(yawRad);
 
-	// _yaw   = math::degrees(atan2(_front.z, _front.x));
-	// _pitch = math::degrees(asin(_front.y));
+	changePosition(newPos);
 }
 
 void Camera::moveFreeMode(CameraMovement direction, float deltaTime)
@@ -110,11 +110,8 @@ void Camera::onMouseMove(double xposIn, double yposIn)
 		_yaw += xoffset;
 		_pitch += yoffset;
 
-		// make sure that when pitch is out of bounds, screen doesn't get flipped
-		if (_pitch > 89.0f)
-			_pitch = 89.0f;
-		if (_pitch < -89.0f)
-			_pitch = -89.0f;
+		float clamp = 89.f;
+    	_pitch = _pitch < -clamp ? -clamp : _pitch > clamp ? clamp : _pitch;
 
 		updateCameraVectors();
 	}
@@ -148,31 +145,33 @@ void Camera::resetPosition()
 	changePosition(_basePosition);
 }
 
+// void Camera::updateYaw
+
 void Camera::changeMode()
 {
-	resetPosition();
+	_firstMouse = true;
 	switch (_mode)
 	{
 		case CameraMode::SPHERE:
 			_mode = CameraMode::FREE;
+			_yaw   = math::degrees(atan2(_front.z, _front.x));
+    		_pitch = math::degrees(asin(_front.y));
+			updateCameraVectors();
 			break;	
 		case CameraMode::FREE:
 			_mode = CameraMode::SPHERE;
+			resetPosition();
+			vec3 rel = math::normalize(_position - _target);
+			_yaw   = math::degrees(atan2(rel.z, rel.x));
+			_pitch = math::degrees(asin(rel.y));
 			break;
 	}
-	updateCameraVectors();
 }
 
 void Camera::changePosition(const vec3& pos)
 {
     _position = pos;
-
-    // Look at target
     _front = math::normalize(_target - _position);
     _right = math::normalize(math::cross(_front, _worldUp));
     _up    = math::normalize(math::cross(_right, _front));
-
-    // Sync yaw/pitch with new orientation
-    // _yaw   = math::degrees(atan2(_front.z, _front.x));
-    // _pitch = math::degrees(asin(_front.y));
 }

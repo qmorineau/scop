@@ -89,7 +89,16 @@ void Application::renderLoop()
 		_deltaTime = currentFrame - _lastFrame;
 		_lastFrame = currentFrame;
 		if (_editLight)
-			_windowTitle = "Scop [Edit Light Mode] ";
+		{
+			if (_red)
+				_windowTitle = "Scop [Edit Light Mode][RED] ";
+			else if (_green)
+				_windowTitle = "Scop [Edit Light Mode][GREEN] ";
+			else if (_blue)
+				_windowTitle = "Scop [Edit Light Mode][BLUE] ";
+			else
+				_windowTitle = "Scop [Edit Light Mode] ";
+		}
 		else
 			_windowTitle = "Scop ";
 		_windowTitle.append("[" + std::to_string(static_cast<int>(1 / _deltaTime)) + " fps]");

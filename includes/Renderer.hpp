@@ -10,7 +10,7 @@
 struct Mesh;
 class Camera;
 class Light;
-class Material;
+struct Material;
 
 enum class RenderMode
 {
@@ -30,7 +30,6 @@ class Renderer
 		void draw(Camera& camera, vec3& angle, std::vector<Light*> lights, float blend);
 		void toggleWireframe() {_wireframe = !_wireframe;}
 	private:
-		int			_defaultTexture;
 		Shader		_shader;
 		RenderMode	_mode;
 		bool		_wireframe = false;

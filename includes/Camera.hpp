@@ -76,8 +76,8 @@ class Camera
 		CameraMode	_mode;
 
 		const vec3	_target;
-		const float	_baseYaw;
-		const float _basePitch;
+		// const float	_baseYaw;
+		// const float _basePitch;
 		const vec3	_baseFront;
 		const vec3 	_baseUp;
 		const vec3	_basePosition;
