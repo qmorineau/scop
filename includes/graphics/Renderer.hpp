@@ -19,6 +19,13 @@ enum class RenderMode
 	Material
 };
 
+enum class FaceRendering
+{
+	VertexOnly,
+	Wireframe,
+	Full
+};
+
 class Renderer
 {
 	public:
@@ -27,13 +34,13 @@ class Renderer
 
 		void beginFrame();
 		void setMode(RenderMode mode);
+		void changeFaceRendering();
 		void draw(Camera& camera, vec3& angle, std::vector<Light*> lights, float blend);
-		void toggleWireframe() {_wireframe = !_wireframe;}
 	private:
-		Shader		_shader;
-		RenderMode	_mode;
-		bool		_wireframe = false;
-		GLMesh		_glMesh;
+		Shader			_shader;
+		RenderMode		_mode;
+		FaceRendering	_faceRender;
+		GLMesh			_glMesh;
 		
 		void configureMode();
 };

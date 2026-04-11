@@ -4,7 +4,7 @@ CC = cc
 
 # Flags
 CFLAGS = -Wall -Wextra -Werror
-CPPFLAGS = -Wall -Wextra -Werror -MMD -g -std=c++17 #-fsanitize=address -fsanitize=undefined
+CPPFLAGS = -Wall -Wextra -Werror -MMD -g -std=c++17 -fsanitize=address
 
 # Project Paths
 SRC_DIR = srcs
@@ -21,6 +21,11 @@ LIBS = $(GLFW_LIB) -lGL -ldl -lpthread -lX11 -lXrandr -lXinerama -lXcursor -lXi
 
 # Include Paths
 INCLUDES = -I $(INC_DIR) \
+			-I $(INC_DIR)/core \
+			-I $(INC_DIR)/graphics \
+			-I $(INC_DIR)/math \
+			-I $(INC_DIR)/parser \
+			-I $(INC_DIR)/utils \
 			-I $(GLAD_DIR)/include \
 			-I $(GLFW_DIR)/include
 

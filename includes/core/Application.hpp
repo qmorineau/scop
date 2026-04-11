@@ -14,7 +14,6 @@
 #include "LightManager.hpp"
 #include "Renderer.hpp"
 #include "GLMesh.hpp"
-#include "Light.hpp"
 
 #define SCR_WIDTH 1920
 #define SCR_HEIGHT 1080
@@ -46,7 +45,7 @@ class Application
 		void run();
 
 		static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
-		static void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+		static void framebufferSizeCallback(GLFWwindow* window, int width, int height);
 		static void mouseCallback(GLFWwindow* window, double xposIn, double yposIn);
 		static void scrollCallback(GLFWwindow* window, double xoffset, double yoffset);
 		bool isLightEditing() {return _editLight;};
@@ -82,10 +81,13 @@ class Application
 		std::string			_windowTitle;
 		float				_deltaTime = 0.0f;
 		float				_lastFrame = 0.0f;
+		const float			_rotationSpeed = 100.f;
+		const float			_blendingSpeed = 100.f;
 
 		void initWindow();
 		void applyRotation();
 		void renderLoop();
+		void manageWindowTitle();
 };
 
 #endif

@@ -62,32 +62,36 @@ void LightManager::remove()
 		_activeIndex = _lights.size() -1;
 };
 
-void LightManager::intensityUp()
+void LightManager::intensityUp(float deltaTime)
 {
+	float speed = deltaTime * _changeSpeed;
 	if (_activeIndex < 0)
 		return;
-	_lights[_activeIndex]->intensityUp();
+	_lights[_activeIndex]->intensityUp(speed);
 };
 
-void LightManager::intensityDown()
+void LightManager::intensityDown(float deltaTime)
 {
+	float speed = deltaTime * _changeSpeed;
 	if (_activeIndex < 0)
 		return;
-	_lights[_activeIndex]->intensityDown();
+	_lights[_activeIndex]->intensityDown(speed);
 };
 
-void LightManager::colorUp(Color color)
+void LightManager::colorUp(Color color, float deltaTime)
 {
+	float speed = deltaTime * _changeSpeed;
 	if (_activeIndex < 0)
 		return;
-	_lights[_activeIndex]->colorUp(color);
+	_lights[_activeIndex]->colorUp(color, speed);
 };
 
-void LightManager::colorDown(Color color)
+void LightManager::colorDown(Color color, float deltaTime)
 {
+	float speed = deltaTime * _changeSpeed;
 	if (_activeIndex < 0)
 		return;
-	_lights[_activeIndex]->colorDown(color);
+	_lights[_activeIndex]->colorDown(color, speed);
 };
 
 void LightManager::changeColor(const vec3& colors)

@@ -41,12 +41,12 @@ class KeyHandler
 		void rotateY(Application *);
 		void rotateZ(Application *);
 		void resetCam(Application *);
-		void toggleWireframe(Application *);
+		void changeFaceRendering(Application *);
 		void changeMode(Application *);
 
 	private:
 		bool _keys[1024] = {false};
-		void lightEditor(LightManager& manager);
+		void lightEditor(LightManager& manager, float deltaTime);
 
 };
 

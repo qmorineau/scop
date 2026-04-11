@@ -1,4 +1,5 @@
 #include "GLMesh.hpp"
+#include "TextureLoader.hpp"
 
 GLMesh::GLMesh(Mesh& mesh, std::string path) : _mesh(mesh)
 {

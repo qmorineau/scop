@@ -19,7 +19,7 @@ void KeyHandler::handleKeys(Application* app)
 	else
 	{
 		LightManager& manager = app->getLightManager();
-		lightEditor(manager);
+		lightEditor(manager, app->getDelta());
 	}
 };
 
@@ -37,15 +37,15 @@ const std::unordered_map<int, KeyHandler::Handler> KeyHandler::lightHandlers =
 	{GLFW_KEY_D, &KeyHandler::nextLight}
 };
 
-void KeyHandler::closeWindow(Application* app)		{app->closeWindow();}
-void KeyHandler::addLight(Application* app)			{app->_lightManager.add(app->_camera.getPosition());}
-void KeyHandler::deleteLight(Application* app)		{app->_lightManager.remove();}
-void KeyHandler::editRed(Application* app)			{app->setColor(LightManager::ActiveColor::Red);}
-void KeyHandler::editGreen(Application* app)		{app->setColor(LightManager::ActiveColor::Green);}
-void KeyHandler::editBlue(Application* app)			{app->setColor(LightManager::ActiveColor::Blue);}
-void KeyHandler::toggleLightMod(Application* app)	{app->toggleEditLight();}
-void KeyHandler::toggleWireframe(Application* app)	{app->getRenderer()->toggleWireframe();}
-void KeyHandler::changeMode(Application* app)		{app->_camera.changeMode();}
+void KeyHandler::closeWindow(Application* app)			{app->closeWindow();}
+void KeyHandler::addLight(Application* app)				{app->_lightManager.add(app->_camera.getPosition());}
+void KeyHandler::deleteLight(Application* app)			{app->_lightManager.remove();}
+void KeyHandler::editRed(Application* app)				{app->setColor(LightManager::ActiveColor::Red);}
+void KeyHandler::editGreen(Application* app)			{app->setColor(LightManager::ActiveColor::Green);}
+void KeyHandler::editBlue(Application* app)				{app->setColor(LightManager::ActiveColor::Blue);}
+void KeyHandler::toggleLightMod(Application* app)		{app->toggleEditLight();}
+void KeyHandler::changeFaceRendering(Application* app)	{app->getRenderer()->changeFaceRendering();}
+void KeyHandler::changeMode(Application* app)			{app->_camera.changeMode();}
 void KeyHandler::nextLight(Application* app)
 {
 	Light* l = app->_lightManager.next();
@@ -67,7 +67,7 @@ const std::unordered_map<int, KeyHandler::Handler> KeyHandler::handlers =
 	{GLFW_KEY_1, &KeyHandler::setPhong},
 	{GLFW_KEY_2, &KeyHandler::setFace},
 	{GLFW_KEY_3, &KeyHandler::setMaterial},
-	{GLFW_KEY_P, &KeyHandler::toggleWireframe},
+	{GLFW_KEY_P, &KeyHandler::changeFaceRendering},
 	{GLFW_KEY_M, &KeyHandler::changeMode},
 	{GLFW_KEY_T, &KeyHandler::applyTexture},
 	{GLFW_KEY_X, &KeyHandler::rotateX},
@@ -155,7 +155,7 @@ void KeyHandler::keyCallback(GLFWwindow* window, int key, int scancode, int acti
 	}
 }
 
-void KeyHandler::lightEditor(LightManager& manager)
+void KeyHandler::lightEditor(LightManager& manager, float deltaTime)
 {
 	if (_keys[GLFW_KEY_1])
 		manager.changeColor(vec3(1, 1, 1));
@@ -178,13 +178,13 @@ void KeyHandler::lightEditor(LightManager& manager)
 		switch (manager.getColor())
 		{
 			case LightManager::ActiveColor::Red:
-				manager.colorDown(Color::Red);
+				manager.colorDown(Color::Red, deltaTime);
 				break;
 			case LightManager::ActiveColor::Green:
-				manager.colorDown(Color::Green);
+				manager.colorDown(Color::Green, deltaTime);
 				break;
 			case LightManager::ActiveColor::Blue:
-				manager.colorDown(Color::Blue);
+				manager.colorDown(Color::Blue, deltaTime);
 				break;
 			default:
 				break;
@@ -195,20 +195,20 @@ void KeyHandler::lightEditor(LightManager& manager)
 		switch (manager.getColor())
 		{
 			case LightManager::ActiveColor::Red:
-				manager.colorUp(Color::Red);
+				manager.colorUp(Color::Red, deltaTime);
 				break;
 			case LightManager::ActiveColor::Green:
-				manager.colorUp(Color::Green);
+				manager.colorUp(Color::Green, deltaTime);
 				break;
 			case LightManager::ActiveColor::Blue:
-				manager.colorUp(Color::Blue);
+				manager.colorUp(Color::Blue, deltaTime);
 				break;
 			default:
 				break;
 		}
 	}
 	if (_keys[GLFW_KEY_W])
-		manager.intensityUp();
+		manager.intensityUp(deltaTime);
 	if (_keys[GLFW_KEY_S])
-		manager.intensityDown();
+		manager.intensityDown(deltaTime);
 }

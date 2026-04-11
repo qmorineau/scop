@@ -53,7 +53,7 @@ void Application::initWindow()
 	glfwSetWindowUserPointer(_window, this);
 
     glfwMakeContextCurrent(_window);
-    glfwSetFramebufferSizeCallback(_window, framebuffer_size_callback);
+    glfwSetFramebufferSizeCallback(_window, framebufferSizeCallback);
 	glfwSetCursorPosCallback(_window, mouseCallback);
     glfwSetScrollCallback(_window, scrollCallback);
 
@@ -72,50 +72,54 @@ void Application::initWindow()
 void Application::applyRotation()
 {
 	if (_isRotAxes.x)
-		_rotAngle.x += _rotations.x;
+		_rotAngle.x += _rotations.x * _rotationSpeed * _deltaTime;
 	if (_isRotAxes.y)
-		_rotAngle.y += _rotations.y;
+		_rotAngle.y += _rotations.y * _rotationSpeed * _deltaTime;
 	if (_isRotAxes.z)
-		_rotAngle.z += _rotations.z;
+		_rotAngle.z += _rotations.z * _rotationSpeed * _deltaTime;
+}
+
+void Application::manageWindowTitle()
+{
+	if (_editLight)
+	{
+		switch (_lightManager.getColor())
+		{
+			case LightManager::ActiveColor::Red:
+				_windowTitle = "Scop [Edit Light Mode][RED] ";
+				break;
+			case LightManager::ActiveColor::Green:
+				_windowTitle = "Scop [Edit Light Mode][GREEN] ";
+				break;
+			case LightManager::ActiveColor::Blue:
+				_windowTitle = "Scop [Edit Light Mode][BLUE] ";
+				break;
+			default:
+				_windowTitle = "Scop [Edit Light Mode] ";
+				break;
+		}
+	}
+	else
+		_windowTitle = "Scop ";
+	_windowTitle.append("[" + std::to_string(static_cast<int>(1 / _deltaTime)) + " fps]");
+	glfwSetWindowTitle(_window, _windowTitle.c_str());
 }
 
 void Application::renderLoop()
 {
-	// glfwSwapInterval(0); // disable vsync
+	glfwSwapInterval(0); // disable vsync
 
 	while (!glfwWindowShouldClose(_window))
 	{
 		float currentFrame = static_cast<float>(glfwGetTime());
 		_deltaTime = currentFrame - _lastFrame;
 		_lastFrame = currentFrame;
-		if (_editLight)
-		{
-			switch (_lightManager.getColor())
-			{
-				case LightManager::ActiveColor::Red:
-					_windowTitle = "Scop [Edit Light Mode][RED] ";
-					break;
-				case LightManager::ActiveColor::Green:
-					_windowTitle = "Scop [Edit Light Mode][GREEN] ";
-					break;
-				case LightManager::ActiveColor::Blue:
-					_windowTitle = "Scop [Edit Light Mode][BLUE] ";
-					break;
-				default:
-					_windowTitle = "Scop [Edit Light Mode] ";
-					break;
-			}
-		}
-		else
-			_windowTitle = "Scop ";
-		_windowTitle.append("[" + std::to_string(static_cast<int>(1 / _deltaTime)) + " fps]");
-		glfwSetWindowTitle(_window, _windowTitle.c_str());
+		manageWindowTitle();
 		glfwSetKeyCallback(_window, KeyHandler::keyCallback);
 		_keyHandler.handleKeys(this);
 		applyRotation();
 		if (_blend > 0.f && _blend < 1.f)
-			_blend += _blending;
-		 // Rendering
+			_blend += _blending * _blendingSpeed * _deltaTime;
 		_renderer->beginFrame();
 		_renderer->draw(_camera, _rotAngle, _lightManager.getLights(), _blend);
 
@@ -126,9 +130,8 @@ void Application::renderLoop()
 	}
 }
 
-// glfw: whenever the window size changed (by OS or user resize) this callback function executes
-// ---------------------------------------------------------------------------------------------
-void Application::framebuffer_size_callback(GLFWwindow* window, int width, int height)
+// Callback for any resize window event
+void Application::framebufferSizeCallback(GLFWwindow* window, int width, int height)
 {
 	(void) window;
     glViewport(0, 0, width, height);
@@ -141,8 +144,7 @@ void Application::mouseCallback(GLFWwindow* window, double xposIn, double yposIn
 	    app->_camera.onMouseMove(xposIn, yposIn);
 }
 
-// glfw: whenever the mouse scroll wheel scrolls, this callback is called
-// ----------------------------------------------------------------------
+// Callback for mouse scroll event
 void Application::scrollCallback(GLFWwindow* window, double xoffset, double yoffset)
 {
 	Application* app = static_cast<Application*>(glfwGetWindowUserPointer(window));

@@ -8,9 +8,9 @@
 Renderer::Renderer(Mesh& mesh, std::string path) :
 	_shader("assets/shaders/shader.vs", "assets/shaders/shader.fs"),
 	_mode(RenderMode::Phong),
+	_faceRender(FaceRendering::Full),
 	_glMesh(mesh, path)
-{	
-};
+{};
 
 Renderer::~Renderer() {};
 
@@ -22,8 +22,12 @@ void Renderer::beginFrame()
 
 void Renderer::draw(Camera& camera, vec3& angle, std::vector<Light*> lights, float blend)
 {
-	// Wireframe
-	glPolygonMode(GL_FRONT_AND_BACK, _wireframe ? GL_LINE : GL_FILL);
+	if (_faceRender == FaceRendering::VertexOnly)
+		glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
+	else if (_faceRender == FaceRendering::Wireframe)
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	else
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 	// Use shader
     _shader.use();
@@ -44,16 +48,13 @@ void Renderer::draw(Camera& camera, vec3& angle, std::vector<Light*> lights, flo
 	// Configure Rendering Mode
 	configureMode();
 
-	if (true) // to change
+	_shader.setInt("lightCount", static_cast<int>(lights.size()));
+	for (size_t i = 0; i < lights.size(); i++)
 	{
-		_shader.setInt("lightCount", static_cast<int>(lights.size()));
-		for (size_t i = 0; i < lights.size(); i++)
-		{
-			_shader.setVec3("lights[" + std::to_string(i) + "].position", lights[i]->getPosition());
-			_shader.setVec3("lights[" + std::to_string(i) + "].color", lights[i]->getColor());
-			_shader.setFloat("lights[" + std::to_string(i) + "].intensity", lights[i]->getIntensity());
-			_shader.setBool("lights[" + std::to_string(i) + "].enabled", true);
-		}
+		_shader.setVec3("lights[" + std::to_string(i) + "].position", lights[i]->getPosition());
+		_shader.setVec3("lights[" + std::to_string(i) + "].color", lights[i]->getColor());
+		_shader.setFloat("lights[" + std::to_string(i) + "].intensity", lights[i]->getIntensity());
+		_shader.setBool("lights[" + std::to_string(i) + "].enabled", true);
 	}
 	_glMesh.draw(_shader);
 }
@@ -61,6 +62,22 @@ void Renderer::draw(Camera& camera, vec3& angle, std::vector<Light*> lights, flo
 void Renderer::setMode(RenderMode mode)
 {
 	_mode = mode;
+}
+
+void Renderer::changeFaceRendering()
+{
+	switch (_faceRender)
+	{
+		case FaceRendering::VertexOnly:
+			_faceRender = FaceRendering::Wireframe;
+			break;
+		case FaceRendering::Wireframe:
+			_faceRender = FaceRendering::Full;
+			break;
+		case FaceRendering::Full:
+			_faceRender = FaceRendering::VertexOnly;
+			break;
+	}
 }
 
 void Renderer::configureMode()

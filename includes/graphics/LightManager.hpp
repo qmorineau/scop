@@ -26,10 +26,10 @@ class LightManager
 
 		void	remove();
 		void	add(const vec3& pos);
-		void	intensityUp();
-		void	intensityDown();
-		void	colorUp(Color);
-		void	colorDown(Color);
+		void	intensityUp(float deltaTime);
+		void	intensityDown(float deltaTime);
+		void	colorUp(Color, float deltaTime);
+		void	colorDown(Color, float deltaTime);
 		void	changeColor(const vec3&);
 
 		const std::vector<Light*>&	getLights();
@@ -39,6 +39,7 @@ class LightManager
 		ssize_t				_activeIndex = -1;
 		std::vector<Light*>	_lights;
 		ActiveColor			_activeColor = ActiveColor::None;
+		const float			_changeSpeed = 100.f;
 };
 
 #endif

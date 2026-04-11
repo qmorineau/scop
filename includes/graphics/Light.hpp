@@ -15,10 +15,10 @@ class Light
 	public:
 		Light(vec3 position, vec3 color, float intensity);
 
-		void colorUp(Color color);
-		void colorDown(Color color);
-		void intensityUp();
-		void intensityDown();
+		void colorUp(Color color, float speed);
+		void colorDown(Color color, float speed);
+		void intensityUp(float speed);
+		void intensityDown(float speed);
 		void changeColor(const vec3& colors);
 
 		vec3 getPosition() {return _position;};

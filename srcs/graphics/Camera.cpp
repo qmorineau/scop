@@ -5,8 +5,6 @@ Camera::Camera(int width, int height, vec3 position, vec3 up, float yaw, float p
 	_width(width), 
 	_height(height),
 	_target(0, 0, 0),
-	// _baseYaw(yaw),
-	// _basePitch(pitch),
 	_baseFront(_front),
 	_baseUp(up),
 	_basePosition(position)
@@ -99,13 +97,12 @@ void Camera::onMouseMove(double xposIn, double yposIn)
 		}
 
 		float xoffset = xpos - _lastX;
-		float yoffset = _lastY - ypos; // reversed since y-coordinates go from bottom to top
+		float yoffset = _lastY - ypos;
 		_lastX = xpos;
 		_lastY = ypos;
 
-		float sensitivity = 0.1f; // change this value to your liking
-		xoffset *= sensitivity;
-		yoffset *= sensitivity;
+		xoffset *= _mouseSensitivity;
+		yoffset *= _mouseSensitivity;
 
 		_yaw += xoffset;
 		_pitch += yoffset;
