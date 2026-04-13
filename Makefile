@@ -64,11 +64,13 @@ clean:
 fclean: clean
 	@rm -rf $(NAME)
 	@echo "Clear binary file"
+	@rm -rf $(GLFW_BUILD_DIR)
+	@echo "Clear GLFW build folder"
 
-$(GLFW_DIR):
-	git submodule update --init --recursive
+submodules:
+	@git submodule update --init --recursive
 
-$(GLFW_LIB): | $(GLFW_DIR)
+$(GLFW_LIB): submodules
 	@echo "Building GLFW"
 	@mkdir -p $(GLFW_BUILD_DIR)
 	@cd $(GLFW_BUILD_DIR) && cmake .. -DGLFW_BUILD_DOCS=OFF -DGLFW_BUILD_TESTS=OFF -DGLFW_BUILD_EXAMPLES=OFF
@@ -77,6 +79,6 @@ $(GLFW_LIB): | $(GLFW_DIR)
 test: all
 	./$(NAME) ./assets/resources/teapot.obj
 
-.PHONY: all re clean fclean
+.PHONY: all re clean fclean submodules test
 
 -include $(DEP)
