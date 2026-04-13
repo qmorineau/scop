@@ -2,14 +2,14 @@
 #include "GLMesh.hpp"
 #include "Matrix4.hpp"
 #include "Math.hpp"
+#include "Scene.hpp"
 #include "Camera.hpp"
 #include "Light.hpp"
 
-Renderer::Renderer(Mesh& mesh, std::string path) :
+Renderer::Renderer() :
 	_shader("assets/shaders/shader.vs", "assets/shaders/shader.fs"),
 	_mode(RenderMode::Phong),
-	_faceRender(FaceRendering::Full),
-	_glMesh(mesh, path)
+	_faceRender(FaceRendering::Full)
 {};
 
 Renderer::~Renderer() {};
@@ -20,7 +20,7 @@ void Renderer::beginFrame()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-void Renderer::draw(Camera& camera, vec3& angle, std::vector<Light*> lights, float blend)
+void Renderer::draw(Scene* scene)
 {
 	if (_faceRender == FaceRendering::VertexOnly)
 		glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
@@ -33,13 +33,15 @@ void Renderer::draw(Camera& camera, vec3& angle, std::vector<Light*> lights, flo
     _shader.use();
 
 	// Camera
+	Camera& camera = scene->camera();
     mat4 projection = mat4::perspective(math::radians(camera.getZoom()), camera.getAspectRatio(), 0.001f, 100.0f);
     _shader.setMat4("projection", projection);
     _shader.setMat4("view", camera.getViewMatrix());
 	_shader.setVec3("viewPos", vec3(camera.getPosition()));
-	_shader.setFloat("u_textureBlend", blend);
+	_shader.setFloat("u_textureBlend", scene->blend());
 
 	// Model
+	const vec3 angle = scene->rotAngle();
 	mat4 model = mat4::rotateX(angle.x)
 		.mul_mat(mat4::rotateY(angle.y))
 		.mul_mat(mat4::rotateZ(angle.z));
@@ -48,6 +50,7 @@ void Renderer::draw(Camera& camera, vec3& angle, std::vector<Light*> lights, flo
 	// Configure Rendering Mode
 	configureMode();
 
+	const std::vector<Light*> lights = scene->lights().getLights();
 	_shader.setInt("lightCount", static_cast<int>(lights.size()));
 	for (size_t i = 0; i < lights.size(); i++)
 	{
@@ -56,7 +59,8 @@ void Renderer::draw(Camera& camera, vec3& angle, std::vector<Light*> lights, flo
 		_shader.setFloat("lights[" + std::to_string(i) + "].intensity", lights[i]->getIntensity());
 		_shader.setBool("lights[" + std::to_string(i) + "].enabled", true);
 	}
-	_glMesh.draw(_shader);
+	const GLMesh mesh = scene->mesh();
+	mesh.draw(_shader);
 }
 
 void Renderer::setMode(RenderMode mode)

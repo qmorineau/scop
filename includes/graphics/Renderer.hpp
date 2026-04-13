@@ -5,12 +5,8 @@
 #include <GLFW/glfw3.h>
 
 #include "Shader.hpp"
-#include "GLMesh.hpp"
 
-struct Mesh;
-class Camera;
-class Light;
-struct Material;
+class Scene;
 
 enum class RenderMode
 {
@@ -29,18 +25,17 @@ enum class FaceRendering
 class Renderer
 {
 	public:
-		Renderer(Mesh&, std::string);
+		Renderer();
 		~Renderer();
 
 		void beginFrame();
 		void setMode(RenderMode mode);
 		void changeFaceRendering();
-		void draw(Camera& camera, vec3& angle, std::vector<Light*> lights, float blend);
+		void draw(Scene* scene);
 	private:
 		Shader			_shader;
 		RenderMode		_mode;
 		FaceRendering	_faceRender;
-		GLMesh			_glMesh;
 		
 		void configureMode();
 };

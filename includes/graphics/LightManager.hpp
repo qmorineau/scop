@@ -33,7 +33,7 @@ class LightManager
 		void	changeColor(const vec3&);
 
 		const std::vector<Light*>&	getLights();
-		ActiveColor getColor() {return _activeColor;};
+		ActiveColor getColor() const {return _activeColor;};
 		void		setColor(ActiveColor c) {_activeColor = c;};
 	private:
 		ssize_t				_activeIndex = -1;
