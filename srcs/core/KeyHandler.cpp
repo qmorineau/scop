@@ -5,18 +5,15 @@
 
 void KeyHandler::handleKeys(Application* app)
 {
-	if (!app->isLightEditing())
-	{
-		if (_keys[GLFW_KEY_W])
-			app->_camera.processKeyboard(Camera::FORWARD, app->getDelta());
-		if (_keys[GLFW_KEY_S])
-			app->_camera.processKeyboard(Camera::BACKWARD, app->getDelta());
-		if (_keys[GLFW_KEY_A])
-			app->_camera.processKeyboard(Camera::LEFT, app->getDelta());
-		if (_keys[GLFW_KEY_D])
-			app->_camera.processKeyboard(Camera::RIGHT, app->getDelta());
-	}
-	else
+	if (_keys[GLFW_KEY_W])
+		app->_camera.processKeyboard(Camera::FORWARD, app->getDelta());
+	if (_keys[GLFW_KEY_S])
+		app->_camera.processKeyboard(Camera::BACKWARD, app->getDelta());
+	if (_keys[GLFW_KEY_A])
+		app->_camera.processKeyboard(Camera::LEFT, app->getDelta());
+	if (_keys[GLFW_KEY_D])
+		app->_camera.processKeyboard(Camera::RIGHT, app->getDelta());
+	if (app->isLightEditing())
 	{
 		LightManager& manager = app->getLightManager();
 		lightEditor(manager, app->getDelta());
@@ -33,8 +30,9 @@ const std::unordered_map<int, KeyHandler::Handler> KeyHandler::lightHandlers =
 	{GLFW_KEY_N, &KeyHandler::addLight},
 	{GLFW_KEY_E, &KeyHandler::deleteLight},
 	{GLFW_KEY_L, &KeyHandler::toggleLightMod},
-	{GLFW_KEY_A, &KeyHandler::prevLight},
-	{GLFW_KEY_D, &KeyHandler::nextLight}
+	{GLFW_KEY_LEFT, &KeyHandler::prevLight},
+	{GLFW_KEY_RIGHT, &KeyHandler::nextLight},
+	{}
 };
 
 void KeyHandler::closeWindow(Application* app)			{app->closeWindow();}
@@ -207,8 +205,8 @@ void KeyHandler::lightEditor(LightManager& manager, float deltaTime)
 				break;
 		}
 	}
-	if (_keys[GLFW_KEY_W])
+	if (_keys[GLFW_KEY_UP])
 		manager.intensityUp(deltaTime);
-	if (_keys[GLFW_KEY_S])
+	if (_keys[GLFW_KEY_DOWN])
 		manager.intensityDown(deltaTime);
 }

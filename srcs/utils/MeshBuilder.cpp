@@ -25,8 +25,8 @@ MeshBuilder::MeshBuilder(const std::vector<vec3>& p,
 
 Mesh MeshBuilder::build(std::unordered_map<std::string, Material>& materials)
 {
-	// if (_faces.empty())
-	// 	throw EmptyMesh(""); // ICI to readd after adding the line of the model
+	if (_faces.empty())
+		throw EmptyMesh(".obj file never define any face");
 	std::cout << "Create Normals" << std::endl;
 	createNormals();
 	std::cout << "Create Smooth Normals" << std::endl;
@@ -48,7 +48,7 @@ void MeshBuilder::convertToGpuData(std::unordered_map<std::string, Material>& ma
 		{
 			std::vector<VertexIndex> &v = face.vertices;
 			for (unsigned int j = 1; j < v.size() - 1; j++)
-				addTriangle(v[0], v[j + 1], v[j], mat); // choose good mesh
+				addTriangle(v[0], v[j + 1], v[j], mat);
 			i++;
 		}
 	}
@@ -121,14 +121,9 @@ void MeshBuilder::createNormals()
 	}
 }
 
-void MeshBuilder::createSmoothNormals()
+void MeshBuilder::accumulateFaceNormals(std::unordered_map<int, vec3>& accum, std::unordered_map<int, int>&  count)
 {
-    // Accumulate normals per vertex index
-    std::unordered_map<int, vec3> accum;
-    std::unordered_map<int, int>  count;
-
-    // 1. Accumulate face normals
-    for (auto& [material, faces] : _faces)
+	for (auto& [material, faces] : _faces)
     {
         for (Face& face : faces)
         {
@@ -148,9 +143,14 @@ void MeshBuilder::createSmoothNormals()
 			}
         }
     }
+}
 
-    // 2. Normalize and dedupe normals using the hash table
-    for (auto& [material, faces] : _faces)
+void MeshBuilder::dedupeNormals(std::unordered_map<int, vec3>& accum, std::unordered_map<int, int>&  count)
+{
+	int id;
+	vec3 smooth;
+
+	for (auto& [material, faces] : _faces)
     {
         for (Face& face : faces)
         {
@@ -158,28 +158,30 @@ void MeshBuilder::createSmoothNormals()
 			{
 				for (auto& v : face.vertices)
 				{
-					vec3 smooth = math::normalize(accum[v.vertex]);
-
-					// Fast O(1) lookup
+					smooth = math::normalize(accum[v.vertex]) / float(count[v.vertex]);
 					auto it = _normIndices.find(smooth);
-					int id;
-
 					if (it != _normIndices.end())
-					{
 						id = it->second;
-					}
 					else
 					{
 						id = static_cast<int>(_allNormals.size());
 						_allNormals.push_back(smooth);
 						_normIndices[smooth] = id;
 					}
-
 					v.normal = id;
 				}
 			}
         }
     }
+}
+
+void MeshBuilder::createSmoothNormals()
+{
+    std::unordered_map<int, vec3> accum;
+    std::unordered_map<int, int>  count;
+
+	accumulateFaceNormals(accum, count);
+	dedupeNormals(accum, count);
 }
 
 void MeshBuilder::createUvs()

@@ -73,9 +73,10 @@ class MeshBuilder
 		void	convertToGpuData(std::unordered_map<std::string, Material>&);
 
 		int		findDuplicateNormal(vec3& v);
-		void	calculateNormalSmoothingGroup();
 		void	createNormals();
 		void	createSmoothNormals();
+		void 	accumulateFaceNormals(std::unordered_map<int, vec3>&, std::unordered_map<int, int>&);
+		void 	dedupeNormals(std::unordered_map<int, vec3>&,  std::unordered_map<int, int>&);
 		void	createUvs();
 
 };

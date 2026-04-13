@@ -50,17 +50,17 @@ ObjParser::ObjParser(std::string file) :
 // Dispatch Table
 const std::unordered_map<std::string, ObjParser::Handler> ObjParser::handlers =
 {
-	{"v", &ObjParser::parsePosition},	// new vertex
-	{"vt", &ObjParser::parseUvs},	// new Uvs / Vertex Texture
-	{"vn", &ObjParser::parseVertexNormal}, // new Vertex Normal
-	{"vp", &ObjParser::parseParameterSpaceVertex}, // New Space Vertex Parameter
-	{"f", &ObjParser::createFace},	// new Face
-	{"mtllib", &ObjParser::parseMtlFile}, // new Material File
-	{"o", &ObjParser::parseObjectName}, // change Object Name State
-	{"usemtl", &ObjParser::useMtl}, // change Material State
-	{"s", &ObjParser::parseSmoothing}, // define Smoothing Group (average normal for each faces)
-	{"g", &ObjParser::parseGroupName}, // change Group Name State
-	{"l", &ObjParser::createLine} // define new Lines
+	{"v", &ObjParser::parsePosition},				// new vertex
+	{"vt", &ObjParser::parseUvs},					// new Uvs / Vertex Texture
+	{"vn", &ObjParser::parseVertexNormal}, 			// new Vertex Normal
+	{"vp", &ObjParser::parseParameterSpaceVertex},	// New Space Vertex Parameter
+	{"f", &ObjParser::createFace},					// new Face
+	{"mtllib", &ObjParser::parseMtlFile}, 			// new Material File
+	{"o", &ObjParser::parseObjectName}, 			// change Object Name State
+	{"usemtl", &ObjParser::useMtl}, 				// change Material State
+	{"s", &ObjParser::parseSmoothing}, 				// define Smoothing Group (average normal for each faces)
+	{"g", &ObjParser::parseGroupName}, 				// change Group Name State
+	{"l", &ObjParser::createLine} 					// define new Lines
 };
 
 // Parser
@@ -93,6 +93,7 @@ void ObjParser::build()
 	{
 		facesNumber += faces.size();
 	}
+	std::cout << "Number of vertices: " << _positions.size() << std::endl;
 	std::cout << "Number of faces: " << facesNumber << std::endl;
 	MeshBuilder builder(_positions, _positionsIdx, _normals, _normalsIdx, _uvs, _uvsIdx, facesNumber);
 	for (auto& [material, faces] : _rawData.faces)
@@ -101,7 +102,7 @@ void ObjParser::build()
 			builder.addFace(face, _materials.at(material));
 	}
 	_mesh = builder.build(_materials);
-	std::cout << "End ObjParser Build" << std::endl;
+	std::cout << "Mesh Builded" << std::endl;
 };
 
 void ObjParser::parsePosition(std::istringstream& iss)

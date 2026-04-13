@@ -107,7 +107,8 @@ void Application::manageWindowTitle()
 
 void Application::renderLoop()
 {
-	glfwSwapInterval(0); // disable vsync
+	// glfwSwapInterval(0); // disable vsync
+	glfwSwapInterval(1); // cap framerate to monitor framerate
 
 	while (!glfwWindowShouldClose(_window))
 	{

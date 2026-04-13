@@ -40,7 +40,6 @@ void Camera::moveSphereMode(CameraMovement dir, float deltaTime)
     if (dir == BACKWARD)
 		_pitch -= angle;
 
-    // clamp pitch
 	float clamp = 89.f;
     _pitch = _pitch < -clamp ? -clamp : _pitch > clamp ? clamp : _pitch;
 
@@ -141,8 +140,6 @@ void Camera::resetPosition()
 {
 	changePosition(_basePosition);
 }
-
-// void Camera::updateYaw
 
 void Camera::changeMode()
 {

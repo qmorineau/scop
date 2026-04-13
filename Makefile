@@ -65,7 +65,10 @@ fclean: clean
 	@rm -rf $(NAME)
 	@echo "Clear binary file"
 
-$(GLFW_LIB):
+$(GLFW_DIR):
+	git submodule update --init --recursive
+
+$(GLFW_LIB): | $(GLFW_DIR)
 	@echo "Building GLFW"
 	@mkdir -p $(GLFW_BUILD_DIR)
 	@cd $(GLFW_BUILD_DIR) && cmake .. -DGLFW_BUILD_DOCS=OFF -DGLFW_BUILD_TESTS=OFF -DGLFW_BUILD_EXAMPLES=OFF

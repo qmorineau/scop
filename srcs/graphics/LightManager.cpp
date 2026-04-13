@@ -55,6 +55,7 @@ void LightManager::remove()
 {
 	if (_activeIndex < 0)
 		return;
+	delete _lights[_activeIndex];
 	_lights.erase(_lights.begin() + _activeIndex);
 	if (!_lights.size())
 		_activeIndex = -1;

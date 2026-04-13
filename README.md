@@ -2,15 +2,15 @@
 
 ## Introduction
 
-**Scop** is a small real‑time 3D renderer built with **OpenGL**.  
+**Scop** is a small real‑time 3D renderer built with **OpenGL**.
 Its goal is to load and display **Wavefront OBJ** models, apply **materials**, **textures**, and **lighting**, and allow interactive camera and light manipulation.
 
 This project focuses on:
 
-- Understanding the modern graphics pipeline  
-- Implementing a minimal rendering engine  
-- Parsing `.obj` and `.mtl` files  
-- Managing shaders, textures, and transformations  
+- Understanding the modern graphics pipeline
+- Implementing a minimal rendering engine
+- Parsing `.obj` and `.mtl` files
+- Managing shaders, textures, and transformations
 - Providing a clean, maintainable architecture
 
 Scop supports multiple rendering modes, a free/orbital camera, and a complete light editor.
@@ -20,7 +20,6 @@ Scop supports multiple rendering modes, a free/orbital camera, and a complete li
 ## Features
 
 - OBJ + MTL parsing (vertices, normals, UVs, materials)
-- Texture loading (PNG/JPG)
 - Rendering modes:
   - Material color + lighting
   - Face rendering (no lighting)
@@ -44,11 +43,11 @@ Scop uses **C++17**, **OpenGL**, **GLFW**, and **GLAD**.
 
 ### Requirements
 
-- C++17 compiler  
-- CMake (recommended)  
-- GLFW  
-- GLAD  
-- OpenGL 3.3+  
+- C++17 compiler
+- CMake (recommended)
+- GLFW
+- GLAD
+- OpenGL 3.3+
 
 ### Build with CMake
 

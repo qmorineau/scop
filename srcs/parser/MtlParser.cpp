@@ -115,8 +115,6 @@ void MtlParser::parseEmissiveColor(std::istringstream& iss)
 	std::string extra;
 	if (iss >> extra)
 		throw ParseError("MtlParser: Unexpected extra value: " + extra);
-	// if (r < 0.f || r > 1.f || g < 0.f || g > 1.f || b < 0.f || b > 1.f)
-    // 	throw ParseError("'Ke' values must be between 0 and 1");
 	_materials.at(_actualMaterial)._Ke = vec3(r, g, b);
 };
 
