@@ -2,7 +2,7 @@
 
 int TextureLoader::loadTexture(std::string file)
 {
-	std::cerr << "Load Texture : " << file << std::endl;
+	std::cerr << "Loading Texture: " << file << std::endl;
 	unsigned int texture;
 	glGenTextures(1, &texture);
 	glBindTexture(GL_TEXTURE_2D, texture);
@@ -24,7 +24,7 @@ int TextureLoader::loadTexture(std::string file)
 
 		glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
 		glGenerateMipmap(GL_TEXTURE_2D);
-		std::cout << "Loaded " << file << " (" << width << "x" << height << ", channels=" << nrChannels << ", texID=" << texture << ")\n";
+		std::cout << "File Loaded: " << file << " (" << width << "x" << height << ", channels=" << nrChannels << ", texID=" << texture << ")\n";
 	}
 	else
 		throw LoadFileError(file);

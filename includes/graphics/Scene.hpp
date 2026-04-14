@@ -23,8 +23,8 @@ class Scene
 		bool			isLightEditor() const {return _isLightEditor;};
 		// setter
 		void			setColor(LightManager::ActiveColor c) {_lights.setColor(c);};
-		void			toggleLightEditor() {_isLightEditor = !_isLightEditor;_lights.setColor(LightManager::ActiveColor::None);};
-		void			toggleTexture() {_blending = -_blending; _blend += _blending;};
+		void			toggleLightEditor();
+		void			toggleTexture();
 		void			resetRot() {_rotAngle = vec3(0,0,0);};
 		void			rotateX();
 		void			rotateY();

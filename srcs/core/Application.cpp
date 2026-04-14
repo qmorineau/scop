@@ -22,8 +22,8 @@ void Application::run()
 
 void Application::renderLoop()
 {
-	glfwSwapInterval(0); // disable vsync
-	// glfwSwapInterval(1); // cap framerate to monitor framerate
+	// glfwSwapInterval(0); // disable vsync
+	glfwSwapInterval(1); // cap framerate to monitor framerate
 
 	while (!glfwWindowShouldClose(_window.getWindow()))
 	{

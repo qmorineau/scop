@@ -17,7 +17,7 @@ class MtlParser
 			explicit ParseError(const std::string& msg) : std::runtime_error(msg) {}
 	};
 	public:
-		MtlParser(std::string path, std::string file) : _path(path), _file(path + file)
+		MtlParser(std::string path, std::string file) : _path(path), _fileName(file), _file(path + file)
 		{
 			if (!_file.is_open())
 				throw ParseError("MtlParser: Can't open \"" + file + "\"");
@@ -39,6 +39,7 @@ class MtlParser
 		void parseIlluminationModel(std::istringstream& iss);
 	private:
 		std::string									_path;
+		std::string									_fileName;
 		std::ifstream								_file;
 		std::string									_actualMaterial;
 		std::unordered_map<std::string, Material>	_materials;

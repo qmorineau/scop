@@ -25,7 +25,7 @@ void Camera::resize(int width, int height)
 	_aspectRatio = static_cast<float>(_width) / static_cast<float>(_height);
 }
 
-void Camera::moveSphereMode(CameraMovement dir, float deltaTime)
+void Camera::moveOrbitalMode(CameraMovement dir, float deltaTime)
 {
 	int radius = 3;
 	float angle = _movementSpeed * deltaTime;
@@ -74,8 +74,8 @@ void Camera::processKeyboard(CameraMovement direction, float deltaTime)
 		case CameraMode::FREE:
 			moveFreeMode(direction, deltaTime);
 			break;
-		case CameraMode::SPHERE:
-			moveSphereMode(direction, deltaTime);
+		case CameraMode::ORBITAL:
+			moveOrbitalMode(direction, deltaTime);
 			break;
 	}
 
@@ -83,7 +83,7 @@ void Camera::processKeyboard(CameraMovement direction, float deltaTime)
 
 void Camera::onMouseMove(double xposIn, double yposIn)
 {
-	if (_mode != Camera::SPHERE)
+	if (_mode != Camera::ORBITAL)
 	{
 		float xpos = static_cast<float>(xposIn);
 		float ypos = static_cast<float>(yposIn);
@@ -139,6 +139,8 @@ void Camera::updateCameraVectors()
 void Camera::resetPosition()
 {
 	changePosition(_basePosition);
+	_firstMouse = true;
+	updateOrientation();
 }
 
 void Camera::changeMode()
@@ -146,19 +148,40 @@ void Camera::changeMode()
 	_firstMouse = true;
 	switch (_mode)
 	{
-		case CameraMode::SPHERE:
+		case CameraMode::ORBITAL:
+		{
 			_mode = CameraMode::FREE;
-			_yaw   = math::degrees(atan2(_front.z, _front.x));
-    		_pitch = math::degrees(asin(_front.y));
+			updateOrientation();
 			updateCameraVectors();
-			break;	
+			break;
+		}
 		case CameraMode::FREE:
-			_mode = CameraMode::SPHERE;
+		{
+			_mode = CameraMode::ORBITAL;
 			resetPosition();
+			updateOrientation();
+			break;
+		}
+	}
+}
+
+void Camera::updateOrientation()
+{
+	switch (_mode)
+	{
+		case CameraMode::ORBITAL:
+		{
 			vec3 rel = math::normalize(_position - _target);
 			_yaw   = math::degrees(atan2(rel.z, rel.x));
 			_pitch = math::degrees(asin(rel.y));
 			break;
+		}
+		case CameraMode::FREE:
+		{
+			_yaw   = math::degrees(atan2(_front.z, _front.x));
+    		_pitch = math::degrees(asin(_front.y));
+			break;
+		}
 	}
 }
 

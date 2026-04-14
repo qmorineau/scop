@@ -62,8 +62,22 @@ void Scene::rotateZ()
 	}
 }
 
+void Scene::toggleTexture()
+{
+	_blending = -_blending;
+	_blend += _blending;
+};
+
 void Scene::applyBlending(float deltaTime)
 {
 	if (_blend > 0.f && _blend < 1.f)
 		_blend += _blending * _blendingSpeed * deltaTime;
+	else
+		_blend = _blend >= 1.f ? 1.f : 0.f;
 }
+
+void Scene::toggleLightEditor()
+{
+	_isLightEditor = !_isLightEditor;
+	_lights.setColor(LightManager::ActiveColor::None);
+};

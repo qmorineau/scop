@@ -129,7 +129,7 @@ void main()
 
 	// Apply final blend between original color and textured result
 	float sharpness = 15;
-	float scale = 5;
+	float scale = 10;
 	vec3 texColor = triplanarTexture(material_triPlanar, vObjectPos, vObjectNormal, scale, sharpness);
 	baseColor = mix(baseColor, texColor, u_textureBlend);
  

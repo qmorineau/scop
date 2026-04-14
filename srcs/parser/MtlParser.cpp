@@ -19,7 +19,7 @@ static const std::unordered_map<std::string, Handler> handlers =
 
 std::unordered_map<std::string, Material> MtlParser::parse()
 {
-	std::cout << "parsing material" << std::endl;
+	std::cout << "Parsing Material File: " << _fileName << std::endl;
 	std::string line;
 	std::string token;
 	while (std::getline(_file, line))

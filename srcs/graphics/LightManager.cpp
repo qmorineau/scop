@@ -46,9 +46,14 @@ Light*	LightManager::active()
 
 void LightManager::add(const vec3& pos)
 {
-	Light* newLight = new Light(pos, vec3(1, 1, 1), 0.5);
-	_lights.push_back(newLight);
-	_activeIndex = _lights.size() - 1;
+	if (static_cast<int>(_lights.size()) < _maxLights)
+	{
+		Light* newLight = new Light(pos, vec3(1, 1, 1), 0.5);
+		_lights.push_back(newLight);
+		_activeIndex = _lights.size() - 1;
+	}
+	else
+		std::cerr << "LightManager: can't create more than " << _maxLights << " lights at the same time" << std::endl;
 };
 
 void LightManager::remove()

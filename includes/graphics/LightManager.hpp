@@ -34,12 +34,14 @@ class LightManager
 
 		const std::vector<Light*>&	getLights();
 		ActiveColor getColor() const {return _activeColor;};
+		int			getMaxLights() const {return _maxLights;};
 		void		setColor(ActiveColor c) {_activeColor = c;};
 	private:
 		ssize_t				_activeIndex = -1;
 		std::vector<Light*>	_lights;
 		ActiveColor			_activeColor = ActiveColor::None;
 		const float			_changeSpeed = 100.f;
+		const int			_maxLights = 8;
 };
 
 #endif

@@ -26,7 +26,7 @@ class Camera
 		enum CameraMode
 		{
 			FREE,
-			SPHERE
+			ORBITAL
 		};
 
 		Camera(int width = 800, 
@@ -40,16 +40,17 @@ class Camera
 		mat4 getViewMatrix() {return mat4::lookAt(_position, _position + _front, _up);}
 		void resize(int width, int height);
 		// processes input received from any keyboard-like input system. Accepts input parameter in the form of camera defined ENUM (to abstract it from windowing systems)
-		void processKeyboard(CameraMovement direction, float deltaTime);
-		void onMouseMove(double xposIn, double yposIn);
-		void onMouseScroll(double xoffset, double yoffset);
-		void resetPosition();
-		void changeMode();
-		void changePosition(const vec3&);
+		void	processKeyboard(CameraMovement direction, float deltaTime);
+		void	onMouseMove(double xposIn, double yposIn);
+		void	onMouseScroll(double xoffset, double yoffset);
+		void	resetPosition();
+		void	updateOrientation();
+		void	changeMode();
+		void	changePosition(const vec3&);
 		// getter
-		float getZoom() {return _zoom;};
-		float getAspectRatio() {return _aspectRatio;};
-		vec3  getPosition() {return _position;};
+		float	getZoom() {return _zoom;};
+		float	getAspectRatio() {return _aspectRatio;};
+		vec3 	getPosition() {return _position;};
 	private:
 		// camera Attributes
 		vec3 		_position;
@@ -80,7 +81,7 @@ class Camera
 		// calculates the front vector from the Camera's (updated) Euler Angles
 		void updateCameraVectors();
 		void moveFreeMode(CameraMovement dir, float deltaTime);
-		void moveSphereMode(CameraMovement dir, float deltaTime);
+		void moveOrbitalMode(CameraMovement dir, float deltaTime);
 };
 
 #endif

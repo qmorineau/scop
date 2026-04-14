@@ -4,7 +4,7 @@ CC = cc
 
 # Flags
 CFLAGS = -Wall -Wextra -Werror
-CPPFLAGS = -Wall -Wextra -Werror -MMD -g -std=c++17 -fsanitize=address
+CPPFLAGS = -Wall -Wextra -Werror -MMD -g -std=c++17
 
 # Project Paths
 SRC_DIR = srcs
