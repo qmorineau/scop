@@ -1,18 +1,18 @@
-#include "GLMesh.hpp"
+#include "MeshGPU.hpp"
 #include "TextureLoader.hpp"
 
-GLMesh::GLMesh(Mesh& mesh, std::string path) : _mesh(mesh)
+MeshGPU::MeshGPU(Mesh& mesh, std::string path) : _mesh(mesh)
 {
-	int id = TextureLoader().loadTexture("assets/textures/awesomeface.png");
+	int id = TextureLoader().loadTexture("assets/textures/azazel.png");
 	for (auto& submesh : _mesh.subMeshes)
 		submesh.material->_triPlanarId = id;
 	upload();
 	linkTexture(path);
 }
 
-GLMesh::~GLMesh() {}
+MeshGPU::~MeshGPU() {}
 
-void GLMesh::upload()
+void MeshGPU::upload()
 {
 	glGenVertexArrays(1, &_vao);
 	glBindVertexArray(_vao);
@@ -40,7 +40,7 @@ void GLMesh::upload()
 	}
 }
 
-void GLMesh::linkTexture(std::string& path)
+void MeshGPU::linkTexture(std::string& path)
 {
 	std::unordered_map<std::string, int> materials;
 
@@ -55,7 +55,7 @@ void GLMesh::linkTexture(std::string& path)
 		submesh.material->_id = materials.at(submesh.material->_name); 
 }
 
-void GLMesh::draw(Shader& shader) const
+void MeshGPU::draw(Shader& shader) const
 {
 	shader.use();
 	glBindVertexArray(_vao);

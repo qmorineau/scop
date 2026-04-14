@@ -76,7 +76,8 @@ void Window::manageTitle(Application& app)
 	}
 	else
 		_title = "Scop ";
-	_title.append("[" + std::to_string(static_cast<int>(1 / app.getDelta())) + " fps]");
+	float fps = 1.f / std::max(app.getDelta(), 0.0001f);
+	_title.append("[" + std::to_string(static_cast<int>(fps)) + " fps]");
 	glfwSetWindowTitle(_window, _title.c_str());
 }
 

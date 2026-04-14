@@ -1,5 +1,5 @@
-#ifndef GLMESH_HPP
-#define GLMESH_HPP
+#ifndef MESHGPU_HPP
+#define MESHGPU_HPP
 
 #include <vector>
 
@@ -12,11 +12,11 @@
 
 class Shader;
 
-class GLMesh
+class MeshGPU
 {
 	public:
-		GLMesh(Mesh&, std::string);
-		~GLMesh();
+		MeshGPU(Mesh&, std::string);
+		~MeshGPU();
 
 		void draw(Shader&) const;
 

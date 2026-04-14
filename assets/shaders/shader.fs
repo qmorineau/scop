@@ -111,7 +111,7 @@ vec3 applyPhong(vec3 baseColor)
 
 void main()
 {
-	 // Base color from material
+	// Base color from material
     vec3 baseColor = material.Kd;
 
     // Texture override	
@@ -119,7 +119,6 @@ void main()
 	{
 		baseColor= vec3(1,1,1);
 		vec3 texColor = texture(material_mapKd, TexCoords).rgb;
-		// vec3 texColor = texture(material_mapKd, FlatUvs).rgb;
 		baseColor *= texColor;
 	}
 
@@ -130,7 +129,7 @@ void main()
 
 	// Apply final blend between original color and textured result
 	float sharpness = 15;
-	float scale = 10;
+	float scale = 5;
 	vec3 texColor = triplanarTexture(material_triPlanar, vObjectPos, vObjectNormal, scale, sharpness);
 	baseColor = mix(baseColor, texColor, u_textureBlend);
  

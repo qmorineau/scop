@@ -6,7 +6,7 @@
 
 void InputManager::handleKeys(Application* app)
 {
-	Camera& camera = app->camera();
+	Camera& camera = app->getCamera();
 	if (_keys[GLFW_KEY_W])
 		camera.processKeyboard(Camera::FORWARD, app->getDelta());
 	if (_keys[GLFW_KEY_S])
@@ -29,34 +29,34 @@ const std::unordered_map<int, InputManager::Handler> InputManager::lightHandlers
 	{GLFW_KEY_R, &InputManager::editRed},
 	{GLFW_KEY_G, &InputManager::editGreen},
 	{GLFW_KEY_B, &InputManager::editBlue},
+	{GLFW_KEY_M, &InputManager::changeMode},
 	{GLFW_KEY_N, &InputManager::addLight},
 	{GLFW_KEY_E, &InputManager::deleteLight},
 	{GLFW_KEY_L, &InputManager::toggleLightMod},
 	{GLFW_KEY_LEFT, &InputManager::prevLight},
-	{GLFW_KEY_RIGHT, &InputManager::nextLight},
-	{}
+	{GLFW_KEY_RIGHT, &InputManager::nextLight}
 };
 
 void InputManager::closeWindow(Application* app)			{app->closeWindow();}
-void InputManager::addLight(Application* app)				{app->lights().add(app->camera().getPosition());}
+void InputManager::addLight(Application* app)				{app->lights().add(app->getCamera().getPosition());}
 void InputManager::deleteLight(Application* app)			{app->lights().remove();}
 void InputManager::editRed(Application* app)				{app->lights().setColor(LightManager::ActiveColor::Red);}
 void InputManager::editGreen(Application* app)			{app->lights().setColor(LightManager::ActiveColor::Green);}
 void InputManager::editBlue(Application* app)				{app->lights().setColor(LightManager::ActiveColor::Blue);}
 void InputManager::toggleLightMod(Application* app)		{app->toggleLightEditor();}
 void InputManager::changeFaceRendering(Application* app)	{app->renderer().changeFaceRendering();}
-void InputManager::changeMode(Application* app)			{app->camera().changeMode();}
+void InputManager::changeMode(Application* app)			{app->getCamera().changeMode();}
 void InputManager::nextLight(Application* app)
 {
 	Light* l = app->lights().next();
 	if (l)
-		app->camera().changePosition(l->getPosition());
+		app->getCamera().changePosition(l->getPosition());
 }
 void InputManager::prevLight(Application* app)
 {
 	Light* l = app->lights().prev();
 	if (l)
-		app->camera().changePosition(l->getPosition());
+		app->getCamera().changePosition(l->getPosition());
 }
 
 // Key Handlers
@@ -85,7 +85,7 @@ void InputManager::applyTexture(Application* app)
 }
 void InputManager::resetCam(Application* app)
 {
-	app->camera().resetPosition();
+	app->getCamera().resetPosition();
 	app->scene()->resetRot();
 }
 void InputManager::rotateX(Application* app)
@@ -109,14 +109,14 @@ void InputManager::mouseCallback(GLFWwindow* window, double xposIn, double yposI
 {
 	Application* app = static_cast<Application*>(glfwGetWindowUserPointer(window));
 	if (app)
-	    app->camera().onMouseMove(xposIn, yposIn);
+	    app->getCamera().onMouseMove(xposIn, yposIn);
 }
 
 void InputManager::scrollCallback(GLFWwindow* window, double xoffset, double yoffset)
 {
 	Application* app = static_cast<Application*>(glfwGetWindowUserPointer(window));
 	if (app)
-		app->camera().onMouseScroll(xoffset, yoffset);
+		app->getCamera().onMouseScroll(xoffset, yoffset);
 }
 
 void InputManager::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)

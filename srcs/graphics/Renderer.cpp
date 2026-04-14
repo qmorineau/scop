@@ -1,5 +1,5 @@
 #include "Renderer.hpp"
-#include "GLMesh.hpp"
+#include "MeshGPU.hpp"
 #include "Matrix4.hpp"
 #include "Math.hpp"
 #include "Scene.hpp"
@@ -38,10 +38,10 @@ void Renderer::draw(Scene* scene)
     _shader.setMat4("projection", projection);
     _shader.setMat4("view", camera.getViewMatrix());
 	_shader.setVec3("viewPos", vec3(camera.getPosition()));
-	_shader.setFloat("u_textureBlend", scene->blend());
+	_shader.setFloat("u_textureBlend", scene->getBlend());
 
 	// Model
-	const vec3 angle = scene->rotAngle();
+	const vec3 angle = scene->getRotAngle();
 	mat4 model = mat4::rotateX(angle.x)
 		.mul_mat(mat4::rotateY(angle.y))
 		.mul_mat(mat4::rotateZ(angle.z));
@@ -50,7 +50,7 @@ void Renderer::draw(Scene* scene)
 	// Configure Rendering Mode
 	configureMode();
 
-	const std::vector<Light*> lights = scene->lights().getLights();
+	const std::vector<Light*>& lights = scene->lights().getLights();
 	_shader.setInt("lightCount", static_cast<int>(lights.size()));
 	for (size_t i = 0; i < lights.size(); i++)
 	{
@@ -59,7 +59,7 @@ void Renderer::draw(Scene* scene)
 		_shader.setFloat("lights[" + std::to_string(i) + "].intensity", lights[i]->getIntensity());
 		_shader.setBool("lights[" + std::to_string(i) + "].enabled", true);
 	}
-	const GLMesh mesh = scene->mesh();
+	const MeshGPU& mesh = scene->mesh();
 	mesh.draw(_shader);
 }
 
