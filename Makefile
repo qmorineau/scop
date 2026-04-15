@@ -16,6 +16,7 @@ GLAD_DIR = vendor/glad
 GLFW_DIR = vendor/glfw
 GLFW_BUILD_DIR = $(GLFW_DIR)/build
 GLFW_LIB = $(GLFW_BUILD_DIR)/src/libglfw3.a
+GLFW_SUBMODULE_OK = $(GLFW_DIR)/.git
 
 LIBS = $(GLFW_LIB) -lGL -ldl -lpthread -lX11 -lXrandr -lXinerama -lXcursor -lXi
 
@@ -67,10 +68,10 @@ fclean: clean
 	@rm -rf $(GLFW_BUILD_DIR)
 	@echo "Clear GLFW build folder"
 
-submodules:
+$(GLFW_SUBMODULE_OK):
 	@git submodule update --init --recursive
 
-$(GLFW_LIB): submodules
+$(GLFW_LIB): $(GLFW_SUBMODULE_OK)
 	@echo "Building GLFW"
 	@mkdir -p $(GLFW_BUILD_DIR)
 	@cd $(GLFW_BUILD_DIR) && cmake .. -DGLFW_BUILD_DOCS=OFF -DGLFW_BUILD_TESTS=OFF -DGLFW_BUILD_EXAMPLES=OFF
