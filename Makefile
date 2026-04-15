@@ -41,7 +41,7 @@ NAME = scop
 
 all: $(NAME)
 
-$(NAME): $(OBJ_DIR) $(OBJ_CPP) $(OBJ_GLAD) $(GLFW_LIB)
+$(NAME): $(GLFW_LIB) $(OBJ_DIR) $(OBJ_CPP) $(OBJ_GLAD)
 	@$(CCPP) $(CPPFLAGS) $(INCLUDES) $(OBJ_GLAD) $(OBJ_CPP) $(LIBS) -o $(NAME)
 	@echo "$(NAME) compiled"
 
