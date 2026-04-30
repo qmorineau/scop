@@ -186,8 +186,6 @@ void MeshBuilder::createSmoothNormals()
 
 void MeshBuilder::createUvs()
 {
-    _allUvs.clear();
-
     for (auto& [material, faces] : _faces)
     {
         for (Face& face : faces)
