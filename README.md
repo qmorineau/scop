@@ -1,5 +1,11 @@
 # scop - OBJ Vizualizer
 
+![scop demo](https://github.com/user-attachments/assets/2c19cf34-b4eb-47fc-8ddf-a4d46eefec7d)
+
+*1.5M-face scan — real-time light color presets, smooth Y-axis rotation loop*
+
+---
+
 ## Overview
 
 **scop** is a lightweight real‑time 3D renderer built with Modern OpenGL.  
