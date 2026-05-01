@@ -11,6 +11,24 @@ LightManager::~LightManager()
 		delete light;
 }
 
+
+void LightManager::update(float deltaTime)
+{
+	for (auto light : _lights)
+	{
+		Light::LightFade& fade = light->fade();
+		if (fade.isActive)
+		{
+			fade.percent += deltaTime / fade.duration;			
+			float k = std::min(fade.percent, 1.f);
+			vec3 color = fade.start * (1.f - k) + fade.target * k;
+			light->setColor(color);
+			if (k >= 1.f)
+				fade.isActive = false;
+		}
+	}
+}
+
 Light*	LightManager::prev()
 {
 	if (_activeIndex < 0)

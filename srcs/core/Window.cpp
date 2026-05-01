@@ -23,7 +23,7 @@ Window::Window(Application* app)
 		throw GLWF_WindowError();
 
 	glfwMakeContextCurrent(_window);
-	glfwSetInputMode(_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	glfwSetInputMode(_window, GLFW_CURSOR, GLFW_CURSOR_NORMAL); // ICI
 	glfwSetWindowUserPointer(_window, app);
 
     glfwMakeContextCurrent(_window);

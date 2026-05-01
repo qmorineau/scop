@@ -20,6 +20,8 @@ class LightManager
 		LightManager();
 		~LightManager();
 
+		void	update(float deltaTime);
+		
 		Light*	prev();
 		Light*	next();
 		Light*	active();

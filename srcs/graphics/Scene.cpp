@@ -15,6 +15,7 @@ Scene::~Scene() {}
 
 void Scene::update(float deltaTime)
 {
+	_lights.update(deltaTime);
 	applyRotation(deltaTime);
 	applyBlending(deltaTime);
 };
