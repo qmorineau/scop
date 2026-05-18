@@ -27,6 +27,7 @@ INCLUDES = -I $(INC_DIR) \
 			-I $(INC_DIR)/math \
 			-I $(INC_DIR)/parser \
 			-I $(INC_DIR)/utils \
+			-I $(INC_DIR)/input \
 			-I $(GLAD_DIR)/include \
 			-I $(GLFW_DIR)/include
 

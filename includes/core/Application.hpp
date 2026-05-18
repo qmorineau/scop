@@ -9,6 +9,8 @@
 #include <GLFW/glfw3.h> 
 
 #include "InputManager.hpp"
+#include "InputHandler.hpp"
+#include "InputContext.hpp"
 #include "ObjParser.hpp"
 #include "Renderer.hpp"
 #include "Window.hpp"
@@ -30,7 +32,9 @@ class Application
 		Camera&			getCamera() {return _scene->camera();};
 		Renderer&		renderer() {return _renderer;};
 		Scene*			scene() {return _scene;};
-		InputManager&	inputManager() {return _inputManager;};
+		InputManager&	inputManager()	{return _inputManager;};
+		InputHandler&	inputHandler()	{return _inputHandler;};
+		InputContext&	inputContext()	{return _inputContext;};
 		// setter
 		void 			setKey(int key, bool state) {_inputManager.setKey(key, state);};
 		void 			setColor(LightManager::ActiveColor c) {_scene->setColor(c);};
@@ -39,6 +43,8 @@ class Application
 		ObjParser			_parser;
 		Window				_window;
 		InputManager		_inputManager;
+		InputHandler		_inputHandler;
+		InputContext		_inputContext;
 		Scene*				_scene;
 		Renderer			_renderer;
 		float				_deltaTime = 0.0f;
