@@ -47,6 +47,14 @@ void Commands::NextLight::execute(Application* app) const
 };
 void Commands::DecreaseIntensity::execute(Application* app) const
 {
+	app->lights().intensityDown(app->getDelta());
+}
+void Commands::IncreaseIntensity::execute(Application* app) const
+{
+	app->lights().intensityUp(app->getDelta());
+}
+void Commands::DecreaseColorChanel::execute(Application* app) const
+{
     LightManager& manager = app->lights();
     switch (manager.getColor())
     {
@@ -63,7 +71,7 @@ void Commands::DecreaseIntensity::execute(Application* app) const
             break;
     }
 };
-void Commands::IncreaseIntensity::execute(Application* app) const
+void Commands::IncreaseColorChanel::execute(Application* app) const
 {
    LightManager& manager = app->lights();
     switch (manager.getColor())

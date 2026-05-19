@@ -39,9 +39,7 @@ InputHandler::InputHandler()
 	_commands[InputMode::LightEditor].event[GLFW_KEY_E] = std::make_unique<Commands::DeleteLight>();
 	_commands[InputMode::LightEditor].event[GLFW_KEY_LEFT] = std::make_unique<Commands::PreviousLight>();
 	_commands[InputMode::LightEditor].event[GLFW_KEY_RIGHT] = std::make_unique<Commands::NextLight>();
-    
-    
-    
+
 	// Repeat Key
 	_commands[InputMode::Default].continuous[GLFW_KEY_W] = std::make_unique<Commands::CameraForward>();
 	_commands[InputMode::Default].continuous[GLFW_KEY_S] = std::make_unique<Commands::CameraBackward>();
@@ -49,6 +47,8 @@ InputHandler::InputHandler()
 	_commands[InputMode::Default].continuous[GLFW_KEY_D] = std::make_unique<Commands::CameraRight>();
     _commands[InputMode::LightEditor].continuous[GLFW_KEY_DOWN] = std::make_unique<Commands::DecreaseIntensity>();
     _commands[InputMode::LightEditor].continuous[GLFW_KEY_UP] = std::make_unique<Commands::IncreaseIntensity>();
+	_commands[InputMode::LightEditor].continuous[GLFW_KEY_9] = std::make_unique<Commands::DecreaseColorChanel>();
+    _commands[InputMode::LightEditor].continuous[GLFW_KEY_0] = std::make_unique<Commands::IncreaseColorChanel>();
 }
 
 InputHandler::~InputHandler() {};
@@ -60,19 +60,10 @@ void InputHandler::handleKeysCallback(Application* app, int key)
 
     if (mode != InputMode::Default)
     {
-        auto& map = _commands[mode].event;
-        auto it = map.find(key);
-        if (it != map.end()) {
-            it->second->execute(app);
-            return;
-        }
+		if (executeCommand(app, _commands[mode].event, key))
+			return;
     }
-
-    auto& def = _commands[InputMode::Default].event;
-    auto it = def.find(key);
-    if (it == def.end())
-        return;
-    it->second->execute(app);
+	executeCommand(app, _commands[InputMode::Default].event, key);
 };
 
 void InputHandler::handleMouseCallback(Application* app, int key)
@@ -82,25 +73,39 @@ void InputHandler::handleMouseCallback(Application* app, int key)
 		return;
 	iterator->second->execute(app);
 }
-
+#include <glad/glad.h>
+#include <GLFW/glfw3.h> 
 void InputHandler::handleKeys(Application* app)
 {
     bool isLightEditor = app->isLightEditor();
     InputMode mode = isLightEditor ? InputMode::LightEditor : InputMode::Default;
     InputContext ctx = app->inputContext();
 
-    if (mode != InputMode::Default)
-    {
-        for (auto& [key, command] : _commands[mode].continuous)
-        {
-            if (ctx.keys[key])
-                command->execute(app);
-        }
-        return;
-    }
-    for (auto& [key, command] : _commands[InputMode::Default].continuous)
-    {
-        if (ctx.keys[key])
-            command->execute(app);
-    }
+	float currentFrame = static_cast<float>(glfwGetTime());
+	for (auto key = 0; key < 1024; key++)
+	{
+		if (ctx.keys[key])
+		{
+			if (mode != InputMode::Default)
+			{
+				if (!executeCommand(app, _commands[mode].continuous, key))
+					executeCommand(app, _commands[InputMode::Default].continuous, key);
+			}
+			else
+				executeCommand(app, _commands[InputMode::Default].continuous, key);
+		}
+	}
+	float currentFrame2 = static_cast<float>(glfwGetTime());
+	std::cout << (currentFrame2 - currentFrame) * 1000 << std::endl;
 }
+
+bool InputHandler::executeCommand(Application * app, std::unordered_map<int, std::unique_ptr<ICommand>>& map, int key)
+{
+	const auto& it = map.find(key);
+	if (it != map.end())
+	{
+		it->second->execute(app);
+		return true;
+	}
+	return false;
+};

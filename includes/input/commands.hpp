@@ -25,6 +25,8 @@ namespace Commands
     class ToggleLightMode : public ICommand {void execute(Application* app) const override;};
     class PreviousLight : public ICommand {void execute(Application* app) const override;};
     class NextLight : public ICommand {void execute(Application* app) const override;};
+	class IncreaseColorChanel : public ICommand {void execute(Application* app) const override;};
+    class DecreaseColorChanel : public ICommand {void execute(Application* app) const override;};
     class IncreaseIntensity : public ICommand {void execute(Application* app) const override;};
     class DecreaseIntensity : public ICommand {void execute(Application* app) const override;};
     // Render Mode

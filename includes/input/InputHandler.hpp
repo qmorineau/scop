@@ -37,6 +37,8 @@ class InputHandler
 
 		std::unordered_map<InputMode, CommandMap>			_commands;
 		std::unordered_map<int, std::unique_ptr<ICommand>>	_eventMouseCommand;
+
+		bool executeCommand(Application * app, std::unordered_map<int, std::unique_ptr<ICommand>>& map, int key);
 };
 
  #endif
