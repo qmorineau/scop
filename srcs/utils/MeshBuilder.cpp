@@ -43,13 +43,11 @@ void MeshBuilder::convertToGpuData(std::unordered_map<std::string, Material>& ma
 	for (auto& [materialName, faces] : _faces)
 	{
 		Material& mat = materials.at(materialName);
-		size_t i = 0;
 		for (auto& face : faces)
 		{
 			std::vector<VertexIndex> &v = face.vertices;
 			for (unsigned int j = 1; j < v.size() - 1; j++)
 				addTriangle(v[0], v[j + 1], v[j], mat);
-			i++;
 		}
 	}
 }

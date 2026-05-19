@@ -2,6 +2,7 @@
 #define COMMANDS_HPP
 
 #include "ICommand.hpp"
+#include "Application.hpp"
 
 namespace Commands
 {
@@ -51,6 +52,8 @@ namespace Commands
     // Mouse
     class MouseScroll : public ICommand {void execute(Application* app) const override;};
     class MouseMove : public ICommand {void execute(Application* app) const override;};
+    class EnableMouse : public ICommand {void execute(Application* app) const override;};
+    class DisableMouse : public ICommand {void execute(Application* app) const override;};
 
     class ChangeRendering : public ICommand {void execute(Application* app) const override;};
 };

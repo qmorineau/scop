@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 #include <exception>
+#include <algorithm>
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h> 
@@ -21,12 +22,13 @@ class Application
 	public:
 		Application(char *file);
 		~Application();
+		
 		void run();
-		void closeWindow() {_window.closeWindow();};
 
 		// getter
 		bool 			isLightEditor() {return _scene->isLightEditor();};
 		void			toggleLightEditor() {_scene->toggleLightEditor();};
+		Window&			window() {return _window;};
 		float			getDelta() {return _deltaTime;};
 		LightManager&	lights() {return _scene->lights();};
 		Camera&			getCamera() {return _scene->camera();};
@@ -36,7 +38,6 @@ class Application
 		InputHandler&	inputHandler()	{return _inputHandler;};
 		InputContext&	inputContext()	{return _inputContext;};
 		// setter
-		void 			setKey(int key, bool state) {_inputManager.setKey(key, state);};
 		void 			setColor(LightManager::ActiveColor c) {_scene->setColor(c);};
 
 	private:
@@ -50,10 +51,12 @@ class Application
 		float				_deltaTime = 0.0f;
 		float				_lastFrame = 0.0f;
 
-		void initWindow();
-		void applyRotation();
-		void renderLoop();
-		void manageWindowTitle();
+		void 		initWindow();
+		void 		applyRotation();
+		void 		renderLoop();
+		void 		manageWindowTitle();
+		void 		endFrame();
+		std::string buildTitle();
 };
 
 #endif

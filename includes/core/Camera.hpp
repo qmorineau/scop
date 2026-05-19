@@ -47,6 +47,8 @@ class Camera
 		void	updateOrientation();
 		void	changeMode();
 		void	changePosition(const vec3&);
+		// setter
+		void	disableMouse() {_firstMouse = true;};
 		// getter
 		float	getZoom() {return _zoom;};
 		float	getAspectRatio() {return _aspectRatio;};

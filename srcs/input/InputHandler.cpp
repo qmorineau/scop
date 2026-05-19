@@ -1,6 +1,6 @@
 #include "InputHandler.hpp"
-#include "commands.hpp"
 #include "Application.hpp"
+#include "commands.hpp"
 
 InputHandler::InputHandler()
 {
@@ -85,15 +85,6 @@ void InputHandler::handleMouseCallback(Application* app, int key)
 
 void InputHandler::handleKeys(Application* app)
 {
-	// InputContext& ctx = app->inputContext();
-    // bool isLightEditor = app->isLightEditor();
-
-	// for (auto& [key, command] : _continuousCommand)
-	// {
-	// 	if (ctx.keys[key])
-	// 		command->execute(app);
-	// }
-
     bool isLightEditor = app->isLightEditor();
     InputMode mode = isLightEditor ? InputMode::LightEditor : InputMode::Default;
     InputContext ctx = app->inputContext();
@@ -106,5 +97,10 @@ void InputHandler::handleKeys(Application* app)
                 command->execute(app);
         }
         return;
+    }
+    for (auto& [key, command] : _commands[InputMode::Default].continuous)
+    {
+        if (ctx.keys[key])
+            command->execute(app);
     }
 }

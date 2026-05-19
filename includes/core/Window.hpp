@@ -35,15 +35,18 @@ class Window
 		Window(Application*);
 		~Window();
 		// Method
-		void 		manageTitle(Application& app);
+		void 		changeTitle(std::string title);
 		static void framebufferSizeCallback(GLFWwindow* window, int width, int height);
 		void 		closeWindow();
+		void		enableMouse();
+		void		disableMouse();
 		// getter
 		GLFWwindow* getWindow() {return _window;};
+		bool		getMouse() {return _isMouse;};
 	private:
 		GLFWwindow* _window;
 		std::string _title;
-
+		bool		_isMouse = false;
 };
 
 #endif

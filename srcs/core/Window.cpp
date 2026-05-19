@@ -30,6 +30,8 @@ Window::Window(Application* app)
     glfwSetFramebufferSizeCallback(_window, Window::framebufferSizeCallback);
 	glfwSetCursorPosCallback(_window, InputManager::mouseCallback);
     glfwSetScrollCallback(_window, InputManager::scrollCallback);
+	glfwSetMouseButtonCallback(_window, InputManager::mouseButtonCallback);
+	glfwSetKeyCallback(_window, InputManager::keyCallback);
 
     // glad: load all OpenGL function pointers
     // ---------------------------------------
@@ -53,32 +55,9 @@ Window::~Window()
 	glfwTerminate();
 }
 
-void Window::manageTitle(Application& app)
+void Window::changeTitle(std::string title)
 {
-	const LightManager& lights = app.lights();
-	if (app.isLightEditor())
-	{
-		switch (lights.getColor())
-		{
-			case LightManager::ActiveColor::Red:
-				_title = "Scop [Edit Light Mode][RED] ";
-				break;
-			case LightManager::ActiveColor::Green:
-				_title = "Scop [Edit Light Mode][GREEN] ";
-				break;
-			case LightManager::ActiveColor::Blue:
-				_title = "Scop [Edit Light Mode][BLUE] ";
-				break;
-			default:
-				_title = "Scop [Edit Light Mode] ";
-				break;
-		}
-	}
-	else
-		_title = "Scop ";
-	float fps = 1.f / std::max(app.getDelta(), 0.0001f);
-	_title.append("[" + std::to_string(static_cast<int>(fps)) + " fps]");
-	glfwSetWindowTitle(_window, _title.c_str());
+	glfwSetWindowTitle(_window, title.c_str());
 }
 
 void Window::framebufferSizeCallback(GLFWwindow* window, int width, int height)
@@ -91,3 +70,21 @@ void Window::closeWindow()
 {
 	glfwSetWindowShouldClose(_window, true);
 };
+
+void Window::enableMouse()
+{
+	if (!_isMouse)
+	{
+		_isMouse = true;
+		glfwSetInputMode(_window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+	}
+}
+
+void Window::disableMouse()
+{
+	if (_isMouse)
+	{
+		_isMouse = false;
+		glfwSetInputMode(_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	}
+}
