@@ -38,14 +38,10 @@ void Renderer::draw(Scene* scene)
     _shader.setMat4("projection", projection);
     _shader.setMat4("view", camera.getViewMatrix());
 	_shader.setVec3("viewPos", vec3(camera.getPosition()));
-	_shader.setFloat("u_textureBlend", scene->getBlend());
+	_shader.setFloat("u_textureBlend", scene->model().getBlend());
 
 	// Model
-	const vec3 angle = scene->getRotAngle();
-	mat4 model = mat4::rotateX(angle.x)
-		.mul_mat(mat4::rotateY(angle.y))
-		.mul_mat(mat4::rotateZ(angle.z));
-    _shader.setMat4("model", model);
+    _shader.setMat4("model", scene->model().matrix());
 
 	// Configure Rendering Mode
 	configureMode();
@@ -59,7 +55,7 @@ void Renderer::draw(Scene* scene)
 		_shader.setFloat("lights[" + std::to_string(i) + "].intensity", lights[i]->getIntensity());
 		_shader.setBool("lights[" + std::to_string(i) + "].enabled", true);
 	}
-	const MeshGPU& mesh = scene->mesh();
+	const MeshGPU& mesh = scene->model().mesh();
 	mesh.draw(_shader);
 }
 

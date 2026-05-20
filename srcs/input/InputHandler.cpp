@@ -81,7 +81,6 @@ void InputHandler::handleKeys(Application* app)
     InputMode mode = isLightEditor ? InputMode::LightEditor : InputMode::Default;
     InputContext ctx = app->inputContext();
 
-	float currentFrame = static_cast<float>(glfwGetTime());
 	for (auto key = 0; key < 1024; key++)
 	{
 		if (ctx.keys[key])
@@ -95,8 +94,6 @@ void InputHandler::handleKeys(Application* app)
 				executeCommand(app, _commands[InputMode::Default].continuous, key);
 		}
 	}
-	float currentFrame2 = static_cast<float>(glfwGetTime());
-	std::cout << (currentFrame2 - currentFrame) * 1000 << std::endl;
 }
 
 bool InputHandler::executeCommand(Application * app, std::unordered_map<int, std::unique_ptr<ICommand>>& map, int key)

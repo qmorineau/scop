@@ -105,7 +105,7 @@ void Commands::MaterialMode::execute(Application* app) const
 };
 void Commands::TextureMode::execute(Application* app) const
 {
-    app->scene()->toggleTexture();
+    app->scene()->model().toggleTexture();
 };
 
 // Model
@@ -117,15 +117,15 @@ void Commands::ResetModel::execute(Application* app) const
 // Rotate
 void Commands::RotateX::execute(Application* app) const
 {
-    app->scene()->rotateX();
+    app->scene()->model().rotateX();
 };
 void Commands::RotateY::execute(Application* app) const
 {
-	app->scene()->rotateY();
+	app->scene()->model().rotateY();
 };
 void Commands::RotateZ::execute(Application* app) const
 {
-	app->scene()->rotateZ();
+	app->scene()->model().rotateZ();
 };
 
 // Transform
@@ -146,7 +146,7 @@ void Commands::TransformZ::execute(Application* app) const
 void Commands::ResetCamera::execute(Application* app) const
 {
     app->getCamera().resetPosition();
-	app->scene()->resetRot();
+	app->scene()->model().resetRotation();
 };
 void Commands::ChangeCameraMode::execute(Application* app) const
 {

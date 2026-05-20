@@ -67,3 +67,39 @@ void ModelState::rotateZ()
 		_rotations.z = -_rotations.z;
 	}
 };
+
+void ModelState::toggleTexture()
+{
+	_blending = -_blending;
+	_blend += _blending;
+};
+
+void ModelState::applyBlending(float deltaTime)
+{
+	if (_blend > 0.f && _blend < 1.f)
+		_blend += _blending * _blendingSpeed * deltaTime;
+	else
+		_blend = _blend >= 1.f ? 1.f : 0.f;
+};
+
+mat4 ModelState::matrix()
+{
+	return translationMatrix()
+		.mul_mat(rotationMatrix()); // Transl * Rot * scale
+};
+
+mat4 ModelState::translationMatrix()
+{
+	mat4 matrix = mat4::identity();
+	matrix(3, 0) = _translations.x;
+	matrix(3, 1) = _translations.y;
+	matrix(3, 2) = _translations.z;
+	return matrix;
+};
+
+mat4 ModelState::rotationMatrix()
+{
+	return mat4::rotateX(_rotAngle.x)
+		.mul_mat(mat4::rotateY(_rotAngle.y))
+		.mul_mat(mat4::rotateZ(_rotAngle.z));
+};

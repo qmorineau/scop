@@ -28,6 +28,7 @@ INCLUDES = -I $(INC_DIR) \
 			-I $(INC_DIR)/parser \
 			-I $(INC_DIR)/utils \
 			-I $(INC_DIR)/input \
+			-I $(INC_DIR)/scene \
 			-I $(GLAD_DIR)/include \
 			-I $(GLFW_DIR)/include
 

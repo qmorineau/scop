@@ -26,17 +26,17 @@ class Application
 		void run();
 
 		// getter
-		bool 			isLightEditor() {return _scene->isLightEditor();};
+		bool 			isLightEditor() 	{return _scene->isLightEditor();};
 		void			toggleLightEditor() {_scene->toggleLightEditor();};
-		Window&			window() {return _window;};
-		float			getDelta() {return _deltaTime;};
-		LightManager&	lights() {return _scene->lights();};
-		Camera&			getCamera() {return _scene->camera();};
-		Renderer&		renderer() {return _renderer;};
-		Scene*			scene() {return _scene;};
-		InputManager&	inputManager()	{return _inputManager;};
-		InputHandler&	inputHandler()	{return _inputHandler;};
-		InputContext&	inputContext()	{return _inputContext;};
+		Window&			window() 			{return _window;};
+		float			getDelta() 			{return _deltaTime;};
+		LightManager&	lights() 			{return _scene->lights();};
+		Camera&			getCamera() 		{return _scene->camera();};
+		Renderer&		renderer() 			{return _renderer;};
+		Scene*			scene() 			{return _scene;};
+		InputManager&	inputManager()		{return _inputManager;};
+		InputHandler&	inputHandler()		{return _inputHandler;};
+		InputContext&	inputContext()		{return _inputContext;};
 		// setter
 		void 			setColor(LightManager::ActiveColor c) {_scene->setColor(c);};
 
@@ -51,10 +51,7 @@ class Application
 		float				_deltaTime = 0.0f;
 		float				_lastFrame = 0.0f;
 
-		void 		initWindow();
-		void 		applyRotation();
 		void 		renderLoop();
-		void 		manageWindowTitle();
 		void 		endFrame();
 		std::string buildTitle();
 };

@@ -86,6 +86,14 @@ class Matrix4
 			return Matrix4(array);
 		}
 
+		float& operator()(size_t c, size_t r)
+		{
+			size_t idx = c + r * 4;
+			if (idx >= data.size())
+				throw OutOfBound();
+			return (data[idx]);
+		}
+
 		const float& operator()(size_t c, size_t r) const
 		{
 			size_t idx = c + r * 4;
