@@ -23,11 +23,17 @@ class ModelState
 		void rotateY();
 		void rotateZ();
 
+		void scaleUp();
+		void scaleDown();
+
 		void toggleTexture();
 
 		// getter
 		float getBlend() {return _blend;};
+		float getScale() {return _scale;};
 	private:
+		// scale
+		float		_scale = 1.f;
 		// translation
 		vec3		_translations;
 		// rotation

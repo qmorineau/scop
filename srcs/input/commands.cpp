@@ -127,7 +127,15 @@ void Commands::RotateZ::execute(Application* app) const
 {
 	app->scene()->model().rotateZ();
 };
-
+// Scale
+void Commands::ScaleUp::execute(Application* app) const
+{
+    app->scene()->model().scaleUp();
+};
+void Commands::ScaleDown::execute(Application* app) const
+{
+    app->scene()->model().scaleDown();
+};
 // Camera
 void Commands::ResetCamera::execute(Application* app) const
 {

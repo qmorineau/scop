@@ -24,6 +24,8 @@ class Model
 		void rotateZ()          {_state.rotateZ();};
         void toggleTexture()    {_state.toggleTexture();};
 
+        void scaleUp()    {_state.scaleUp();};
+        void scaleDown()    {_state.scaleDown();};
         // getter
         MeshGPU&    mesh() {return _meshGPU;};
         ModelState& state() {return _state;};

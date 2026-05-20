@@ -48,6 +48,8 @@ InputHandler::InputHandler()
 	_commands[InputMode::Default].continuous[GLFW_KEY_S] = std::make_unique<Commands::CameraBackward>();
 	_commands[InputMode::Default].continuous[GLFW_KEY_A] = std::make_unique<Commands::CameraLeft>();
 	_commands[InputMode::Default].continuous[GLFW_KEY_D] = std::make_unique<Commands::CameraRight>();
+	_commands[InputMode::Default].continuous[GLFW_KEY_LEFT_ALT] = std::make_unique<Commands::ScaleDown>();
+	_commands[InputMode::Default].continuous[GLFW_KEY_RIGHT_ALT] = std::make_unique<Commands::ScaleUp>();
     _commands[InputMode::LightEditor].continuous[GLFW_KEY_DOWN] = std::make_unique<Commands::DecreaseIntensity>();
     _commands[InputMode::LightEditor].continuous[GLFW_KEY_UP] = std::make_unique<Commands::IncreaseIntensity>();
 	_commands[InputMode::LightEditor].continuous[GLFW_KEY_9] = std::make_unique<Commands::DecreaseColorChanel>();

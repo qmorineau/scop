@@ -51,6 +51,9 @@ namespace Commands
     class RotateX : public ICommand {void execute(Application* app) const override;};
     class RotateY : public ICommand {void execute(Application* app) const override;};
     class RotateZ : public ICommand {void execute(Application* app) const override;};
+    // Scale
+    class ScaleUp : public ICommand {void execute(Application* app) const override;};
+    class ScaleDown : public ICommand {void execute(Application* app) const override;};
     // Camera
     class ResetCamera : public ICommand {void execute(Application* app) const override;};
     class ChangeCameraMode : public ICommand {void execute(Application* app) const override;};

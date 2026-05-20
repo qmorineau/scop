@@ -40,6 +40,16 @@ class Matrix4
 
 		~Matrix4() {};
 
+		static Matrix4 scale(const float s)
+		{
+			Matrix4 mat = Matrix4::identity();
+			mat(0, 0) = s;
+			mat(1, 1) = s;
+			mat(2, 2) = s;
+			return mat;
+		};
+
+
 		static Matrix4 identity()
 		{
 			std::vector<float> m(16, 0.0f);

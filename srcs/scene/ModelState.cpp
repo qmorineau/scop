@@ -10,6 +10,18 @@ void ModelState::translate(vec3 v)
 	_translations += v;
 };
 
+void ModelState::scaleUp()
+{
+	_scale += 0.01;
+}
+
+void ModelState::scaleDown()
+{
+	_scale -= 0.01;
+	if (_scale <= 0.f)
+		_scale = 0.f;
+}
+
 void ModelState::applyRotation(float deltaTime)
 {
 	if (_rotationsEnable.x)
@@ -75,7 +87,8 @@ void ModelState::applyBlending(float deltaTime)
 mat4 ModelState::matrix()
 {
 	return translationMatrix()
-		.mul_mat(rotationMatrix()); // Transl * Rot * scale
+		.mul_mat(rotationMatrix())
+		.mul_mat(mat4::scale(_scale));
 };
 
 mat4 ModelState::translationMatrix()
