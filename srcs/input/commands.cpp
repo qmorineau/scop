@@ -174,23 +174,23 @@ void Commands::MouseMove::execute(Application* app) const
 	if (!app->window().getMouse())
 	{	
 		InputContext& ctx = app->inputContext();
-		app->getCamera().onMouseMove(ctx.mousePos.x, ctx.mousePos.y);
+		app->getCamera().onMouseMove(ctx.mousePos());
 	}
 };
 
 void Commands::MouseScroll::execute(Application* app) const
 {
 	InputContext& ctx = app->inputContext();
-	app->getCamera().onMouseScroll(ctx.mouseOffset.x, ctx.mouseOffset.y);
+	app->getCamera().onMouseScroll(ctx.mouseScroll());
 };
 void Commands::EnableMouse::execute(Application* app) const
 {
-	app->inputContext().isMouseCaptured = false;
+	app->inputContext().setIsMouseCaptured(false);
 	app->window().enableMouse();
 };
 void Commands::DisableMouse::execute(Application* app) const
 {
-	app->inputContext().isMouseCaptured = true;
+	app->inputContext().setIsMouseCaptured(true);
 	app->getCamera().disableMouse();
 	glfwSetCursorPos(app->window().getWindow(), SCR_WIDTH / 2, SCR_HEIGHT / 2);
 	app->window().disableMouse();

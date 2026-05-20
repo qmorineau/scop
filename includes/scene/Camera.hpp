@@ -41,8 +41,8 @@ class Camera
 		void resize(int width, int height);
 		// processes input received from any keyboard-like input system. Accepts input parameter in the form of camera defined ENUM (to abstract it from windowing systems)
 		void	processKeyboard(CameraMovement direction, float deltaTime);
-		void	onMouseMove(double xposIn, double yposIn);
-		void	onMouseScroll(double xoffset, double yoffset);
+		void	onMouseMove(const vec2& posIn);
+		void	onMouseScroll(const vec2& offset);
 		void	resetPosition();
 		void	updateOrientation();
 		void	changeMode();

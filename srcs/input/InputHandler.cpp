@@ -86,18 +86,15 @@ void InputHandler::handleKeys(Application* app)
     InputMode mode = isLightEditor ? InputMode::LightEditor : InputMode::Default;
     InputContext ctx = app->inputContext();
 
-	for (auto key = 0; key < 1024; key++)
+	for (const auto& key : ctx.activeKeys())
 	{
-		if (ctx.keys[key])
+		if (mode != InputMode::Default)
 		{
-			if (mode != InputMode::Default)
-			{
-				if (!executeCommand(app, _commands[mode].continuous, key))
-					executeCommand(app, _commands[InputMode::Default].continuous, key);
-			}
-			else
+			if (!executeCommand(app, _commands[mode].continuous, key))
 				executeCommand(app, _commands[InputMode::Default].continuous, key);
 		}
+		else
+			executeCommand(app, _commands[InputMode::Default].continuous, key);
 	}
 }
 

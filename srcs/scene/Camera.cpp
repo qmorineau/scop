@@ -81,12 +81,12 @@ void Camera::processKeyboard(CameraMovement direction, float deltaTime)
 
 }
 
-void Camera::onMouseMove(double xposIn, double yposIn)
+void Camera::onMouseMove(const vec2& posIn)
 {
 	if (_mode != Camera::ORBITAL)
 	{
-		float xpos = static_cast<float>(xposIn);
-		float ypos = static_cast<float>(yposIn);
+		float xpos = static_cast<float>(posIn.x);
+		float ypos = static_cast<float>(posIn.y);
 
 		if (_firstMouse)
 		{
@@ -113,10 +113,9 @@ void Camera::onMouseMove(double xposIn, double yposIn)
 	}
 }
 
-void Camera::onMouseScroll(double xoffset, double yoffset)
+void Camera::onMouseScroll(const vec2& offset)
 {
-	(void) xoffset;
-	_zoom -= (float)yoffset;
+	_zoom -= (float)static_cast<float>(offset.y);
 	if (_zoom < 1.0f)
 		_zoom = 1.0f;
 	if (_zoom > 45.0f)

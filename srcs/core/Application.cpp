@@ -28,9 +28,9 @@ void Application::renderLoop()
 	while (!glfwWindowShouldClose(_window.getWindow()))
 	{
 		// Mouse
-		if (_inputContext.mouseMoved)
+		if (_inputContext.isMouseMoved())
 			_inputHandler.handleMouseCallback(this, InputHandler::CommandID::CMD_MOUSE_MOVE);
-		if (_inputContext.mouseScrolled)
+		if (_inputContext.isMouseScrolled())
 			_inputHandler.handleMouseCallback(this, InputHandler::CommandID::CMD_MOUSE_SCROLL);
 		_inputHandler.handleKeys(this);
 		
@@ -58,10 +58,9 @@ void Application::renderLoop()
 void Application::endFrame()
 {
 	auto& ctx = _inputContext;
-    ctx.mouseMoved = false;
-    ctx.mouseScrolled = false;
-    ctx.mouseOffset.x = 0;
-    ctx.mouseOffset.y = 0;
+	ctx.setIsMouseMoved(false);
+	ctx.setIsMouseScrolled(false);
+	ctx.setMouseScrolled(vec2(0));
 }
 
 std::string Application::buildTitle()

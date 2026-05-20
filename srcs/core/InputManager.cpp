@@ -11,10 +11,10 @@ void InputManager::mouseButtonCallback(GLFWwindow* window, int button, int actio
 	{
 		InputContext& ctx = app->inputContext();
 		if (action == GLFW_PRESS)
-			ctx.mouse[button] = true;
+			ctx.pressMouse(button);
 		else if (action == GLFW_RELEASE)
 		{
-			ctx.mouse[button] = false;
+			ctx.releaseMouse(button);
 			app->inputHandler().handleMouseCallback(app, button);
 		}
 	}
@@ -26,13 +26,8 @@ void InputManager::mouseCallback(GLFWwindow* window, double xposIn, double yposI
 	if (app)
 	{
 		InputContext& ctx = app->inputContext();
-		ctx.mouseMoved = true;
-		ctx.mousePos.x = xposIn;
-		ctx.mousePos.y = yposIn;
-		ctx.ndc = vec2(
-			(2.0f * xposIn) / SCR_WIDTH - 1.0f,
-			1.0f - (2.0f * yposIn) / SCR_HEIGHT
-		);
+		ctx.setIsMouseMoved(true);
+		ctx.setMousePos(vec2(xposIn, yposIn));
 	}
 }
 
@@ -42,9 +37,8 @@ void InputManager::scrollCallback(GLFWwindow* window, double xoffset, double yof
 	if (app)
 	{
 		InputContext& ctx = app->inputContext();
-		ctx.mouseScrolled = true;
-		ctx.mouseOffset.x = xoffset;
-		ctx.mouseOffset.y = yoffset;
+		ctx.setIsMouseScrolled(true);
+		ctx.setMouseScrolled(vec2(xoffset, yoffset));
 	}
 }
 // Keyboard
@@ -59,10 +53,10 @@ void InputManager::keyCallback(GLFWwindow* window, int key, int scancode, int ac
 
 	InputContext& ctx = app->inputContext();
 	if (action == GLFW_PRESS)
-		ctx.keys[key] = true;
+		ctx.pressKey(key);
     else if (action == GLFW_RELEASE)
 	{
-		ctx.keys[key] = false;
+		ctx.releaseKey(key);
 		app->inputHandler().handleKeysCallback(app, key);
 	}
 }
