@@ -16,9 +16,7 @@ class ModelState
 		void applyBlending(float deltaTime);
 
 		void resetTranslation();
-		void translateX();
-		void translateY();
-		void translateZ();
+		void translate(vec3 v);
 		
 		void resetRotation();
 		void rotateX();
@@ -31,8 +29,7 @@ class ModelState
 		float getBlend() {return _blend;};
 	private:
 		// translation
-		vec3		_offsets;
-		vec3		_translations = vec3(0.01, 0.01, 0.01);
+		vec3		_translations;
 		// rotation
 		vec3		_rotationsEnable = vec3(0, 1, 0);
 		vec3		_rotAngle;

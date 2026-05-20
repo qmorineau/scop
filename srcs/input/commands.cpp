@@ -111,7 +111,7 @@ void Commands::TextureMode::execute(Application* app) const
 // Model
 void Commands::ResetModel::execute(Application* app) const
 {
-    (void) app; // TODO
+    app->scene()->model().resetTranslation();
 };
 
 // Rotate
@@ -126,20 +126,6 @@ void Commands::RotateY::execute(Application* app) const
 void Commands::RotateZ::execute(Application* app) const
 {
 	app->scene()->model().rotateZ();
-};
-
-// Transform
-void Commands::TransformX::execute(Application* app) const
-{
-     (void) app; // TODO
-};
-void Commands::TransformY::execute(Application* app) const
-{
-     (void) app; // TODO
-};
-void Commands::TransformZ::execute(Application* app) const
-{
-     (void) app; // TODO
 };
 
 // Camera

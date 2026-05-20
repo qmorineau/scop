@@ -2,22 +2,12 @@
 
 void ModelState::resetTranslation()
 {
-	_offsets = vec3(0,0,0);
+	_translations = vec3(0,0,0);
 };
 
-void ModelState::translateX()
+void ModelState::translate(vec3 v)
 {
-	_offsets.x += _translations.x;
-};
-
-void ModelState::translateY()
-{
-	_offsets.y += _translations.y;
-};
-
-void ModelState::translateZ()
-{
-	_offsets.z += _translations.z;
+	_translations += v;
 };
 
 void ModelState::applyRotation(float deltaTime)

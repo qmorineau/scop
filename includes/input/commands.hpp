@@ -17,6 +17,17 @@ namespace Commands
         private:
             vec3 _color;
     };
+    class Translate : public ICommand
+    {
+        public:
+            Translate(vec3 v) : _vec3(v) {};
+            void execute(Application* app) const override
+            {
+                app->scene()->model().translate(_vec3 * app->getDelta());
+            }
+        private:
+            vec3 _vec3;
+    };
     class EditRedChanel : public ICommand {void execute(Application* app) const override;};
     class EditGreenChanel : public ICommand {void execute(Application* app) const override;};
     class EditBlueChanel : public ICommand {void execute(Application* app) const override;};
@@ -40,10 +51,6 @@ namespace Commands
     class RotateX : public ICommand {void execute(Application* app) const override;};
     class RotateY : public ICommand {void execute(Application* app) const override;};
     class RotateZ : public ICommand {void execute(Application* app) const override;};
-    // Transform
-    class TransformX : public ICommand {void execute(Application* app) const override;};
-    class TransformY : public ICommand {void execute(Application* app) const override;};
-    class TransformZ : public ICommand {void execute(Application* app) const override;};
     // Camera
     class ResetCamera : public ICommand {void execute(Application* app) const override;};
     class ChangeCameraMode : public ICommand {void execute(Application* app) const override;};

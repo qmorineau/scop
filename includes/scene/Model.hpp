@@ -17,9 +17,7 @@ class Model
         mat4 matrix()           {return _state.matrix();};
 
         void resetTranslation() {_state.resetTranslation();};
-		void translateX()       {_state.translateX();};
-		void translateY()       {_state.translateY();};
-		void translateZ()       {_state.translateZ();};
+		void translate(vec3 v)  {_state.translate(v);};
 		void resetRotation()    {_state.resetRotation();};
 		void rotateX()          {_state.rotateX();};
 		void rotateY()          {_state.rotateY();};

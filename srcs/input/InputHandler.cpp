@@ -13,17 +13,14 @@ InputHandler::InputHandler()
     _commands[InputMode::Default].event[GLFW_KEY_2] = std::make_unique<Commands::FaceMode>();
     _commands[InputMode::Default].event[GLFW_KEY_3] = std::make_unique<Commands::MaterialMode>();
     _commands[InputMode::Default].event[GLFW_KEY_T] = std::make_unique<Commands::TextureMode>();
-    _commands[InputMode::Default].event[GLFW_KEY_SPACE] = std::make_unique<Commands::ResetModel>(); // todo
+    _commands[InputMode::Default].event[GLFW_KEY_SPACE] = std::make_unique<Commands::ResetModel>();
     _commands[InputMode::Default].event[GLFW_KEY_X] = std::make_unique<Commands::RotateX>();
     _commands[InputMode::Default].event[GLFW_KEY_Y] = std::make_unique<Commands::RotateY>();
     _commands[InputMode::Default].event[GLFW_KEY_Z] = std::make_unique<Commands::RotateZ>();
-    _commands[InputMode::Default].event[GLFW_KEY_SPACE] = std::make_unique<Commands::TransformX>(); // todo
-    _commands[InputMode::Default].event[GLFW_KEY_SPACE] = std::make_unique<Commands::TransformY>(); // todo
-    _commands[InputMode::Default].event[GLFW_KEY_SPACE] = std::make_unique<Commands::TransformZ>(); // todo
     _commands[InputMode::Default].event[GLFW_KEY_R] = std::make_unique<Commands::ResetCamera>();
     _commands[InputMode::Default].event[GLFW_KEY_C] = std::make_unique<Commands::ChangeRendering>();
     _commands[InputMode::Default].event[GLFW_KEY_M] = std::make_unique<Commands::ChangeCameraMode>();
-
+	
     _commands[InputMode::LightEditor].event[GLFW_KEY_1] = std::make_unique<Commands::SetLightColor>(vec3(1, 1, 1));
     _commands[InputMode::LightEditor].event[GLFW_KEY_2] = std::make_unique<Commands::SetLightColor>(vec3(0, 0, 0));
     _commands[InputMode::LightEditor].event[GLFW_KEY_3] = std::make_unique<Commands::SetLightColor>(vec3(1, 0, 0));
@@ -39,8 +36,14 @@ InputHandler::InputHandler()
 	_commands[InputMode::LightEditor].event[GLFW_KEY_E] = std::make_unique<Commands::DeleteLight>();
 	_commands[InputMode::LightEditor].event[GLFW_KEY_LEFT] = std::make_unique<Commands::PreviousLight>();
 	_commands[InputMode::LightEditor].event[GLFW_KEY_RIGHT] = std::make_unique<Commands::NextLight>();
-
+	
 	// Repeat Key
+    _commands[InputMode::Default].continuous[GLFW_KEY_LEFT] = std::make_unique<Commands::Translate>(vec3(-1, 0, 0));
+    _commands[InputMode::Default].continuous[GLFW_KEY_RIGHT] = std::make_unique<Commands::Translate>(vec3(1, 0, 0));
+    _commands[InputMode::Default].continuous[GLFW_KEY_UP] = std::make_unique<Commands::Translate>(vec3(0, 0, -1));
+	_commands[InputMode::Default].continuous[GLFW_KEY_DOWN] = std::make_unique<Commands::Translate>(vec3(0, 0, 1));
+    _commands[InputMode::Default].continuous[GLFW_KEY_PAGE_UP] = std::make_unique<Commands::Translate>(vec3(0, 1, 0));
+    _commands[InputMode::Default].continuous[GLFW_KEY_PAGE_DOWN] = std::make_unique<Commands::Translate>(vec3(0, -1, 0));
 	_commands[InputMode::Default].continuous[GLFW_KEY_W] = std::make_unique<Commands::CameraForward>();
 	_commands[InputMode::Default].continuous[GLFW_KEY_S] = std::make_unique<Commands::CameraBackward>();
 	_commands[InputMode::Default].continuous[GLFW_KEY_A] = std::make_unique<Commands::CameraLeft>();
