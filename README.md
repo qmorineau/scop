@@ -1,4 +1,4 @@
-# scop - OBJ Vizualizer
+# scop - OBJ Visualizer
 
 ![scop demo](https://github.com/user-attachments/assets/2c19cf34-b4eb-47fc-8ddf-a4d46eefec7d)
 
@@ -33,7 +33,7 @@ The project focuses on:
 
 ### Camera System
 - Free camera (FPS‑style)  
-- Orbital camera (rotate around the model)  
+- Orbital camera (orbit around the model)  
 - Adjustable speed and sensitivity
 
 ### Light Editor
@@ -44,7 +44,7 @@ The project focuses on:
 - Real‑time updates
 
 ### Model Interaction
-- Toggle rotation on X, Y, or Z axes  
+- Toggle rotation on X, Y, or Z axis  
 - Reset transformations  
 - Window resizing support
 
@@ -63,16 +63,26 @@ Core systems required to run the application.
 ### graphics/
 Rendering‑related classes and GPU abstractions.
 
-- **Camera**: Free/orbital camera logic  
-- **Light**: Light representation  
-- **LightManager**: Handles multiple lights  
 - **Material**: Material properties (colors, shininess, textures)  
-- **Mesh**: CPU‑side mesh representation  
 - **MeshGPU**: GPU buffers (VAO/VBO/EBO)  
 - **Renderer**: Draw calls, shader binding, render modes  
-- **Scene**: Holds objects, lights, and global render state  
 - **Shader**: Shader program compilation and uniform management  
 - **Vertex**: Vertex structure (position, normal, UV)
+
+### input/
+Command design pattern for input handler
+- **ICommand**: Interface for each command
+- **InputContext**: Data storage from events of inputManager
+- **InputHandler**: Execute each command
+
+### scene/
+- **Camera**: Free/orbital camera logic  
+- **LightManager**: Handles multiple lights  
+- **Light**: Light representation
+- **Model**: Encapsulates all model-related data and behavior
+- **ModelState**: Data of the model state (rotation, translation..)
+- **Mesh**: CPU‑side mesh representation
+- **Scene**: Holds objects, lights, and global render state  
 
 ### math/
 Math utilities used across the engine.
@@ -108,24 +118,25 @@ Since the program does not display help in the window, here is the complete cont
 - **Scroll Wheel**: Zoom
 - **R**: Recenter the camera on the model
 
-### Light Controls (Light Editor Mode Only)
+### Light Controls (Light Editor Mode)
 - **L**: Enable/Disable Light Editor Mode
 - **E**: Delete selected light
-- **1 - 8**: Preset Light Color
-- **9 / 0**: Decrease or Increase RGB channel selected  
-- **Left Arrow**: Select previous light
-- **Right Arrow**: Select next light
-- **Up Arrow**: Increase intensity of selected light
-- **Down Arrow**: Decrease intensity of selected light
+- **1 - 8**: Preset light colors
+- **9 / 0**: Select previous/next light  
+- **Left / Right Arrow**: Decrease or Increase RGB channel selected (only in Light Editor Mode)
+- **Up / Down Arrow**: Increase / Decrease intensity of selected light (only in Light Editor Mode)
 
 ### Rendering Modes
 - **1**: Material + lighting
 - **2**: Flat face rendering (no lighting)  
 - **3**: Textured rendering (if any)
-- **P**: Cycle through Vertex Rendering / Wireframe Rendering / Full Rendering
+- **P**: Cycle through vertex / wireframe / full rendering
 
 ### Model Transformations
 - **X / Y / Z**: Toggle rotation on each axis
+- **Left / Right Arrow**: Translation on X axis (only in Model Mode)
+- **Page Up / Down**: Translation on Y axis
+- **Up / Down Arrow**: Translation on Z axis (only in Model Mode)
 
 ### Misc
 - **Esc**: Quit  

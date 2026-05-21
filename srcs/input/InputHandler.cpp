@@ -27,7 +27,7 @@ void InputHandler::initDefaultMod()
     event[IK{GLFW_KEY_Y, 0}] = std::make_unique<Commands::RotateY>();
     event[IK{GLFW_KEY_Z, 0}] = std::make_unique<Commands::RotateZ>();
     event[IK{GLFW_KEY_R, 0}] = std::make_unique<Commands::ResetCamera>();
-    event[IK{GLFW_KEY_C, 0}] = std::make_unique<Commands::ChangeRendering>();
+    event[IK{GLFW_KEY_P, 0}] = std::make_unique<Commands::ChangeRendering>();
     event[IK{GLFW_KEY_M, 0}] = std::make_unique<Commands::ChangeCameraMode>();
 
 	// Repeat key
