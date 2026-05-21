@@ -6,7 +6,6 @@
 Window::Window(Application* app)
 {
 	// glfw: initialize and configure
-    // ------------------------------
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -17,7 +16,6 @@ Window::Window(Application* app)
 	#endif
 
     // glfw window creation
-    // --------------------
     _window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Scop", NULL, NULL);
     if (_window == NULL)
 		throw GLWF_WindowError();
@@ -34,12 +32,10 @@ Window::Window(Application* app)
 	glfwSetKeyCallback(_window, InputManager::keyCallback);
 
     // glad: load all OpenGL function pointers
-    // ---------------------------------------
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 		throw GLAD_Error();
 
     // configure global opengl state
-    // -----------------------------
     glEnable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
