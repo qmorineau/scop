@@ -54,6 +54,7 @@ class Application
 		void 		renderLoop();
 		void 		endFrame();
 		std::string buildTitle();
+		vec3		backgroundColor();
 };
 
 #endif

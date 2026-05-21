@@ -44,7 +44,7 @@ void Application::renderLoop()
 
 		_scene->update(_deltaTime);
 
-		_renderer.beginFrame();
+		_renderer.beginFrame(backgroundColor());
 		_renderer.draw(_scene);
 		endFrame();
 
@@ -88,4 +88,24 @@ std::string Application::buildTitle()
 	float fps = 1.f / std::max(_deltaTime, 0.0001f);
 	title.append(" [" + std::to_string(static_cast<int>(fps)) + " fps]");
 	return title;
+}
+
+vec3 Application::backgroundColor()
+{
+	if (isLightEditor())
+	{
+		switch (lights().getColor())
+		{
+			case LightManager::ActiveColor::Red:
+				return vec3(0.4, 0.2, 0.2);
+			case LightManager::ActiveColor::Green:
+				return vec3(0.2, 0.4, 0.2);
+			case LightManager::ActiveColor::Blue:
+				return vec3(0.2, 0.2, 0.4);
+			default:
+				return vec3(0.4, 0.4, 0);
+		}
+	}
+	else
+		return vec3(0.2, 0.2, 0.2);
 }

@@ -28,7 +28,7 @@ class Renderer
 		Renderer();
 		~Renderer();
 
-		void beginFrame();
+		void beginFrame(vec3);
 		void setMode(RenderMode mode);
 		void changeFaceRendering();
 		void draw(Scene* scene);

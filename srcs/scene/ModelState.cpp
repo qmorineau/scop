@@ -13,6 +13,11 @@ void ModelState::translate(vec3 v)
 	_translations += v;
 };
 
+void ModelState::resetScale()
+{
+	_scale = 1.f;
+}
+
 void ModelState::scaleUp()
 {
 	_scale += 0.01;

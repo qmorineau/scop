@@ -23,6 +23,7 @@ class ModelState
 		void rotateY();
 		void rotateZ();
 
+		void resetScale();
 		void scaleUp();
 		void scaleDown();
 

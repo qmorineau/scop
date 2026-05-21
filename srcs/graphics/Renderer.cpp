@@ -14,9 +14,9 @@ Renderer::Renderer() :
 
 Renderer::~Renderer() {};
 
-void Renderer::beginFrame()
+void Renderer::beginFrame(vec3 v)
 {
-	glClearColor(0.2f, 0.2f, 0.2f, 1.f);
+	glClearColor(v.x, v.y, v.z, 1.f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 

@@ -11,15 +11,27 @@ void Commands::CloseWindow::execute(Application* app) const
 // Lights
 void Commands::EditRedChanel::execute(Application* app) const
 {
-    app->lights().setColor(LightManager::ActiveColor::Red);
+	LightManager::ActiveColor color = app->lights().getColor();
+	if (color == LightManager::ActiveColor::Red)
+		app->lights().setColor(LightManager::ActiveColor::None);
+	else
+	    app->lights().setColor(LightManager::ActiveColor::Red);
 };
 void Commands::EditGreenChanel::execute(Application* app) const
 {
-    app->lights().setColor(LightManager::ActiveColor::Green);   
+	LightManager::ActiveColor color = app->lights().getColor();
+	if (color == LightManager::ActiveColor::Green)
+		app->lights().setColor(LightManager::ActiveColor::None);
+	else
+	    app->lights().setColor(LightManager::ActiveColor::Green);
 };
 void Commands::EditBlueChanel::execute(Application* app) const
 {
-    app->lights().setColor(LightManager::ActiveColor::Blue);
+    LightManager::ActiveColor color = app->lights().getColor();
+	if (color == LightManager::ActiveColor::Blue)
+		app->lights().setColor(LightManager::ActiveColor::None);
+	else
+	    app->lights().setColor(LightManager::ActiveColor::Blue);
 };
 void Commands::AddLight::execute(Application* app) const
 {
@@ -111,7 +123,7 @@ void Commands::TextureMode::execute(Application* app) const
 // Model
 void Commands::ResetModel::execute(Application* app) const
 {
-    app->scene()->model().resetTranslation();
+    app->scene()->model().resetModel();
 };
 
 // Rotate

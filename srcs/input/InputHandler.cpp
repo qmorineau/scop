@@ -34,8 +34,8 @@ void InputHandler::initDefaultMod()
 	auto& continuous = _commands[InputMode::Default].continuous;
 	continuous[IK{GLFW_KEY_LEFT, 0}] = std::make_unique<Commands::Translate>(vec3(-1, 0, 0));
     continuous[IK{GLFW_KEY_RIGHT, 0}] = std::make_unique<Commands::Translate>(vec3(1, 0, 0));
-    continuous[IK{GLFW_KEY_DOWN, 0}] = std::make_unique<Commands::Translate>(vec3(0, 0, -1));
-	continuous[IK{GLFW_KEY_UP, 0}] = std::make_unique<Commands::Translate>(vec3(0, 0, 1));
+    continuous[IK{GLFW_KEY_UP, 0}] = std::make_unique<Commands::Translate>(vec3(0, 0, -1));
+	continuous[IK{GLFW_KEY_DOWN, 0}] = std::make_unique<Commands::Translate>(vec3(0, 0, 1));
     continuous[IK{GLFW_KEY_PAGE_UP, 0}] = std::make_unique<Commands::Translate>(vec3(0, 1, 0));
     continuous[IK{GLFW_KEY_PAGE_DOWN, 0}] = std::make_unique<Commands::Translate>(vec3(0, -1, 0));
 	continuous[IK{GLFW_KEY_W, 0}] = std::make_unique<Commands::CameraForward>();
@@ -58,20 +58,20 @@ void InputHandler::initLightEditorMod()
     event[IK{GLFW_KEY_6, 0}] = std::make_unique<Commands::SetLightColor>(vec3(1, 1, 0));
     event[IK{GLFW_KEY_7, 0}] = std::make_unique<Commands::SetLightColor>(vec3(1, 0, 1));
     event[IK{GLFW_KEY_8, 0}] = std::make_unique<Commands::SetLightColor>(vec3(0, 1, 1));
+	event[IK{GLFW_KEY_9, 0}] = std::make_unique<Commands::PreviousLight>();
+	event[IK{GLFW_KEY_0, 0}] = std::make_unique<Commands::NextLight>();
 	event[IK{GLFW_KEY_R, 0}] = std::make_unique<Commands::EditRedChanel>();
 	event[IK{GLFW_KEY_G, 0}] = std::make_unique<Commands::EditGreenChanel>();
 	event[IK{GLFW_KEY_B, 0}] = std::make_unique<Commands::EditBlueChanel>();
 	event[IK{GLFW_KEY_N, 0}] = std::make_unique<Commands::AddLight>();
 	event[IK{GLFW_KEY_E, 0}] = std::make_unique<Commands::DeleteLight>();
-	event[IK{GLFW_KEY_LEFT, 0}] = std::make_unique<Commands::PreviousLight>();
-	event[IK{GLFW_KEY_RIGHT, 0}] = std::make_unique<Commands::NextLight>();
 	
 	// Repeat key
     auto& continuous = _commands[InputMode::LightEditor].continuous;
     continuous[IK{GLFW_KEY_DOWN, 0}] = std::make_unique<Commands::DecreaseIntensity>();
     continuous[IK{GLFW_KEY_UP, 0}] = std::make_unique<Commands::IncreaseIntensity>();
-	continuous[IK{GLFW_KEY_9, 0}] = std::make_unique<Commands::DecreaseColorChanel>();
-    continuous[IK{GLFW_KEY_0, 0}] = std::make_unique<Commands::IncreaseColorChanel>();
+	continuous[IK{GLFW_KEY_LEFT, 0}] = std::make_unique<Commands::DecreaseColorChanel>();
+    continuous[IK{GLFW_KEY_RIGHT, 0}] = std::make_unique<Commands::IncreaseColorChanel>();
 };
 
 void InputHandler::handleKeysCallback(Application* app, int key)
@@ -123,5 +123,6 @@ bool InputHandler::executeCommand(Application * app, std::unordered_map<InputKey
 		it->second->execute(app);
 		return true;
 	}
-	return false;
+	else
+		return false;
 };

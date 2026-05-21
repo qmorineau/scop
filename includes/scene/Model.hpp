@@ -1,8 +1,8 @@
 #ifndef MODEL_HPP
 #define MODEL_HPP
 
-class Mesh;
-class ModelState;
+struct	Mesh;
+class 	ModelState;
 
 #include "ModelState.hpp"
 #include "MeshGPU.hpp"
@@ -16,7 +16,7 @@ class Model
         void update(float deltaTime);
         mat4 matrix()           {return _state.matrix();};
 
-        void resetTranslation() {_state.resetTranslation();};
+        void resetModel() 		{_state.resetTranslation(); _state.resetScale();};
 		void translate(vec3 v)  {_state.translate(v);};
 		void resetRotation()    {_state.resetRotation();};
 		void rotateX()          {_state.rotateX();};
