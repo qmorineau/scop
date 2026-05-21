@@ -137,6 +137,7 @@ Since the program does not display help in the window, here is the complete cont
 - **Left / Right Arrow**: Translation on X axis (only in Model Mode)
 - **Page Up / Down**: Translation on Y axis
 - **Up / Down Arrow**: Translation on Z axis (only in Model Mode)
+- **Alt  Left / Right**: Scale Up / Down the model
 
 ### Misc
 - **Esc**: Quit  
