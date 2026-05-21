@@ -7,8 +7,8 @@
 class ModelState
 {
 	public:
-		ModelState() = default;
-		~ModelState() = default;
+		ModelState();
+		~ModelState();
 
 		mat4 matrix();
 

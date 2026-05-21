@@ -11,7 +11,7 @@ class Model
 {
     public:
         Model(Mesh& mesh, std::string path);
-        ~Model() = default;
+        ~Model();
 
         void update(float deltaTime);
         mat4 matrix()           {return _state.matrix();};

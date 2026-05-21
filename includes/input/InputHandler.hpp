@@ -29,16 +29,35 @@ class InputHandler
 			Default,
 			LightEditor
 		};
+		struct InputKey
+		{
+			int key;
+			int mod;
+			bool operator==(const InputKey& k) const
+			{
+				return (k.key == key && k.mod == mod);
+			};
+		};
+		struct InputKeyHash // to put in the hashtable 
+		{
+			size_t operator()(const InputKey& k) const {
+				return k.key | (k.mod << 16);  // bits 0-15 = key, bits 16-31 = mod
+			}    
+		};
+
 		struct CommandMap
 		{
-			std::unordered_map<int, std::unique_ptr<ICommand>> event;
-			std::unordered_map<int, std::unique_ptr<ICommand>> continuous;
+			std::unordered_map<InputKey, std::unique_ptr<ICommand>, InputKeyHash> event;
+			std::unordered_map<InputKey, std::unique_ptr<ICommand>, InputKeyHash> continuous;
 		};
+
 
 		std::unordered_map<InputMode, CommandMap>			_commands;
 		std::unordered_map<int, std::unique_ptr<ICommand>>	_eventMouseCommand;
 
-		bool executeCommand(Application * app, std::unordered_map<int, std::unique_ptr<ICommand>>& map, int key);
+		void initDefaultMod();
+		void initLightEditorMod();
+		bool executeCommand(Application * app, std::unordered_map<InputKey, std::unique_ptr<ICommand>, InputKeyHash>& map, InputKey key);
 };
 
  #endif

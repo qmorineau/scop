@@ -1,5 +1,8 @@
 #include "ModelState.hpp"
 
+ModelState::ModelState() = default;
+ModelState::~ModelState() = default;
+
 void ModelState::resetTranslation()
 {
 	_translations = vec3(0,0,0);

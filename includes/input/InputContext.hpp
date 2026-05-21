@@ -10,11 +10,8 @@
 class InputContext
 {
 	public:
-		InputContext()
-		{
-			_activeKeys.reserve(16);
-		};
-		~InputContext() = default;
+		InputContext();
+		~InputContext();
 
 		void pressKey(int key);
 		void releaseKey(int key);
@@ -22,12 +19,14 @@ class InputContext
 		void releaseMouse(int key);
 
 		// setter
+		void setMods(int m)					{_mods = m;};
 		void setIsMouseCaptured(bool v)	{_isMouseCaptured = v;};
 		void setIsMouseMoved(bool v) 	{_isMouseMoved = v;};
 		void setIsMouseScrolled(bool v)	{_isMouseScrolled = v;};
 		void setMouseScrolled(vec2 v) 	{_mouseScroll = v;};
 		void setMousePos(vec2 v) 		{_mousePos = v;};
- 		// getter
+		// getter
+		int getMods()					{return _mods;};
 		bool isMouseCaptured() 			{return _isMouseCaptured;};
 		bool isMouseMoved()				{return _isMouseMoved;};
 		bool isMouseScrolled()			{return _isMouseScrolled;};
@@ -35,6 +34,7 @@ class InputContext
 		const vec2& mousePos()			{return _mousePos;};
 		const auto& activeKeys()		{return _activeKeys;};
 	private:
+		int					_mods;
 		bool				_isMouseCaptured = true;
 		std::bitset<1024>	_keys;
 		std::vector<int>	_activeKeys;

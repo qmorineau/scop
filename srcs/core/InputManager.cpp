@@ -42,16 +42,17 @@ void InputManager::scrollCallback(GLFWwindow* window, double xoffset, double yof
 	}
 }
 // Keyboard
+// scancode: physical position of a key, not keyboard dependent
+// mods: bitmask if mod is press (shift, ctrl, alt, super...)
 void InputManager::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-	(void) scancode /* physical position of a key, not keyboard dependent */;
-	(void) mods; /* bitmask if mod is press, shift, ctrl, alt, super... */
-
+	(void) scancode;
     Application* app = static_cast<Application*>(glfwGetWindowUserPointer(window));
     if (!app)
 		return;
 
 	InputContext& ctx = app->inputContext();
+	ctx.setMods(mods);
 	if (action == GLFW_PRESS)
 		ctx.pressKey(key);
     else if (action == GLFW_RELEASE)

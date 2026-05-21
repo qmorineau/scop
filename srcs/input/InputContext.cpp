@@ -1,5 +1,12 @@
 #include "InputContext.hpp"
 
+InputContext::InputContext()
+{
+    _activeKeys.reserve(16);
+};
+
+InputContext::~InputContext() = default;
+
 void InputContext::pressKey(int key)
 {
     if (_keys.test(key))
