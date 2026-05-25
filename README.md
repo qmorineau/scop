@@ -134,9 +134,9 @@ Since the program does not display help in the window, here is the complete cont
 
 ### Model Transformations
 - **X / Y / Z**: Toggle rotation on each axis
-- **Left / Right Arrow**: Translation on X axis (only in Model Mode)
+- **Left / Right Arrow**: Translation on X axis
 - **Page Up / Down**: Translation on Y axis
-- **Up / Down Arrow**: Translation on Z axis (only in Model Mode)
+- **Up / Down Arrow**: Translation on Z axis
 - **Alt  Left / Right**: Scale Up / Down the model
 
 ### Misc
